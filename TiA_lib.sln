@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TiA_library", "TiA_lib.vcxproj", "{C9DFDA24-4646-4913-B064-45EECCAFB3D9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TiA_Client", "TiA_Client.vcxproj", "{CE83BAE1-4EAC-4A0A-999F-A5A7D8CF7381}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C9DFDA24-4646-4913-B064-45EECCAFB3D9} = {C9DFDA24-4646-4913-B064-45EECCAFB3D9}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C9DFDA24-4646-4913-B064-45EECCAFB3D9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C9DFDA24-4646-4913-B064-45EECCAFB3D9}.Debug|Win32.Build.0 = Debug|Win32
+		{C9DFDA24-4646-4913-B064-45EECCAFB3D9}.Debug|x64.ActiveCfg = Debug|x64
+		{C9DFDA24-4646-4913-B064-45EECCAFB3D9}.Debug|x64.Build.0 = Debug|x64
+		{C9DFDA24-4646-4913-B064-45EECCAFB3D9}.Release|Win32.ActiveCfg = Release|Win32
+		{C9DFDA24-4646-4913-B064-45EECCAFB3D9}.Release|Win32.Build.0 = Release|Win32
+		{C9DFDA24-4646-4913-B064-45EECCAFB3D9}.Release|x64.ActiveCfg = Release|x64
+		{C9DFDA24-4646-4913-B064-45EECCAFB3D9}.Release|x64.Build.0 = Release|x64
+		{CE83BAE1-4EAC-4A0A-999F-A5A7D8CF7381}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CE83BAE1-4EAC-4A0A-999F-A5A7D8CF7381}.Debug|Win32.Build.0 = Debug|Win32
+		{CE83BAE1-4EAC-4A0A-999F-A5A7D8CF7381}.Debug|x64.ActiveCfg = Debug|Win32
+		{CE83BAE1-4EAC-4A0A-999F-A5A7D8CF7381}.Release|Win32.ActiveCfg = Release|Win32
+		{CE83BAE1-4EAC-4A0A-999F-A5A7D8CF7381}.Release|Win32.Build.0 = Release|Win32
+		{CE83BAE1-4EAC-4A0A-999F-A5A7D8CF7381}.Release|x64.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
