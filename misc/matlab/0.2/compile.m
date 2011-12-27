@@ -41,8 +41,8 @@ function compile(reset_setting)
     win_build_command  = ['mex -v -O -DTIXML_USE_TICPP -DWIN32 -D_WIN32_WINNT=0x0501 -I' win_boost_path ' '];
     win_build_command  = [ win_build_command ' -I../../../include/  -I../../../extern/include/ -L' win_boost_path '\lib -outdir build'];
     win_libs = [' -llibboost_system-'    answer{2} '-mt-' answer{1} ...
-                ' -llibboost_date_time-' answer{2} '-mt-' answer{1}
-                ' -llibboost_regex-'     answer{2} '-mt-' answer{1}
+                ' -llibboost_date_time-' answer{2} '-mt-' answer{1} ...
+                ' -llibboost_regex-'     answer{2} '-mt-' answer{1} ...
                 ' -llibboost_thread-'    answer{2} '-mt-' answer{1} ];
 
     save('libtia_matlab_client_win_settings.mat', answer, win_boost_path);
