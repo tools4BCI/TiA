@@ -1,7 +1,4 @@
 function compile(reset_setting)
-
-
-
   c_files = ' ';
   c_files = [c_files ' ../../../src/tia/datapacket/data_packet_impl.cpp ../../../src/tia/datapacket/raw_mem.cpp'];
   c_files = [c_files ' ../../../src/tia/datapacket/data_packet_3_impl.cpp ../../../src/tia/datapacket/raw_mem3.cpp ../../../src/tia/clock.cpp'];
@@ -18,7 +15,7 @@ function compile(reset_setting)
   unix_build_command = 'mex -v -O -DTIXML_USE_TICPP  -I../../../include/  -I../../../extern/include/  -lboost_system -lstdc++ -outdir build';
   if(~isunix)
 
-    if(~exists('libtia_matlab_client_win_settings.mat') || reset_setting)
+    if(~exist('libtia_matlab_client_win_settings.mat','file') || reset_setting)
 
       win_boost_path = 'C:\Programme\boost\boost_1_48_0';
 
@@ -35,7 +32,7 @@ function compile(reset_setting)
       answer = inputdlg(prompt,dlg_title,num_lines,def);
 
     else
-      load(libtia_matlab_client_win_settings.mat);
+      load('libtia_matlab_client_win_settings.mat');
     end
 
     win_build_command  = ['mex -v -O -DTIXML_USE_TICPP -DWIN32 -D_WIN32_WINNT=0x0501 -I' win_boost_path ' '];
@@ -45,8 +42,8 @@ function compile(reset_setting)
                 ' -llibboost_regex-'     answer{2} '-mt-' answer{1} ...
                 ' -llibboost_thread-'    answer{2} '-mt-' answer{1} ];
 
-    save('libtia_matlab_client_win_settings.mat', answer, win_boost_path);
-    clear answer, win_boost_path;
+    save('libtia_matlab_client_win_settings.mat', 'answer', 'win_boost_path');
+    clear answer win_boost_path;
   end
 
   ticpp_files = ' ../../../extern/include/ticpp/tinyxmlparser.cpp ../../../extern/include/ticpp/tinyxmlerror.cpp';
