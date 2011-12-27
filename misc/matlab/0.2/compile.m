@@ -12,23 +12,32 @@ c_files = [c_files ' ../../../src/tia/newtia/tia_datapacket_parser.cpp ../../../
 c_files = [c_files ' ../../../src/tia/newtia/messages_impl/tia_control_message_parser_1_0.cpp'];
 
 
-unix_build_command = 'mex -v -O -DTIXML_USE_TICPP  -I../../../include/  -I../../../extern/include/  -lboost_thread -lboost_system -lstdc++ -outdir build';
+unix_build_command = 'mex -v -O -DTIXML_USE_TICPP  -I../../../include/  -I../../../extern/include/  -lboost_system -lstdc++ -outdir build';
 if(~isunix)
-  win_boost_path = 'C:\Programme\boost\boost_1_46_1';
+  win_boost_path = 'C:\Programme\boost\boost_1_48_0';
 
   if(~exist(win_boost_path,'dir'))    
       disp('Boost not found!');
       win_boost_path = uigetdir;
   end
   win_boost_path = ['''' win_boost_path ''''];
+
+  prompt = {'Boost version:','Compiler:'};
+  dlg_title = 'Boost library specifications';
+  num_lines = 1;
+  def = {'1_48_0','vc100'};
+  answer = inputdlg(prompt,dlg_title,num_lines,def);
   
   win_build_command  = ['mex -v -O -DTIXML_USE_TICPP -DWIN32 -D_WIN32_WINNT=0x0501 -I' win_boost_path ' '];
   win_build_command  = [ win_build_command ' -I../../../include/  -I../../../extern/include/ -L' win_boost_path '\lib -outdir build'];
-  win_libs = ' -llibboost_system-vc100-mt-1_46_1 -llibboost_date_time-vc100-mt-1_46_1 -llibboost_regex-vc100-mt-1_46_1 -llibboost_thread-vc100-mt-1_46_1';
+  win_libs = [' -llibboost_system-'    answer{2} '-mt-' answer{1} ...
+              ' -llibboost_date_time-' answer{2} '-mt-' answer{1}
+              ' -llibboost_regex-'     answer{2} '-mt-' answer{1}
+              ' -llibboost_thread-'    answer{2} '-mt-' answer{1} ];
 end
 
 ticpp_files = ' ../../../extern/include/ticpp/tinyxmlparser.cpp ../../../extern/include/ticpp/tinyxmlerror.cpp';
-ticpp_files = [ticpp_files ' ../../extern/include/ticpp/tinystr.cpp ../../../extern/include/ticpp/tinyxml.cpp ../../../extern/include/ticpp/ticpp.cpp'];
+ticpp_files = [ticpp_files ' ../../../extern/include/ticpp/tinystr.cpp ../../../extern/include/ticpp/tinyxml.cpp ../../../extern/include/ticpp/ticpp.cpp'];
 
 if(~exist('build','dir'))
   mkdir('build');
