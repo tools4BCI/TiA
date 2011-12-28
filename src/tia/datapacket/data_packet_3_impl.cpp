@@ -174,9 +174,10 @@ void DataPacket3Impl::reset(void* mem)
 DataPacket3Impl::~DataPacket3Impl()
 {
 	for(std::map<boost::uint32_t, RawMem3*>::iterator it(raw_map_.begin());
-		it != raw_map_.end(); it++)
+			it != raw_map_.end(); it++)
 	{
 		delete(it->second);
+		it->second = 0;
 	}
 }
 
@@ -198,7 +199,11 @@ void DataPacket3Impl::reset()
   data_.clear();
   for(map<uint32_t, RawMem3*>::iterator it(raw_map_.begin()); it != raw_map_.end(); it++)
     if(it->second)
+    {
       delete(it->second);
+      it->second = 0;
+    }
+  raw_map_.clear();
 }
 
 //-----------------------------------------------------------------------------
