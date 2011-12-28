@@ -73,11 +73,8 @@
 using namespace std;
 using namespace tia;
 
-#ifdef WIN32
-using namespace boost;
-#endif
-
 static TiAClient* client = 0;    // Static value for the client. We need to save it to obtain the data after the first configuration.
+static DataPacket* packet = 0;
 static std::map<uint32_t, tia::Signal> *sig_types_map;   // The maps for the internal number of the signal type to the structure.
 
 
@@ -85,10 +82,13 @@ static std::map<uint32_t, tia::Signal> *sig_types_map;   // The maps for the int
 
 void ssc_getConfig(int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray *prhs[]);
+
 void ssc_close();
+
 void ssc_getData(int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray *prhs[]);
 
+//-------------------------------------------------------------------------
 
 void mexFunction( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray *prhs[])
@@ -101,6 +101,9 @@ void mexFunction( int nlhs, mxArray *plhs[],
     ssc_getConfig(nlhs,plhs,nrhs,prhs);
   }
 }
+
+//-------------------------------------------------------------------------
+
 void ssc_getConfig(int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray *prhs[])
 {
@@ -154,6 +157,7 @@ void ssc_getConfig(int nlhs, mxArray *plhs[],
     std::cout << "Using server " << srv_addr << ":" << port << std::endl;
     // Connect to the server
     client = new TiAClient( USE_NEW_TIA_IMPLEMENTATION );
+    packet = client->getEmptyDataPacket();
     sig_types_map = new std::map<uint32_t, tia::Signal>();
     
     
@@ -249,6 +253,8 @@ void ssc_getConfig(int nlhs, mxArray *plhs[],
     return;
 }
 
+//-------------------------------------------------------------------------
+
 void ssc_getData(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
   
   /** 
@@ -267,7 +273,7 @@ void ssc_getData(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
   {
     uint16_t nr_values = 0;
     vector<double> v;
-    DataPacket* packet = client->getEmptyDataPacket();
+    
  
     if (!client->receiving())
     {
@@ -279,7 +285,9 @@ void ssc_getData(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
      // for every signal type one row where the first coloumn contains the name 
      // of the signal and the second coloumn contains the data for that signal
      // type.
+         
      client->getDataPacket(*packet);
+          
      mxArray* cellArray = mxCreateCellMatrix(packet->getNrOfSignalTypes(),2);
      plhs[DATA_CELL] = cellArray;
 
@@ -339,19 +347,32 @@ void ssc_getData(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
   
 }
 
-void ssc_close() {  
-  if(0 != client) {
-    try {
-     client->stopReceiving();
+//-------------------------------------------------------------------------
+
+void ssc_close()
+{  
+  if(client) {
+    try
+    {
+      client->stopReceiving();
     } catch( ...) {
       /* empty */
     }
     delete client;
-  }
-  if(0 != sig_types_map) {
-    delete sig_types_map;
+    client = 0;
   }
   
-  client = 0;
-  sig_types_map = 0;
+  if(sig_types_map)
+  {
+    delete sig_types_map;
+    sig_types_map = 0;
+  }
+  
+  if(packet)
+  {
+    delete packet;
+    packet = 0;
+  }
+  
+  
 }

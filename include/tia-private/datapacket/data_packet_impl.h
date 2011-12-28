@@ -84,7 +84,9 @@ class DataPacketImpl :public DataPacket
     DataPacketImpl()
     : flags_(0), packet_nr_(0),
       timestamp_(boost::posix_time::microsec_clock::local_time()), nr_of_signal_types_(0)
-    {  }
+    {
+      std::cout << "DataPacketImpl::Constructor" << std::endl;
+    }
 
     /**
     * @brief Resets the whole DataPacket to be (re)build a DataPacket from raw memory.
@@ -114,6 +116,10 @@ class DataPacketImpl :public DataPacket
     */
     DataPacketImpl(const DataPacketImpl &src)
     {
+      #ifdef DEBUG
+        std::cout << "DataPacketImpl::CopyConstr" << std::endl;
+      #endif
+
       sample_nr_ = src.sample_nr_;
       flags_ = src.flags_;
       packet_nr_ = src.packet_nr_;
@@ -126,6 +132,28 @@ class DataPacketImpl :public DataPacket
 
       std::map<boost::uint32_t, RawMem*> raw_map_;
     }
+
+    virtual DataPacketImpl& operator=(const DataPacketImpl &src)
+    {
+      #ifdef DEBUG
+        std::cout << "DataPacketImpl::operator=" << std::endl;
+      #endif
+
+      sample_nr_ = src.sample_nr_;
+      flags_ = src.flags_;
+      packet_nr_ = src.packet_nr_;
+      timestamp_ = src.timestamp_;
+      nr_of_signal_types_ = src.nr_of_signal_types_;
+
+      nr_blocks_ = src.nr_blocks_;
+      nr_values_ = src.nr_values_;
+      data_ = src.data_;
+
+      std::map<boost::uint32_t, RawMem*> raw_map_;
+
+      return *this;
+    }
+
     /**
     * @brief Resets the whole DataPacket (samples are deleted).
     */

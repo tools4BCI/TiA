@@ -12,7 +12,7 @@ DEFINES += TIXML_USE_TICPP
 #DEFINES += TIMING_TEST
 
 TARGET = tia
-DESTDIR = lib
+
 OBJECTS_DIR = tmp
 INCLUDEPATH += . \
     include \
@@ -27,21 +27,13 @@ QMAKE_CXXFLAGS_WARN_ON = -Wall \
 
 #--------------------------------------------------------------------
 
-#unix {
-#    LIBS += -lboost_thread \
-#        -lboost_system
-
-#    HARDWARE_PLATFORM = $$system(uname -m)
-#    contains( HARDWARE_PLATFORM, x86_64 ):: {
-#        message(Building 64 bit )
-
-#        # 64-bit Linux
-#        LIBS += extern/lib/ticpp/linux/libticpp_64.a
-#    }
-#    else:: {
-#        # 32-bit Linux
-#        message(Building 32 bit )
-#        LIBS += extern/lib/ticpp/linux/libticpp.a
-#    }
-#}
+HARDWARE_PLATFORM = $$system(uname -m)
+contains( HARDWARE_PLATFORM, x86_64 )::
+  {
+    message(Building 64 bit )
+    DESTDIR = lib/amd64
+  }else::{
+    message(Building 32 bit )
+    DESTDIR = lib/x86
+  }
 

@@ -90,6 +90,26 @@ DataPacket3Impl::DataPacket3Impl(const DataPacket3Impl &src)
 
 //-----------------------------------------------------------------------------
 
+DataPacket3Impl& DataPacket3Impl::operator=(const DataPacket3Impl &src)
+{
+  version_ = src.version_;
+  packet_id_ = src.packet_id_;
+  flags_ = src.flags_;
+  connection_packet_nr_ = src.connection_packet_nr_;
+  timestamp_ = src.timestamp_;
+  nr_of_signal_types_ = src.nr_of_signal_types_;
+
+  nr_channels_ = src.nr_channels_;
+  samples_per_channel_ = src.samples_per_channel_;
+  data_ = src.data_;
+
+  std::map<boost::uint32_t, RawMem3*> raw_map_;
+
+  return *this;
+}
+
+//-----------------------------------------------------------------------------
+
 void DataPacket3Impl::reset(void* mem)
 {
   #ifdef DEBUG

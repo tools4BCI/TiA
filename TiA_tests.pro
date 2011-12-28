@@ -1,18 +1,19 @@
 TEMPLATE += app
 CONFIG += console
-TARGET = $$PWD/bin/test
+DESTDIR = tests
+TARGET = tia_test
 OBJECTS_DIR = tmp/tests/
 
 QT -= core \
       gui
 
 
-INCLUDEPATH += $$PWD/. \
-    $$PWD/include \
-    $$PWD/extern/include
+INCLUDEPATH += . \
+    include \
+    extern/include
 DEPENDPATH += $$INCLUDEPATH
 
-PRE_TARGETDEPS += $$PWD/lib/libtia.a
+#PRE_TARGETDEPS += lib/libtia.a
 
 DEFINES += TIXML_USE_TICPP
 #DEFINES += DEBUG
@@ -24,23 +25,22 @@ DEFINES += TIXML_USE_TICPP
 QMAKE_CXXFLAGS_WARN_ON = -Wall \
     -pedantic
 
-LIBS += $$PWD/lib/libtia.a
-
 HARDWARE_PLATFORM = $$system(uname -m)
 
 contains( HARDWARE_PLATFORM, x86_64 )::{
-  LIBS += $$PWD/extern/lib/ticpp/linux/libticpp_64.a
+  LIBS += lib/amd64/libtia.a
+  LIBS += extern/lib/ticpp/linux/libticpp_64.a
   }
   else:: {
-  LIBS += $$PWD/extern/lib/ticpp/linux/libticpp.a
+  LIBS += extern/lib/ticpp/linux/libticpp.a
   }
 
 LIBS += -lboost_thread \
         -lboost_system \
         -lboost_filesystem \
-        -L$$PWD/extern/lib \
-        -L$$PWD/extern/lib/ticpp/linux \
-        -L$$PWD/tests/UnitTest++
+        -Lextern/lib \
+        -Lextern/lib/ticpp/linux \
+        -Ltests/UnitTest++
 
 contains( HARDWARE_PLATFORM, x86_64 )::{
   LIBS += -lUnitTest++_64
@@ -62,8 +62,7 @@ SOURCES += \
     tests/boost_socket_tests.cpp \
     tests/control_commands/get_data_transmission.cpp \
     tests/tia_version_1_0/tia_tcp_server_socket_tests.cpp \
-    tests/tia_server_state_server_tests.cpp \
-    tests/sampleblock_tests.cpp
+    tests/tia_server_state_server_tests.cpp
 
 HEADERS += \
     tests/datapacket_tests_fixtures.h \

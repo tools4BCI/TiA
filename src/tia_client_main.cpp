@@ -103,7 +103,16 @@ class TiAClientDataReader
           if(running_ && client_.receiving())
           {
             try {
+
+              std::cout << " ---- " << std::endl;
+
               client_.getDataPacket(*packet_);
+
+              std::cout << "NR SigTypes: " << packet_->getNrOfSignalTypes() << std::endl;
+              std::cout << "Flags: " << packet_->getFlags() << std::endl;
+              std::cout << "ID: " << packet_->getPacketID() << std::endl;
+
+              std::cout << " *** " << std::endl << std::endl;
 
               if(packet_->hasFlag(SIG_MOUSE))
               {
@@ -121,8 +130,8 @@ class TiAClientDataReader
                 (client_.config().signal_info.masterSamplingRate()/client_.config().signal_info.masterBlockSize()) *2 ) == 0) )
               {
                 std::cout << " -- Nr:" << packet_->getPacketID() << std::endl;
-                client_.requestConfig();
-                cerr << " -- got config ... "  << endl;
+                //                client_.requestConfig();
+                //                cerr << " -- got config ... "  << endl;
               }
 
               sample_nr_old = sample_nr;

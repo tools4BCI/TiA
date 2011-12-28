@@ -98,12 +98,7 @@ void TiANewClientImpl::disconnect ()
   if (data_socket_.get ())
     data_socket_.reset (0);
   socket_.reset (0);
-
-  if(data_packet_parser)
-  {
-    delete data_packet_parser;
-    data_packet_parser = 0;
-  }
+  data_packet_parser.reset(0);
 }
 
 //-----------------------------------------------------------------------------
@@ -143,7 +138,7 @@ void TiANewClientImpl::startReceiving (bool use_udp_bc)
     }
   }
 
-  data_packet_parser =  new TiADataPacketParser(*data_socket_);
+  data_packet_parser.reset(new TiADataPacketParser(*data_socket_) );
 
   sendMessage (TiAControlMessage (MESSAGE_VERSION_, TiAControlMessageTags10::START_DATA_TRANSMISSION, "", ""));
   waitForOKResponse ();

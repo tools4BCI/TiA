@@ -509,7 +509,8 @@ void TiAClientImpl::getDataPacket(DataPacket& packet)
   boost::system::error_code error;
   size_t bytes_transferred = 0;
   uint32_t packet_size = 0;
-  DataPacketImpl p;
+  DataPacketImpl& p = (dynamic_cast<DataPacketImpl&>(packet));
+  packet.reset();
 
   if (packet_offset_ == 0)
   {
@@ -657,9 +658,7 @@ void TiAClientImpl::getDataPacket(DataPacket& packet)
 
     throw(std::overflow_error(ex_str));
   }
-
   last_packet_nr_ =  p.getSampleNr();
-  packet = p;
 
   #ifdef TIMING_TEST
     int port_state = LptPortIn(LPT1,0);

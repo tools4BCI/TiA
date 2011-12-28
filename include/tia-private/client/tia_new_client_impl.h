@@ -110,7 +110,7 @@ private:
     std::auto_ptr<ReadSocket>                 data_socket_;
     std::auto_ptr<TiAControlMessageBuilder>   message_builder_;
     std::auto_ptr<TiAControlMessageParser>    message_parser_;
-    TiADataPacketParser*                      data_packet_parser;
+    std::auto_ptr<TiADataPacketParser>        data_packet_parser;
     boost::shared_ptr<DataPacket>             packet_;
 //    std::auto_ptr<TiAControlMessageParser> message_parser_;
 };

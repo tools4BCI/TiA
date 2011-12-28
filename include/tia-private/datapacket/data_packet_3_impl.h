@@ -100,6 +100,8 @@ class DataPacket3Impl : public DataPacket
     */
     DataPacket3Impl(const DataPacket3Impl &src);
 
+    DataPacket3Impl& operator=(const DataPacket3Impl &src);
+
     /**
     * @brief Resets the whole DataPacket (samples are deleted).
     */
