@@ -367,12 +367,4 @@ void ssc_close()
     delete sig_types_map;
     sig_types_map = 0;
   }
-  
-  if(packet)
-  {
-    delete packet;
-    packet = 0;
-  }
-  
-  
 }

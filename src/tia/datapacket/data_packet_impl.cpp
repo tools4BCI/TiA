@@ -133,6 +133,7 @@ DataPacketImpl::~DataPacketImpl()
 		it != raw_map_.end(); it++)
 	{
 		delete(it->second);
+		it->second = 0;
 	}
 }
 
@@ -154,7 +155,11 @@ void DataPacketImpl::reset()
   data_.clear();
   for(map<uint32_t, RawMem*>::iterator it(raw_map_.begin()); it != raw_map_.end(); it++)
     if(it->second)
+    {
       delete(it->second);
+      it->second = 0;
+    }
+  raw_map_.clear();
 }
 
 //-----------------------------------------------------------------------------
