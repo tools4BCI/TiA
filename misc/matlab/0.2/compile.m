@@ -64,9 +64,9 @@ function compile(reset_setting, use_lib_file)
         lib_files = [' ../../../extern/lib/ticpp/linux/libticpp_64.a '];
       end
 
-      eval([unix_build_command c_files ' src/TiA_matlab_get_config.cpp ' lib_files]);
-      eval([unix_build_command c_files ' src/TiA_simulink_get_data.cpp ' lib_files]);
-      eval([unix_build_command c_files ' src/TiA_matlab_client.cpp '     lib_files]);
+      eval([unix_build_command ' src/TiA_matlab_get_config.cpp ' c_files lib_files]);
+      eval([unix_build_command ' src/TiA_simulink_get_data.cpp ' c_files lib_files]);
+      eval([unix_build_command ' src/TiA_matlab_client.cpp '     c_files lib_files]);
 
     else
       if(strcmp(computer, 'WIN32'))
@@ -75,9 +75,9 @@ function compile(reset_setting, use_lib_file)
         lib_files = [' ../../../extern/lib/ticpp/win/x64/libticpp.lib  '];
       end
 
-      eval([win_build_command c_files ' src/TiA_matlab_get_config.cpp ' lib_files win_libs]);
-      eval([win_build_command c_files ' src/TiA_simulink_get_data.cpp ' lib_files win_libs]);
-      eval([win_build_command c_files ' src/TiA_matlab_client.cpp '     lib_files win_libs]);
+      eval([win_build_command ' src/TiA_matlab_get_config.cpp ' c_files lib_files win_libs]);
+      eval([win_build_command ' src/TiA_simulink_get_data.cpp ' c_files lib_files win_libs]);
+      eval([win_build_command ' src/TiA_matlab_client.cpp '     c_files lib_files win_libs]);
     end
 
   else
