@@ -110,6 +110,26 @@ public:
    * @sa requestConfig()
    */
   virtual SSConfig config() const;
+
+
+  /**
+   * @brief Establishes a DataConnection to the server either
+   * using udp (if use_udp is set) or tcp as underlying protocol.
+   * The caller will be blocked until the DataConnection is established or an error has occurred.
+   * @param use_udp if \c true data will be received via UDP broadcast instead of TCP
+   * @throw std::ios_base::failure if the client is not connected or if an error occurred
+   * \sa startReceiving(), stopReceiving(), receiving(), getDataPacket()
+   */
+  virtual void createDataConnection(bool use_udp);
+
+  /**
+   * @brief Turns the client into receiving state. Can be called after the client established a
+   * DataConnection with createDataConnection().
+   * The caller will be blocked until the client is ready to receive or an error has occurred.
+   * \sa stopReceiving(), receiving(), getDataPacket()
+   */
+  virtual void startReceiving();
+
   /**
    * @brief Turns the client into receiving state
    * The caller will be blocked until the client is ready to receive or an error has occurred.
@@ -118,6 +138,7 @@ public:
    * \sa stopReceiving(), receiving(), getDataPacket()
    */
   virtual void startReceiving(bool use_udp_bc);
+
   /**
    * @brief Tell if the client if is in receiving state
    * @return \c true if the client is in receiving state, \c false otherwise.

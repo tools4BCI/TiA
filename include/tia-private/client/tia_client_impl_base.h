@@ -92,11 +92,29 @@ public:
    * \sa requestConfig()
    */
   virtual SSConfig config() const = 0;
+
+  /**
+   * @brief Establishes a DataConnection to the server either
+   *        using udp (if use_udp is set) or tcp as underlying protocol
+   * \sa startReceiving()
+   */
+  virtual void createDataConnection(bool use_udp) = 0;
+
+  /**
+   * @brief Can be called after a DataConnection to the server has
+   *        been establised. Turns the client into receiving state.
+   * @throws std::runtime_error if createDataConnection() was not called
+   *         before.
+   * \sa createDataConnection()
+   */
+  virtual void startReceiving() = 0;
+
   /**
    * @brief Turns the client into receiving state
    * \sa stopReceiving(), receiving()
    */
   virtual void startReceiving(bool use_udp_bc) = 0;
+
   /**
    * @brief Tell if the client if is in receiving state
    * \sa startReceiving(), stopReceiving()

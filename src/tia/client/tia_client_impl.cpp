@@ -363,6 +363,22 @@ void TiAClientImpl::closeDataConnection()
 
 //-----------------------------------------------------------------------------
 
+void TiAClientImpl::createDataConnection(bool use_udp)
+{
+    //TODO: May implement, or use startReceiving(bool use_udp_bc) instead
+    throw std::runtime_error("Not implemented yet. Use startReceiving(bool use_udp_bc) instead");
+}
+
+//-----------------------------------------------------------------------------
+
+void TiAClientImpl::startReceiving()
+{
+    //TODO: May implement, or use startReceiving(bool use_udp_bc) instead
+    throw std::runtime_error("Not implemented yet. Use startReceiving(bool use_udp_bc) instead");
+}
+
+//-----------------------------------------------------------------------------
+
 void TiAClientImpl::startReceiving(bool use_udp_bc)
 {
   if (ctl_conn_state_ == ControlConnState_NotConnected)

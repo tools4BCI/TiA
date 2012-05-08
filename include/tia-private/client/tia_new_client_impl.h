@@ -73,6 +73,10 @@ public:
 
     virtual SSConfig config () const;
 
+    virtual void createDataConnection(bool use_udp);
+
+    virtual void startReceiving();
+
     virtual void startReceiving (bool use_udp_bc);
 
     virtual bool receiving() const;

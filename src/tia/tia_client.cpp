@@ -103,6 +103,19 @@ SSConfig TiAClient::config() const
 
 //-----------------------------------------------------------------------------
 
+void TiAClient::createDataConnection(bool use_udp)
+{
+    return impl_->createDataConnection(use_udp);
+}
+
+//-----------------------------------------------------------------------------
+void TiAClient::startReceiving()
+{
+    return impl_->startReceiving();
+}
+
+//-----------------------------------------------------------------------------
+
 void TiAClient::startReceiving(bool use_udp_bc)
 {
   impl_->startReceiving(use_udp_bc);

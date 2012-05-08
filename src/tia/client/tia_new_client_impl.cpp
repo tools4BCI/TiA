@@ -116,34 +116,47 @@ SSConfig TiANewClientImpl::config () const
 }
 
 //-----------------------------------------------------------------------------
+
+void TiANewClientImpl::createDataConnection(bool use_udp)
+{
+    if (!data_socket_.get ())
+    {
+      sendMessage (GetDataConnectionTiAControlMessage (MESSAGE_VERSION_, use_udp));
+      TiAControlMessage dataconnection_message = waitForControlMessage (TiAControlMessageTags10::DATA_CONNECTION_PORT);
+      unsigned port = toUnsigned (dataconnection_message.getParameters ());
+      if (use_udp)
+      {
+        boost::asio::ip::udp::endpoint server_data_address (boost::asio::ip::address_v4::from_string (server_ip_address_), port);
+        data_socket_.reset (new BoostUDPReadSocket (io_service_, server_data_address, buffer_size_));
+      }
+      else
+      {
+        boost::asio::ip::tcp::endpoint server_data_address (boost::asio::ip::address_v4::from_string (server_ip_address_), port);
+        data_socket_.reset (new BoostTCPSocketImpl (io_service_, server_data_address, buffer_size_));
+      }
+    }
+
+    data_packet_parser.reset(new TiADataPacketParser(*data_socket_) );
+}
+
+//-----------------------------------------------------------------------------
+
+void TiANewClientImpl::startReceiving()
+{
+    if(receiving_)
+        return;
+
+    sendMessage (TiAControlMessage (MESSAGE_VERSION_, TiAControlMessageTags10::START_DATA_TRANSMISSION, "", ""));
+    waitForOKResponse ();
+
+    receiving_ = true;
+}
+
+//-----------------------------------------------------------------------------
 void TiANewClientImpl::startReceiving (bool use_udp_bc)
 {
-  if (receiving_)
-    return;
-
-  if (!data_socket_.get ())
-  {
-    sendMessage (GetDataConnectionTiAControlMessage (MESSAGE_VERSION_, use_udp_bc));
-    TiAControlMessage dataconnection_message = waitForControlMessage (TiAControlMessageTags10::DATA_CONNECTION_PORT);
-    unsigned port = toUnsigned (dataconnection_message.getParameters ());
-    if (use_udp_bc)
-    {
-      boost::asio::ip::udp::endpoint server_data_address (boost::asio::ip::address_v4::from_string (server_ip_address_), port);
-      data_socket_.reset (new BoostUDPReadSocket (io_service_, server_data_address, buffer_size_));
-    }
-    else
-    {
-      boost::asio::ip::tcp::endpoint server_data_address (boost::asio::ip::address_v4::from_string (server_ip_address_), port);
-      data_socket_.reset (new BoostTCPSocketImpl (io_service_, server_data_address, buffer_size_));
-    }
-  }
-
-  data_packet_parser.reset(new TiADataPacketParser(*data_socket_) );
-
-  sendMessage (TiAControlMessage (MESSAGE_VERSION_, TiAControlMessageTags10::START_DATA_TRANSMISSION, "", ""));
-  waitForOKResponse ();
-
-  receiving_ = true;
+    createDataConnection(use_udp_bc);    
+    startReceiving();
 }
 
 //-----------------------------------------------------------------------------
