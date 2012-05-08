@@ -32,6 +32,7 @@ contains( HARDWARE_PLATFORM, x86_64 )::{
   LIBS += extern/lib/ticpp/linux/libticpp_64.a
   }
   else:: {
+  LIBS += lib/x86/libtia.a
   LIBS += extern/lib/ticpp/linux/libticpp.a
   }
 

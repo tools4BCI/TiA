@@ -28,8 +28,7 @@ QMAKE_CXXFLAGS_WARN_ON = -Wall \
 #--------------------------------------------------------------------
 
 HARDWARE_PLATFORM = $$system(uname -m)
-contains( HARDWARE_PLATFORM, x86_64 )::
-  {
+contains( HARDWARE_PLATFORM, x86_64 )::{
     message(Building 64 bit )
     DESTDIR = lib/amd64
   }else::{

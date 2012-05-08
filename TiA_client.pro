@@ -43,7 +43,7 @@ unix {
     }else::{
         # 32-bit Linux
         message(Building 32 bit )
-        LIBS += -Llib/x32 -ltia   -lticpp
+        LIBS += -Llib/x86 -ltia   -lticpp
 
     }
 }
