@@ -271,6 +271,11 @@ class SignalInfo
 
     void setMasterBlockSize(boost::uint16_t size) { master_block_size_ = size; }
 
+#ifdef signals
+    #define SIGNAL_INFO_HELPER signals
+    #undef signals
+#endif
+
     const SignalMap& signals() const { return signals_; }
 
     SignalMap& signals() { return signals_; }
@@ -279,6 +284,11 @@ class SignalInfo
     boost::uint16_t  master_block_size_;      ///<
     boost::uint16_t  master_sampling_rate_;   ///<
     SignalMap signals_;                       ///<
+
+#ifdef SIGNAL_INFO_HELPER
+    #define signals SIGNAL_INFO_HELPER
+    #undef SIGNAL_INFO_HELPER
+#endif
 };
 
 } // Namespace tobiss
