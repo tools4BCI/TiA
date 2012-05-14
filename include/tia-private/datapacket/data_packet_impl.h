@@ -85,7 +85,7 @@ class DataPacketImpl :public DataPacket
     : flags_(0), packet_nr_(0),
       timestamp_(boost::posix_time::microsec_clock::local_time()), nr_of_signal_types_(0)
     {
-      std::cout << "DataPacketImpl::Constructor" << std::endl;
+      //std::cout << "DataPacketImpl::Constructor" << std::endl;
     }
 
     /**
@@ -117,7 +117,7 @@ class DataPacketImpl :public DataPacket
     DataPacketImpl(const DataPacketImpl &src)
     {
       #ifdef DEBUG
-        std::cout << "DataPacketImpl::CopyConstr" << std::endl;
+        //std::cout << "DataPacketImpl::CopyConstr" << std::endl;
       #endif
 
       sample_nr_ = src.sample_nr_;
@@ -136,7 +136,7 @@ class DataPacketImpl :public DataPacket
     virtual DataPacketImpl& operator=(const DataPacketImpl &src)
     {
       #ifdef DEBUG
-        std::cout << "DataPacketImpl::operator=" << std::endl;
+        //std::cout << "DataPacketImpl::operator=" << std::endl;
       #endif
 
       sample_nr_ = src.sample_nr_;

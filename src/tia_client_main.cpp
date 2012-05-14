@@ -38,6 +38,7 @@
 
 // STL
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 
 // Boost
@@ -69,12 +70,14 @@ class TiAClientDataReader
         t_max_last_ (0, 0, 0),
         t_var_(0)
     {
+      out_file_stream_.open("samples_ch1.csv");
       packet_ = client_.getEmptyDataPacket();
     }
 
     void stop()
     {
       running_ = 0;
+      out_file_stream_.close();
     }
 
     void readData()
@@ -104,15 +107,17 @@ class TiAClientDataReader
           {
             try {
 
-              std::cout << " ---- " << std::endl;
+              //              std::cout << " ---- " << std::endl;
 
               client_.getDataPacket(*packet_);
 
-              std::cout << "NR SigTypes: " << packet_->getNrOfSignalTypes() << std::endl;
-              std::cout << "Flags: " << packet_->getFlags() << std::endl;
-              std::cout << "ID: " << packet_->getPacketID() << std::endl;
+              //              std::cout << "NR SigTypes: " << packet_->getNrOfSignalTypes() << std::endl;
+              //              std::cout << "Flags: " << packet_->getFlags() << std::endl;
+              //              std::cout << "ID: " << packet_->getPacketID() << std::endl;
 
-              std::cout << " *** " << std::endl << std::endl;
+              //              std::cout << " *** " << std::endl << std::endl;
+
+              /*  MOUSE STUFF
 
               if(packet_->hasFlag(SIG_MOUSE))
               {
@@ -133,6 +138,13 @@ class TiAClientDataReader
                 //                client_.requestConfig();
                 //                cerr << " -- got config ... "  << endl;
               }
+              */
+
+              v = packet_->getSingleDataBlock(SIG_EEG);
+
+              // cout << v.size() << endl;
+
+              out_file_stream_ << v[0] << ", ";
 
               sample_nr_old = sample_nr;
               packet_nr_old = packet_nr;
@@ -216,6 +228,9 @@ class TiAClientDataReader
     vector<boost::posix_time::time_duration> t_diffs_;
     boost::int64_t t_var_;
 //     boost::posix_time::time_duration t_var_;
+
+
+    std::ofstream out_file_stream_;
 };
 
 

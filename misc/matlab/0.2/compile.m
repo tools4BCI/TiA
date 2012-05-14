@@ -64,20 +64,20 @@ function compile(reset_setting, use_lib_file)
         lib_files = [' ../../../extern/lib/ticpp/linux/libticpp_64.a '];
       end
 
-      eval([unix_build_command ' src/TiA_matlab_get_config.cpp ' c_files lib_files]);
-      eval([unix_build_command ' src/TiA_simulink_get_data.cpp ' c_files lib_files]);
-      eval([unix_build_command ' src/TiA_matlab_client.cpp '     c_files lib_files]);
+      eval([unix_build_command ' src/TiA_matlab_get_config.cpp ' c_files ticpp_files lib_files]);
+      eval([unix_build_command ' src/TiA_simulink_get_data.cpp ' c_files ticpp_files lib_files]);
+      eval([unix_build_command ' src/TiA_matlab_client.cpp '     c_files ticpp_files lib_files]);
 
     else
-      if(strcmp(computer, 'WIN32'))
+      if(strcmp(computer, 'PCWIN'))
         lib_files = [' ../../../extern/lib/ticpp/win/Win32/libticpp.lib  '];
       else
         lib_files = [' ../../../extern/lib/ticpp/win/x64/libticpp.lib  '];
       end
 
-      eval([win_build_command ' src/TiA_matlab_get_config.cpp ' c_files lib_files win_libs]);
-      eval([win_build_command ' src/TiA_simulink_get_data.cpp ' c_files lib_files win_libs]);
-      eval([win_build_command ' src/TiA_matlab_client.cpp '     c_files lib_files win_libs]);
+      eval([win_build_command ' src/TiA_matlab_get_config.cpp ' c_files ticpp_files lib_files win_libs]);
+      eval([win_build_command ' src/TiA_simulink_get_data.cpp ' c_files ticpp_files lib_files win_libs]);
+      eval([win_build_command ' src/TiA_matlab_client.cpp '     c_files ticpp_files lib_files win_libs]);
     end
 
   else
@@ -94,7 +94,7 @@ function compile(reset_setting, use_lib_file)
       eval([unix_build_command  ' src/TiA_matlab_client.cpp '     lib_files]);
 
     else
-      if(strcmp(computer, 'WIN32'))
+      if(strcmp(computer, 'PCWIN'))
         lib_files = [' ../../../lib/Win32/tia.lib ../../../extern/lib/ticpp/win/Win32/libticpp.lib  '];
       else
         lib_files = [' ../../../lib/x64/tia.lib    ../../../extern/lib/ticpp/win/x64/libticpp.lib  '];

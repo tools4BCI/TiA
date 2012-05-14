@@ -34,7 +34,6 @@
 #include "tia-private/newtia/server_impl/tia_server_state_server_impl.h"
 #include "tia-private/newtia/messages_impl/tia_control_message_builder_1_0.h"
 
-#include <boost/thread.hpp>
 #include <iostream>
 
 namespace tia

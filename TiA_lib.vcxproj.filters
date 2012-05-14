@@ -313,5 +313,11 @@
     <ClInclude Include="include\tia-private\clock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\tia\ssconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tia\tia_client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

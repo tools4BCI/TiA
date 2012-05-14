@@ -46,7 +46,7 @@
 #include <boost/cstdint.hpp>
 
 // local
-#include "tia_client_impl_base.h"
+#include "tia-private/client/tia_client_impl_base.h"
 #include "tia/ssconfig.h"
 #include "tia/defines.h"
 

@@ -90,9 +90,6 @@ const string Constants::fr_stop("stop_at_end");
 
 Constants::Constants()
 {
-  signaltypes.insert(pair <string,uint32_t>("mouse", SIG_MOUSE));
-  signaltypes.insert(pair <string,uint32_t>("mouse-button", SIG_MBUTTON));
-
   signaltypes.insert(pair <string,uint32_t>("eeg", SIG_EEG));
   signaltypes.insert(pair <string,uint32_t>("emg", SIG_EMG));
   signaltypes.insert(pair <string,uint32_t>("eog", SIG_EOG));
@@ -100,7 +97,7 @@ Constants::Constants()
   signaltypes.insert(pair <string,uint32_t>("hr",  SIG_HR));
   signaltypes.insert(pair <string,uint32_t>("bp", SIG_BP));
   signaltypes.insert(pair <string,uint32_t>("button", SIG_BUTTON));
-  signaltypes.insert(pair <string,uint32_t>("joystick", SIG_JOYSTICK));
+  signaltypes.insert(pair <string,uint32_t>("axis", SIG_AXIS));
   signaltypes.insert(pair <string,uint32_t>("sensor", SIG_SENSOR));
   signaltypes.insert(pair <string,uint32_t>("nirs",  SIG_NIRS));
   signaltypes.insert(pair <string,uint32_t>("fmri",  SIG_FMRI));
