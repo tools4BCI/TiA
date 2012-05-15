@@ -90,7 +90,11 @@ ControlConnection2::~ControlConnection2 ()
 //-----------------------------------------------------------------------------
 void ControlConnection2::asyncStart ()
 {
-    thread_ = new boost::thread (boost::bind (&ControlConnection2::run, boost::ref(*this)));
+  #ifdef WIN32
+    SetPriorityClass(sig_server_ptr->native_handle(),  HIGH_PRIORITY_CLASS);
+    SetThreadPriority(sig_server_ptr->native_handle(), THREAD_PRIORITY_HIGHEST );
+  #endif
+  thread_ = new boost::thread (boost::bind (&ControlConnection2::run, boost::ref(*this)));
 }
 
 //-----------------------------------------------------------------------------

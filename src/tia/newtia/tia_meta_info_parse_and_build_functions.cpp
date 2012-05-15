@@ -51,7 +51,10 @@ namespace tia
 
 namespace XML_TAGS
 {
-    string const TIA_META_INFO = "tiaMetaInfo";
+    std::string const TIA_META_INFO = "tiaMetaInfo";
+    std::string const TIA_META_INFO_VERSION = "version";
+    std::string const TIA_META_INFO_CURRENT_VERSION = "1.0";
+
     std::string const SUBJECT = "subject";
     std::string const SUBJECT_ID = "id";
     std::string const SUBJECT_FIRSTNAME = "firstName";
@@ -172,6 +175,9 @@ std::string buildTiAMetaInfoXMLString (SSConfig const& tia_meta_info)
 
     char *tia_metainfo_node_name = xml_doc.allocate_string (XML_TAGS::TIA_META_INFO.c_str ());
     rapidxml::xml_node<>* tia_metainfo_node = xml_doc.allocate_node (rapidxml::node_element, tia_metainfo_node_name);
+
+    addAttribute (&xml_doc, tia_metainfo_node,
+                  XML_TAGS::TIA_META_INFO_VERSION, XML_TAGS::TIA_META_INFO_CURRENT_VERSION);
 
     // subject node
     char *subject_node_name = xml_doc.allocate_string (XML_TAGS::SUBJECT.c_str ());

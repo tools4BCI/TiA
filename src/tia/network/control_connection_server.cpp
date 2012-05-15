@@ -187,8 +187,8 @@ void ControlConnectionServer::createSignalInfo()
 
   assert(sig_types.size() == blocksizes.size() && sig_types.size() == fs_per_sig_type.size());
 
-  cout << endl;
-  cout << " Sent Signal Types: (ordered)" << endl;
+  //cout << endl;
+  //cout << " Sent Signal Types: (ordered)" << endl;
 
   for (vector<uint32_t>::size_type index = 0; index < sig_types.size(); ++index)
   {

@@ -35,7 +35,6 @@
 #include "tia-private/newtia/network_impl/boost_tcp_socket_impl.h"
 
 #include <boost/bind.hpp>
-#include <boost/thread.hpp>
 #include <boost/weak_ptr.hpp>
 
 using namespace boost::asio::ip;
