@@ -222,6 +222,11 @@ class Signal
       boost::uint16_t samplingRate() const { return sampling_rate_; }
 
       /**
+       * @brief Returns wheter the signal is apreiodic or not. Is similar to a sampling rate equal to zero.
+       */
+      bool isAperiodic() const { return sampling_rate_ == 0; }
+
+      /**
        * @brief Set the sampling rate of the stored signal type.
        */
       void setSamplingRate(boost::uint16_t sampling_rate) { sampling_rate_ = sampling_rate; }
