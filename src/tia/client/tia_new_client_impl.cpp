@@ -116,6 +116,14 @@ SSConfig TiANewClientImpl::config () const
 }
 
 //-----------------------------------------------------------------------------
+bool TiANewClientImpl::trySetCustomSignalInfo(SignalInfo &custom_sig_info)
+{
+  sendMessage (SetCustomSignalInfo (MESSAGE_VERSION_,custom_sig_info));
+
+  //TODO: check response!
+}
+
+//-----------------------------------------------------------------------------
 
 void TiANewClientImpl::createDataConnection(bool use_udp)
 {

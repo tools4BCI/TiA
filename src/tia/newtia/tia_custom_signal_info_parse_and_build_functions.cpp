@@ -31,17 +31,13 @@
     Contact: TiA@tobi-project.org
 */
 
+#include "tia-private/newtia/tia_custom_signal_info_parse_and_build_functions.h"
 #include "tia-private/newtia/tia_meta_info_parse_and_build_functions.h"
 #include "tia-private/newtia/tia_parse_and_build_helper_functions.h"
 
 #include "tia-private/newtia/tia_exceptions.h"
 
 #include "tia-private/newtia/string_utils.h"
-#include <rapidxml/rapidxml.hpp>
-#include <rapidxml/rapidxml_print.hpp>
-
-#include <map>
-#include <set>
 
 using std::string;
 using std::map;
@@ -51,53 +47,40 @@ namespace tia
 {
 
 //-----------------------------------------------------------------------------
-SSConfig parseTiAMetaInfoFromXMLString (std::string const& tia_meta_info_xml_string)
+SignalInfo parseTiACustomSignalInfoFromXMLString (std::string const& custom_signal_info_str)
 {
-    SSConfig tia_meta_info;
+    SignalInfo custom_signal_info;
     rapidxml::xml_document<> xml_doc;
     try
     {
-        xml_doc.parse<rapidxml::parse_non_destructive | rapidxml::parse_validate_closing_tags> ((char*)tia_meta_info_xml_string.c_str ());
+        xml_doc.parse<rapidxml::parse_non_destructive | rapidxml::parse_validate_closing_tags> ((char*)custom_signal_info_str.c_str ());
     }
     catch (rapidxml::parse_error &error)
     {
         throw TiAException (string (error.what()));
     }
 
-    rapidxml::xml_node<>* tia_metainfo_node = xml_doc.first_node ();
-    if (tia_metainfo_node->next_sibling ())
+    rapidxml::xml_node<>* tia_custom_sig_info_node = xml_doc.first_node ();
+    if (tia_custom_sig_info_node->next_sibling ())
         throw TiAException ("Parsing TiAMetaInfo String: Too many first level nodes.");
-
-    // parse subject
-    rapidxml::xml_node<>* subject_node = tia_metainfo_node->first_node (XML_TAGS::SUBJECT.c_str());
-    if (subject_node)
-    {
-        std::map<string, string> attributes = getAttributes (subject_node);
-        if (attributes.count (XML_TAGS::SUBJECT_ID))
-            tia_meta_info.subject_info.setId (attributes.at(XML_TAGS::SUBJECT_ID));
-        if (attributes.count (XML_TAGS::SUBJECT_FIRSTNAME))
-            tia_meta_info.subject_info.setFirstName (attributes.at(XML_TAGS::SUBJECT_FIRSTNAME));
-        if (attributes.count (XML_TAGS::SUBJECT_SURNAME))
-            tia_meta_info.subject_info.setSurname (attributes.at(XML_TAGS::SUBJECT_SURNAME));
-    }
 
     // parse master signal info
     rapidxml::xml_node<>* master_signal_node = 0;
-    master_signal_node = tia_metainfo_node->first_node (XML_TAGS::MASTER_SIGNAL.c_str());
+    master_signal_node = tia_custom_sig_info_node->first_node (XML_TAGS::MASTER_SIGNAL.c_str());
     if (master_signal_node)
     {
         std::map<string, string> attributes = getAttributes (master_signal_node);
         if (attributes.count (XML_TAGS::SIGNAL_SAMPLINGRATE))
-            tia_meta_info.signal_info.setMasterSamplingRate (toUnsigned (attributes.at(XML_TAGS::SIGNAL_SAMPLINGRATE)));
+            custom_signal_info.setMasterSamplingRate (toUnsigned (attributes.at(XML_TAGS::SIGNAL_SAMPLINGRATE)));
         if (attributes.count (XML_TAGS::SIGNAL_BLOCKSIZE))
-            tia_meta_info.signal_info.setMasterBlockSize (toUnsigned (attributes.at(XML_TAGS::SIGNAL_BLOCKSIZE)));
+            custom_signal_info.setMasterBlockSize (toUnsigned (attributes.at(XML_TAGS::SIGNAL_BLOCKSIZE)));
     }
 
 
     // parse signals
     rapidxml::xml_node<>* signal_node = 0;
-    signal_node = tia_metainfo_node->first_node (XML_TAGS::SIGNAL.c_str());
-    SignalInfo::SignalMap& signal_map = tia_meta_info.signal_info.signals ();
+    signal_node = tia_custom_sig_info_node->first_node (XML_TAGS::SIGNAL.c_str());
+    SignalInfo::SignalMap& signal_map = custom_signal_info.signals ();
     while (signal_node)
     {
         Signal signal;
@@ -133,41 +116,31 @@ SSConfig parseTiAMetaInfoFromXMLString (std::string const& tia_meta_info_xml_str
         signal_node = signal_node->next_sibling (XML_TAGS::SIGNAL.c_str ());
     }
 
-    return tia_meta_info;
+    return custom_signal_info;
 }
 
 //-----------------------------------------------------------------------------
-std::string buildTiAMetaInfoXMLString (SSConfig const& tia_meta_info)
+std::string buildTiACustomSignalInfoXMLString (SignalInfo const& custom_signal_info)
 {
     rapidxml::xml_document<> xml_doc;
 
-    char *tia_metainfo_node_name = xml_doc.allocate_string (XML_TAGS::TIA_META_INFO.c_str ());
+    char *tia_metainfo_node_name = xml_doc.allocate_string (XML_TAGS::TIA_CUSTOM_SIGNAL_INFO.c_str ());
     rapidxml::xml_node<>* tia_metainfo_node = xml_doc.allocate_node (rapidxml::node_element, tia_metainfo_node_name);
 
     addAttribute (&xml_doc, tia_metainfo_node,
-                  XML_TAGS::TIA_META_INFO_VERSION, XML_TAGS::TIA_META_INFO_CURRENT_VERSION);
-
-    // subject node
-    char *subject_node_name = xml_doc.allocate_string (XML_TAGS::SUBJECT.c_str ());
-    rapidxml::xml_node<>* subject_node = xml_doc.allocate_node (rapidxml::node_element, subject_node_name);
-    addAttribute (&xml_doc, subject_node, XML_TAGS::SUBJECT_ID, tia_meta_info.subject_info.id());
-    addAttribute (&xml_doc, subject_node, XML_TAGS::SUBJECT_FIRSTNAME, tia_meta_info.subject_info.firstName());
-    addAttribute (&xml_doc, subject_node, XML_TAGS::SUBJECT_SURNAME, tia_meta_info.subject_info.surname());
-    // TODO: add further attributes
-    tia_metainfo_node->append_node (subject_node);
-
+                  XML_TAGS::TIA_CUSTOM_SIGNAL_INFO_VERSION, XML_TAGS::TIA_CUSTOM_SIGNAL_INFO_CURRENT_VERSION);
 
     // master signal data
     char *master_signal_node_name = xml_doc.allocate_string (XML_TAGS::MASTER_SIGNAL.c_str ());
     rapidxml::xml_node<>* master_signal_node = xml_doc.allocate_node (rapidxml::node_element, master_signal_node_name);
-    addAttribute (&xml_doc, master_signal_node, XML_TAGS::SIGNAL_SAMPLINGRATE, tia_meta_info.signal_info.masterSamplingRate());
-    addAttribute (&xml_doc, master_signal_node, XML_TAGS::SIGNAL_BLOCKSIZE, tia_meta_info.signal_info.masterBlockSize());
+    addAttribute (&xml_doc, master_signal_node, XML_TAGS::SIGNAL_SAMPLINGRATE, custom_signal_info.masterSamplingRate());
+    addAttribute (&xml_doc, master_signal_node, XML_TAGS::SIGNAL_BLOCKSIZE, custom_signal_info.masterBlockSize());
     tia_metainfo_node->append_node (master_signal_node);
 
 
     // signals
-    for (SignalInfo::SignalMap::const_iterator signal_iter = tia_meta_info.signal_info.signals().begin ();
-         signal_iter != tia_meta_info.signal_info.signals ().end (); ++signal_iter)
+    for (SignalInfo::SignalMap::const_iterator signal_iter = custom_signal_info.signals().begin ();
+         signal_iter != custom_signal_info.signals ().end (); ++signal_iter)
     {
         char *signal_node_name = xml_doc.allocate_string (XML_TAGS::SIGNAL.c_str ());
         rapidxml::xml_node<>* signal_node = xml_doc.allocate_node (rapidxml::node_element, signal_node_name);

@@ -38,6 +38,7 @@
 
 // STL
 #include <iostream>
+#include <exception>
 
 // Boost
 #include <boost/bind.hpp>
@@ -142,6 +143,12 @@ TiAClientImpl::~TiAClientImpl()
 SSConfig TiAClientImpl::config() const
 {
   return config_;
+}
+
+//-----------------------------------------------------------------------------
+bool TiAClientImpl::trySetCustomSignalInfo(SignalInfo &custom_sig_info)
+{
+    throw std::runtime_error("NOT implemented yet");
 }
 
 //-----------------------------------------------------------------------------

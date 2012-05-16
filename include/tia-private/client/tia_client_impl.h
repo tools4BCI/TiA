@@ -111,6 +111,11 @@ public:
    */
   virtual SSConfig config() const;
 
+  /**
+   * @brief Asks the server to accept the custom signal info.
+   *        NOT implemented yet due to deprecated tia version!
+   */
+  virtual bool trySetCustomSignalInfo(SignalInfo &custom_sig_info);
 
   /**
    * @brief Establishes a DataConnection to the server either

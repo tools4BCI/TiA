@@ -31,49 +31,27 @@
     Contact: TiA@tobi-project.org
 */
 
-#ifndef TIA_META_INFO_PARSE_AND_BUILD_FUNCTIONS_H
-#define TIA_META_INFO_PARSE_AND_BUILD_FUNCTIONS_H
+#ifndef TIA_CUSTOM_SIGNAL_INFO_PARSE_AND_BUILD_FUNCTIONS_H
+#define TIA_CUSTOM_SIGNAL_INFO_PARSE_AND_BUILD_FUNCTIONS_H
 
-#include "tia/ssconfig.h"
-
-#include <set>
+#include "tia/ss_meta_info.h"
 
 namespace tia
 {
 
 namespace XML_TAGS
 {
-    std::string const TIA_META_INFO = "tiaMetaInfo";
-    std::string const TIA_META_INFO_VERSION = "version";
-    std::string const TIA_META_INFO_CURRENT_VERSION = "1.0";
-
-    std::string const SUBJECT = "subject";
-    std::string const SUBJECT_ID = "id";
-    std::string const SUBJECT_FIRSTNAME = "firstName";
-    std::string const SUBJECT_SURNAME = "surname";
-
-    std::string const MASTER_SIGNAL = "masterSignal";
-    std::string const SIGNAL = "signal";
-    std::string const SIGNAL_TYPE = "type";
-    std::string const SIGNAL_SAMPLINGRATE = "samplingRate";
-    std::string const SIGNAL_NUMCHANNELS = "numChannels";
-    std::string const SIGNAL_BLOCKSIZE = "blockSize";
-    std::string const SIGNAL_REQUIRED_ATTRIBUTES_ARRAY[] = {SIGNAL_TYPE, SIGNAL_SAMPLINGRATE, SIGNAL_BLOCKSIZE, SIGNAL_NUMCHANNELS};
-    std::set<std::string> const SIGNAL_REQUIRED_ATTRIBUTES (SIGNAL_REQUIRED_ATTRIBUTES_ARRAY, SIGNAL_REQUIRED_ATTRIBUTES_ARRAY + 4);
-
-    std::string const CHANNEL = "channel";
-    std::string const CHANNEL_NR = "nr";
-    std::string const CHANNEL_LABEL = "label";
-    std::string const CHANNEL_REQUIRED_ATTRIBUTES_ARRAY[] = {CHANNEL_NR, CHANNEL_LABEL};
-    std::set<std::string> const CHANNEL_REQUIRED_ATTRIBUTES (CHANNEL_REQUIRED_ATTRIBUTES_ARRAY, CHANNEL_REQUIRED_ATTRIBUTES_ARRAY + 2);
+    std::string const TIA_CUSTOM_SIGNAL_INFO = "tiaCustomSignalInfo";
+    std::string const TIA_CUSTOM_SIGNAL_INFO_VERSION = "version";
+    std::string const TIA_CUSTOM_SIGNAL_INFO_CURRENT_VERSION = "1.0";
 }
 
 //-----------------------------------------------------------------------------
-SSConfig parseTiAMetaInfoFromXMLString (std::string const& tia_meta_info_xml_string);
+SignalInfo parseTiACustomSignalInfoFromXMLString (std::string const& custom_signal_info_xml_str);
 
 //-----------------------------------------------------------------------------
-std::string buildTiAMetaInfoXMLString (SSConfig const& tia_meta_info);
+std::string buildTiACustomSignalInfoXMLString (SignalInfo const& custom_signal_info);
 
 }
 
-#endif // TIA_META_INFO_PARSE_AND_BUILD_FUNCTIONS_H
+#endif // TIA_CUSTOM_SIGNAL_INFO_PARSE_AND_BUILD_FUNCTIONS_H

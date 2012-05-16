@@ -48,6 +48,7 @@ namespace tia
 // forward declarations;
 class SSConfig;
 class DataPacket;
+class SignalInfo;
 
 //-----------------------------------------------------------------------------
 /**
@@ -92,6 +93,13 @@ public:
    * \sa requestConfig()
    */
   virtual SSConfig config() const = 0;
+
+  /**
+   * @brief Asks the server to accept the custom signal info.
+   * @returns Either true if the server accepts the custom signal_info or
+   *          false if the signal info is invalid.
+   */
+  virtual bool trySetCustomSignalInfo(SignalInfo &custom_sig_info) = 0;
 
   /**
    * @brief Establishes a DataConnection to the server either

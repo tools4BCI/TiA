@@ -58,6 +58,9 @@ namespace TiAControlMessageTags10
     std::string const METAINFO = "MetaInfo";
     std::string const CHECK_PROTOCOL_VERSION = "CheckProtocolVersion";
     std::string const GET_METAINFO = "GetMetaInfo";
+
+    std::string const SET_CUSTOM_SIGNALINFO = "SetCustomSignalInfo";
+
     std::string const DATA_CONNECTION_PORT = "DataConnectionPort";
     std::string const SERVER_STATE_CONNECTION_PORT = "ServerStateConnectionPort";
     std::string const GET_SERVER_STATE_CONNECTION = "GetServerStateConnection";

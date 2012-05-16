@@ -60,7 +60,9 @@ HEADERS += include/tia/tia_server.h \
     include/tia-private/newtia/server_impl/control_connection_2.h \
     include/tia-private/datapacket/data_packet_3_impl.h \
     include/tia/data_packet_interface.h \
-    include/tia-private/datapacket/data_packet_impl.h
+    include/tia-private/datapacket/data_packet_impl.h \
+    include/tia-private/newtia/tia_custom_signal_info_parse_and_build_functions.h \
+    include/tia-private/newtia/tia_parse_and_build_helper_functions.h
 
 contains( DEFINES, TIMING_TEST )::HEADERS += extern/include/LptTools/LptTools.h
 
@@ -98,7 +100,9 @@ SOURCES += src/tia/tia_server.cpp \
     src/tia/newtia/server_impl/control_connection_server_2_impl.cpp \
     src/tia/newtia/server_impl/control_connection_2.cpp \
     src/tia/datapacket/data_packet_impl.cpp \
-    src/tia/datapacket/data_packet_3_impl.cpp
+    src/tia/datapacket/data_packet_3_impl.cpp \
+    src/tia/newtia/tia_custom_signal_info_parse_and_build_functions.cpp \
+    src/tia/newtia/tia_parse_and_build_helper_functions.cpp
 
 unix {
   contains( DEFINES, TIMING_TEST )::SOURCES += extern/include/LptTools/LptToolsLinux.cpp

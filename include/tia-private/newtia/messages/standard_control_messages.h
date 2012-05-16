@@ -37,6 +37,10 @@
 #include "../messages/tia_control_message.h"
 #include "../messages/tia_control_message_tags_1_0.h"
 
+#include "../../../tia/ss_meta_info.h"
+
+#include "../../newtia/tia_custom_signal_info_parse_and_build_functions.h"
+
 namespace tia
 {
 
@@ -86,6 +90,16 @@ public:
     GetMetaInfoTiAControlMessage (std::string const& version) : TiAControlMessage (version, TiAControlMessageTags10::GET_METAINFO, "", "")
     {}
     virtual ~GetMetaInfoTiAControlMessage () {}
+};
+
+//-----------------------------------------------------------------------------
+class SetCustomSignalInfo : public TiAControlMessage
+{
+public:
+    SetCustomSignalInfo (std::string const& version, SignalInfo custom_sig_info)
+        : TiAControlMessage (version, TiAControlMessageTags10::SET_CUSTOM_SIGNALINFO, "" , buildTiACustomSignalInfoXMLString(custom_sig_info) )
+    {}
+    virtual ~SetCustomSignalInfo () {}
 };
 
 //-----------------------------------------------------------------------------
