@@ -12,6 +12,10 @@ public:
     CustomChannelFilterDecorator(CustomPacketFilter &decorated_filter);
 
     virtual void applyFilter(DataPacket &packet);
+
+private:
+    std::vector<boost::uint32_t> signals_to_exclude_;
+    std::map<boost::uint32_t, std::vector<boost::uint32_t> > channels_to_include_;
 };
 
 }

@@ -100,6 +100,8 @@ SignalInfo parseTiACustomSignalInfoFromXMLString (std::string const& custom_sign
         std::vector<Channel>& channel_vector = signal.channels();
         rapidxml::xml_node<>* channel_node = signal_node->first_node (XML_TAGS::CHANNEL.c_str());
 
+        unsigned num_channels = toUnsigned (signal_attributes[XML_TAGS::SIGNAL_NUMCHANNELS]);
+
         while (channel_node)
         {
             Channel channel;
@@ -119,7 +121,12 @@ SignalInfo parseTiACustomSignalInfoFromXMLString (std::string const& custom_sign
             channel_vector.push_back (channel);
 
             channel_node = channel_node->next_sibling (XML_TAGS::CHANNEL.c_str ());
+
+            --num_channels;
         }
+
+        if(num_channels != 0)
+            throw TiAException ("Parsing TiACustomSignalInfo String: Number of channels doesn't fit to actual channel amount.");
 
         if(signal.channels().size() > default_signals[signal.type()].channels().size())
             throw TiAException ("Parsing TiACustomSignalInfo String: Too many custom channels.");

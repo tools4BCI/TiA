@@ -13,19 +13,11 @@ namespace tia
 
 CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &decorated_filter)
     : CustomPacketFilterDecorator(decorated_filter)
-{
-    //TODO: extract appropriate data for later filtering and
-    //      set is_applicalbe and has_configured_work_ flags!       
-
+{  
     SignalInfo::SignalMap default_signals = default_sig_info_.signals();
     SignalInfo::SignalMap custom_signals = custom_sig_info_.signals();
 
     Constants constants;
-
-    std::cout << "Default channels: " << std::endl;
-
-    std::vector<boost::uint32_t> signals_to_delete;
-    std::map<boost::uint32_t, std::vector<boost::uint32_t> > channel_filter_map;
 
     BOOST_FOREACH(SignalInfo::SignalMap::value_type default_signal, default_signals)
     {
@@ -33,8 +25,8 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &d
 
         if(custom_signal == custom_signals.end())
         {
-            std::cout << "Signal has no channels: "<< default_signal.first << std::endl;
-            signals_to_delete.push_back(constants.getSignalFlag(default_signal.first));
+            std::cout << "Signal " << default_signal.first << ": is not present in client config!" << std::endl;
+            signals_to_exclude_.push_back(constants.getSignalFlag(default_signal.first));
         }
         else
         {
@@ -54,21 +46,21 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &d
                 }
                 else
                 {
-                    channel_filter_map[constants.getSignalFlag(default_signal.first)].push_back(custom_channel.number());
+                    channels_to_include_[constants.getSignalFlag(default_signal.first)].push_back(custom_channel.number());
                     std::cout << "custom chan: " << custom_channel.number() << ";" << custom_channel.id() << std::endl;
                 }
             }
 
-            if(channel_filter_map[constants.getSignalFlag(default_signal.first)].size() == default_channels.size())
+            if(channels_to_include_[constants.getSignalFlag(default_signal.first)].size() == default_channels.size())
             {
                 //there are all channels used for this signal
-                channel_filter_map.erase(constants.getSignalFlag(default_signal.first));
+                channels_to_include_.erase(constants.getSignalFlag(default_signal.first));
                 std::cout << "Signal " << default_signal.first << ": No channels to filter!" << std::endl;
             }
             else
             {
                 std::cout << "Signal " << default_signal.first << ": Sorting channels!" << std::endl;
-                std::sort(channel_filter_map[constants.getSignalFlag(default_signal.first)].begin(),channel_filter_map[constants.getSignalFlag(default_signal.first)].end());
+                std::sort(channels_to_include_[constants.getSignalFlag(default_signal.first)].begin(),channels_to_include_[constants.getSignalFlag(default_signal.first)].end());
 
             }
         }
@@ -76,7 +68,7 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &d
 
     is_applicable_ = true;
 
-    has_configured_work_ = (signals_to_delete.size() > 0 || channel_filter_map.size() > 0);
+    has_configured_work_ = (signals_to_exclude_.size() > 0 || channels_to_include_.size() > 0);
 }
 
 //-----------------------------------------------------------------------------
