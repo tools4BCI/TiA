@@ -61,7 +61,7 @@ class CustomPacketFilterDecorator : public CustomPacketFilter
 public:
     CustomPacketFilterDecorator(CustomPacketFilter &decorated_filter)
         : CustomPacketFilter(decorated_filter.default_sig_info_, decorated_filter.custom_sig_info_),
-          decorated_filter_ (decorated_filter)
+          decorated_filter_ (decorated_filter), is_applicable_(false), has_configured_work_ (false)
     { }
 
     virtual void applyFilter(DataPacket &packet) = 0;

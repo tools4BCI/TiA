@@ -39,6 +39,7 @@
 
 #include "tia-private/newtia/string_utils.h"
 
+
 using std::string;
 using std::map;
 using std::set;
@@ -47,7 +48,7 @@ namespace tia
 {
 
 //-----------------------------------------------------------------------------
-SignalInfo parseTiACustomSignalInfoFromXMLString (std::string const& custom_signal_info_str)
+SignalInfo parseTiACustomSignalInfoFromXMLString (std::string const& custom_signal_info_str, SignalInfo &default_signal_info)
 {
     SignalInfo custom_signal_info;
     rapidxml::xml_document<> xml_doc;
@@ -62,7 +63,7 @@ SignalInfo parseTiACustomSignalInfoFromXMLString (std::string const& custom_sign
 
     rapidxml::xml_node<>* tia_custom_sig_info_node = xml_doc.first_node ();
     if (tia_custom_sig_info_node->next_sibling ())
-        throw TiAException ("Parsing TiAMetaInfo String: Too many first level nodes.");
+        throw TiAException ("Parsing TiACustomSignalInfo String: Too many first level nodes.");
 
     // parse master signal info
     rapidxml::xml_node<>* master_signal_node = 0;
@@ -81,6 +82,9 @@ SignalInfo parseTiACustomSignalInfoFromXMLString (std::string const& custom_sign
     rapidxml::xml_node<>* signal_node = 0;
     signal_node = tia_custom_sig_info_node->first_node (XML_TAGS::SIGNAL.c_str());
     SignalInfo::SignalMap& signal_map = custom_signal_info.signals ();
+
+    SignalInfo::SignalMap& default_signals = default_signal_info.signals();
+
     while (signal_node)
     {
         Signal signal;
@@ -89,28 +93,36 @@ SignalInfo parseTiACustomSignalInfoFromXMLString (std::string const& custom_sign
         signal.setSamplingRate (toUnsigned (signal_attributes[XML_TAGS::SIGNAL_SAMPLINGRATE]));
         signal.setBlockSize (toUnsigned (signal_attributes[XML_TAGS::SIGNAL_BLOCKSIZE]));
 
-        unsigned const num_channels = toUnsigned (signal_attributes[XML_TAGS::SIGNAL_NUMCHANNELS]);
+        if(default_signals.find(signal.type()) == default_signals.end())
+            throw TiAException ("Parsing TiACustomSignalInfo String: Invalid Signal that is not in default SignalInfo.");
 
         // parse channels
         std::vector<Channel>& channel_vector = signal.channels();
-        for (unsigned channel_nr = 0; channel_nr < num_channels; channel_nr++)
-        {
-            Channel channel;
-            channel.setId (toString (channel_nr));
-            channel_vector.push_back (channel);
-        }
-
         rapidxml::xml_node<>* channel_node = signal_node->first_node (XML_TAGS::CHANNEL.c_str());
+
         while (channel_node)
         {
+            Channel channel;
+
             map<string, string> channel_attributes = getAttributes (channel_node, XML_TAGS::CHANNEL_REQUIRED_ATTRIBUTES);
             unsigned channel_nr = toUnsigned (channel_attributes[XML_TAGS::CHANNEL_NR]);
-            if (channel_nr > num_channels)
-                throw TiAException ("Parse TiAMetaInfo: nr-attribute of channel exceeds numChannels attribute of signal!");
 
-            channel_vector[channel_nr - 1].setId (channel_attributes[XML_TAGS::CHANNEL_LABEL]);
+            if(channel_nr > default_signals[signal.type()].channels().size())
+                throw TiAException ("Parsing TiACustomSignalInfo String: Too great channel number.");
+
+            if(channel_nr == 0 )
+                throw TiAException ("Parsing TiACustomSignalInfo String: Channel number 0 is invalid.");
+
+
+            channel.setId (channel_attributes[XML_TAGS::CHANNEL_LABEL]);
+            channel.setNumber(channel_nr);
+            channel_vector.push_back (channel);
+
             channel_node = channel_node->next_sibling (XML_TAGS::CHANNEL.c_str ());
         }
+
+        if(signal.channels().size() > default_signals[signal.type()].channels().size())
+            throw TiAException ("Parsing TiACustomSignalInfo String: Too many custom channels.");
 
         signal_map[signal_attributes[XML_TAGS::SIGNAL_TYPE]] = signal;
         signal_node = signal_node->next_sibling (XML_TAGS::SIGNAL.c_str ());

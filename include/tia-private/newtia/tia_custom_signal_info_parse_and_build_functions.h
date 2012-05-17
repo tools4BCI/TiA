@@ -47,7 +47,7 @@ namespace XML_TAGS
 }
 
 //-----------------------------------------------------------------------------
-SignalInfo parseTiACustomSignalInfoFromXMLString (std::string const& custom_signal_info_xml_str);
+SignalInfo parseTiACustomSignalInfoFromXMLString (std::string const& custom_signal_info_xml_str, SignalInfo &default_signal_info);
 
 //-----------------------------------------------------------------------------
 std::string buildTiACustomSignalInfoXMLString (SignalInfo const& custom_signal_info);

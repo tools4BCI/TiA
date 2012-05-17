@@ -40,8 +40,13 @@ TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
 
     CustomChannelFilterDecorator chan_filter (dummy_filter);
 
+    cout << "Applicalbe: " << chan_filter.isApplicable() ;
+    cout << ", hasWork: " <<chan_filter.hasConfiguredWork() << endl;
 
-    chan_filter.applyFilter(packet_);
+    CHECK(chan_filter.isApplicable());
+    CHECK(chan_filter.hasConfiguredWork());
+
+//    chan_filter.applyFilter(packet_);
 }
 
 

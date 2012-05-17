@@ -177,8 +177,14 @@ class Channel
      */
     void setId(const std::string& id) { id_ = id; }
 
+    boost::uint32_t number() const { return number_; }
+
+    void setNumber(boost::uint32_t number) { number_ = number; }
+
   private:
     std::string id_;    ///<
+    boost::uint32_t number_;
+
 };
 
 //-----------------------------------------------------------------------------
