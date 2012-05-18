@@ -14,54 +14,68 @@ namespace tia
 CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &decorated_filter)
     : CustomPacketFilterDecorator(decorated_filter)
 {  
-    SignalInfo::SignalMap default_signals = default_sig_info_.signals();
     SignalInfo::SignalMap custom_signals = custom_sig_info_.signals();
 
-    Constants constants;
+    modified_signal_info_ = default_sig_info_;
 
-    BOOST_FOREACH(SignalInfo::SignalMap::value_type default_signal, default_signals)
+    for(SignalInfo::SignalMap::iterator mod_signal_it = modified_signal_info_.signals().begin();
+        mod_signal_it != modified_signal_info_.signals().end(); ++mod_signal_it)
     {
-        SignalInfo::SignalMap::iterator custom_signal = custom_signals.find(default_signal.first);
+
+        SignalInfo::SignalMap::iterator custom_signal = custom_signals.find(mod_signal_it->first);
 
         if(custom_signal == custom_signals.end())
         {
-            std::cout << "Signal " << default_signal.first << ": is not present in client config!" << std::endl;
-            signals_to_exclude_.push_back(constants.getSignalFlag(default_signal.first));
+            std::cout << "Signal " << mod_signal_it->first << ": is not present in client config!" << std::endl;
+            signals_to_exclude_.push_back(constants_.getSignalFlag(mod_signal_it->first));
+            modified_signal_info_.signals().erase(mod_signal_it);
         }
         else
         {
-            std::vector<Channel> &default_channels = default_signal.second.channels();
+            std::vector<Channel> &channels = mod_signal_it->second.channels();
 
-            BOOST_FOREACH(Channel custom_channel, custom_signal->second.channels())
+            for(std::vector<Channel>::iterator channel_it = channels.begin();
+                channel_it != channels.end();)
             {
-                Channel &default_chan = default_channels[custom_channel.number() - 1];
 
-                if(default_chan.number() != custom_channel.number()
-                        || default_chan.id() != custom_channel.id())
+                bool chan_is_in_custom_chans = false;
+
+                BOOST_FOREACH(Channel custom_channel, custom_signal->second.channels())
                 {
-                    //custom signal info is invalid
-                    has_configured_work_ = is_applicable_ = false;
-                    std::cerr << "Signal " << default_signal.first << ": Inkonsistent channels!" << std::endl;
-                    return;
+                    if(channel_it->number() == custom_channel.number())
+                    {
+                        std::cout << "found channel: " << channel_it->id() << " in custom config" << std::endl;
+                        if(channel_it->id() != custom_channel.id())
+                        {
+                            //custom signal info is invalid
+                            has_configured_work_ = is_applicable_ = false;
+                            std::cerr << "Signal " << mod_signal_it->first << ": Inkonsistent channels!" << std::endl;
+
+                            return;
+                        }
+                        channels_to_include_[constants_.getSignalFlag(mod_signal_it->first)].push_back(custom_channel.number());
+
+                        chan_is_in_custom_chans = true;
+                        break;
+                    }
                 }
+
+                if(chan_is_in_custom_chans)
+                    ++channel_it;
                 else
-                {
-                    channels_to_include_[constants.getSignalFlag(default_signal.first)].push_back(custom_channel.number());
-                    std::cout << "custom chan: " << custom_channel.number() << ";" << custom_channel.id() << std::endl;
-                }
+                    channel_it = channels.erase(channel_it);
             }
 
-            if(channels_to_include_[constants.getSignalFlag(default_signal.first)].size() == default_channels.size())
+            if(channels_to_include_[constants_.getSignalFlag(mod_signal_it->first)].size() == channels.size())
             {
                 //there are all channels used for this signal
-                channels_to_include_.erase(constants.getSignalFlag(default_signal.first));
-                std::cout << "Signal " << default_signal.first << ": No channels to filter!" << std::endl;
+                channels_to_include_.erase(constants_.getSignalFlag(mod_signal_it->first));
+                std::cout << "Signal " << mod_signal_it->first << ": No channels to filter!" << std::endl;
             }
             else
             {
-                std::cout << "Signal " << default_signal.first << ": Sorting channels!" << std::endl;
-                std::sort(channels_to_include_[constants.getSignalFlag(default_signal.first)].begin(),channels_to_include_[constants.getSignalFlag(default_signal.first)].end());
-
+//                std::cout << "Signal " << mod_signal_it->first << ": Sorting channels!" << std::endl;
+                std::sort(channels_to_include_[constants_.getSignalFlag(mod_signal_it->first)].begin(),channels_to_include_[constants_.getSignalFlag(mod_signal_it->first)].end());
             }
         }
     }
@@ -80,6 +94,13 @@ void CustomChannelFilterDecorator::applyFilter(DataPacket &packet)
     std::cout << " chan filter ";
 
     //TODO: filter the data in the packet!
+}
+
+//-----------------------------------------------------------------------------
+
+const SignalInfo &CustomChannelFilterDecorator::getSignalInfoAfterFiltering()
+{
+    return modified_signal_info_;
 }
 
 }

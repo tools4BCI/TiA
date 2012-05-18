@@ -3,6 +3,7 @@
 
 #include "tia/data_packet_interface.h"
 #include "tia/ss_meta_info.h"
+#include "tia/constants.h"
 
 #include <iostream>
 
@@ -20,6 +21,8 @@ public:
 
     virtual void applyFilter(DataPacket &packet) = 0;
 
+    virtual const SignalInfo &getSignalInfoAfterFiltering() = 0;
+
     virtual bool isApplicable() = 0;
 
     virtual bool hasConfiguredWork() = 0;
@@ -27,6 +30,7 @@ public:
 protected:
     const SignalInfo &default_sig_info_;
     const SignalInfo &custom_sig_info_;
+    Constants constants_;
 };
 
 //-----------------------------------------------------------------------------
@@ -41,6 +45,11 @@ public:
 
     virtual void applyFilter(DataPacket &)
     { std::cout << " dummy filter "; }
+
+    virtual const SignalInfo &getSignalInfoAfterFiltering()
+    {
+        return default_sig_info_;
+    }
 
     virtual bool isApplicable()
     {
@@ -60,11 +69,13 @@ class CustomPacketFilterDecorator : public CustomPacketFilter
 {
 public:
     CustomPacketFilterDecorator(CustomPacketFilter &decorated_filter)
-        : CustomPacketFilter(decorated_filter.default_sig_info_, decorated_filter.custom_sig_info_),
+        : CustomPacketFilter(decorated_filter.getSignalInfoAfterFiltering(), decorated_filter.custom_sig_info_),
           decorated_filter_ (decorated_filter), is_applicable_(false), has_configured_work_ (false)
     { }
 
     virtual void applyFilter(DataPacket &packet) = 0;
+
+    virtual const SignalInfo &getSignalInfoAfterFiltering() = 0;
 
     virtual bool isApplicable()
     {

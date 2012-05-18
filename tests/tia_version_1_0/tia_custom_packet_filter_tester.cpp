@@ -46,9 +46,10 @@ TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
     CHECK(chan_filter.isApplicable());
     CHECK(chan_filter.hasConfiguredWork());
 
+    cout << endl << buildTiACustomSignalInfoXMLString(chan_filter.getSignalInfoAfterFiltering());
+
 //    chan_filter.applyFilter(packet_);
 }
-
 
 }
 

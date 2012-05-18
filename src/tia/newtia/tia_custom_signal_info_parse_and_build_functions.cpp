@@ -172,7 +172,7 @@ std::string buildTiACustomSignalInfoXMLString (SignalInfo const& custom_signal_i
         {
             char *channel_node_name = xml_doc.allocate_string (XML_TAGS::CHANNEL.c_str ());
             rapidxml::xml_node<>* channel_node = xml_doc.allocate_node (rapidxml::node_element, channel_node_name);
-            addAttribute (&xml_doc, channel_node, XML_TAGS::CHANNEL_NR, channel_nr + 1);
+            addAttribute (&xml_doc, channel_node, XML_TAGS::CHANNEL_NR, signal_iter->second.channels ()[channel_nr].number());
             addAttribute (&xml_doc, channel_node, XML_TAGS::CHANNEL_LABEL, signal_iter->second.channels ()[channel_nr].id());
             signal_node->append_node (channel_node);
         }
