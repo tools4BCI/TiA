@@ -44,7 +44,7 @@ public:
 
 
     virtual void applyFilter(DataPacket &)
-    { std::cout << " dummy filter "; }
+    { }
 
     virtual const SignalInfo &getSignalInfoAfterFiltering()
     {

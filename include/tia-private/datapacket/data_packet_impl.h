@@ -265,6 +265,23 @@ class DataPacketImpl :public DataPacket
     virtual std::vector<double> getSingleDataBlock(boost::uint32_t flag);
 
     /**
+    * @brief Removes all entries of this signal type form the DataPacket
+    *        and updates the packets header.
+    *        NOT IMPELEMNTED DUE TO OLD TIA VERSION!
+    * @param[in] flag that specifies the signal type
+    */
+    virtual void removeDataBlock(boost::uint32_t flag);
+
+    /**
+    * @brief Removes all samples of the channel of the signal type form the DataPacket
+    *        and updates the packets header.
+    *        NOT IMPELEMNTED DUE TO OLD TIA VERSION
+    * @param[in] flag that specifies the signal type
+    * @param[in] channel that specifies the channels index in the signal
+    */
+    virtual void removeSamples(boost::uint32_t flag, boost::uint32_t channel);
+
+    /**
     * @brief Get the number of values for a specific signal type.
     * @param[in] flag
     * @return boost::uint16_t The number of values.

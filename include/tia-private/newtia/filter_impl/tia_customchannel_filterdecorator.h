@@ -9,6 +9,8 @@ namespace tia
 
 class CustomChannelFilterDecorator : public CustomPacketFilterDecorator
 {
+
+    typedef std::map<boost::uint32_t, std::vector<boost::uint32_t> > ChannelNrMap;
 public:
     CustomChannelFilterDecorator(CustomPacketFilter &decorated_filter);   
 
@@ -18,7 +20,7 @@ public:
 
 private:
     std::vector<boost::uint32_t> signals_to_exclude_;
-    std::map<boost::uint32_t, std::vector<boost::uint32_t> > channels_to_include_;
+    ChannelNrMap channels_to_exclude_;
     SignalInfo modified_signal_info_;
 };
 

@@ -26,6 +26,7 @@
 #include "tia-private/newtia/filter_impl/tia_customchannel_filterdecorator.h"
 
 #include <iostream>
+#include <stdexcept>
 
 using namespace tia;
 using namespace std;
@@ -35,20 +36,37 @@ SUITE (TiAVersion10)
 
 TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
 {
+    //check custom signal info parser
+    string tmp_info_str = buildTiACustomSignalInfoXMLString(custom_sig_info_);
 
+    SignalInfo tmp_info = parseTiACustomSignalInfoFromXMLString(tmp_info_str, default_sig_info_);
+
+    string new_info_str = buildTiACustomSignalInfoXMLString(tmp_info);
+
+    CHECK_EQUAL(tmp_info_str,new_info_str);
+
+    //-----------------------------------------------------------------------------
+    //check channel filter
     DummyCustomPacketFilter dummy_filter (default_sig_info_, custom_sig_info_);
-
     CustomChannelFilterDecorator chan_filter (dummy_filter);
-
-    cout << "applicable: " << chan_filter.isApplicable() ;
-    cout << ", hasWork: " <<chan_filter.hasConfiguredWork() << endl;
 
     CHECK(chan_filter.isApplicable());
     CHECK(chan_filter.hasConfiguredWork());
 
-    cout << endl << buildTiACustomSignalInfoXMLString(chan_filter.getSignalInfoAfterFiltering());
+    chan_filter.applyFilter(packet_);
 
-//    chan_filter.applyFilter(packet_);
+    CHECK_THROW(packet_.getSingleDataBlock(SIG_EMG), invalid_argument);
+
+    CHECK_EQUAL(3, packet_.getNrOfSignalTypes());
+
+    std::vector<double> tmp = packet_.getSingleDataBlock(SIG_EEG);
+    CHECK_ARRAY_EQUAL(target_raw_data_eeg_, tmp, target_raw_data_eeg_.size());
+
+    tmp = packet_.getSingleDataBlock(SIG_EOG);
+    CHECK_ARRAY_EQUAL(target_raw_data_eog_, tmp, target_raw_data_eog_.size());
+
+    tmp = packet_.getSingleDataBlock(SIG_BP);
+    CHECK_ARRAY_EQUAL(target_raw_data_bp_, tmp, target_raw_data_bp_.size());
 }
 
 }

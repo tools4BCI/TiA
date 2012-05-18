@@ -401,6 +401,62 @@ vector<double> DataPacket3Impl::getSingleDataBlock(boost::uint32_t flag)
 
 //-----------------------------------------------------------------------------
 
+void DataPacket3Impl::removeDataBlock(boost::uint32_t flag)
+{
+    if(!flagsOK())
+      throw(std::logic_error("DataPacket3::removeDataBlock() -- Flags differ from Amount of Signals in DataPacket!"));
+
+    if(!hasFlag(flag))
+      throw(std::invalid_argument("DataPacket3::removeDataBlock() -- Error ... Flag not set, unable to get Data!"));
+
+    uint32_t pos = getDataPos(flag);
+
+    clearFlag(flag);
+
+    vector<double>::iterator it_data(data_.begin() + getOffset(pos));
+
+    data_.erase(it_data, it_data + ( nr_channels_[pos] * samples_per_channel_[pos] ));
+
+
+    vector<uint16_t>::iterator it_nr(samples_per_channel_.begin() + pos );
+    samples_per_channel_.erase(it_nr);
+
+    it_nr = nr_channels_.begin() + pos;
+    nr_channels_.erase(it_nr);
+
+    --nr_of_signal_types_;
+}
+
+//-----------------------------------------------------------------------------
+
+void DataPacket3Impl::removeSamples(boost::uint32_t flag, boost::uint32_t channel)
+{
+    if(!flagsOK())
+      throw(std::logic_error("DataPacket3::removeSamples() -- Flags differ from Amount of Signals in DataPacket!"));
+
+    if(!hasFlag(flag))
+      throw(std::invalid_argument("DataPacket3::removeSamples() -- Error ... Flag not set, unable to get Data!"));
+
+    uint32_t pos = getDataPos(flag);
+
+    if(channel >= nr_channels_[pos])
+      throw(std::out_of_range("DataPacket3::removeSamples() -- Error ... Channel is too great!"));
+
+    if(nr_channels_[pos] == 1)
+        removeDataBlock(flag);
+    else
+    {
+        vector<double>::iterator it_data(data_.begin() + getOffset(pos) \
+                                         + (channel * samples_per_channel_[pos]));
+
+        data_.erase(it_data, it_data + samples_per_channel_[pos]);
+
+        nr_channels_[pos] = nr_channels_[pos] - 1;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 boost::uint16_t DataPacket3Impl::getNrOfSamples(boost::uint32_t flag)
 {
   if(!flagsOK())
@@ -468,6 +524,13 @@ bool DataPacket3Impl::flagsOK()
 void DataPacket3Impl::setFlag(boost::uint32_t f)
 {
   flags_ |= f;
+}
+
+//-----------------------------------------------------------------------------
+
+void DataPacket3Impl::clearFlag(boost::uint32_t f)
+{
+  flags_ &= ~f;
 }
 
 //-----------------------------------------------------------------------------

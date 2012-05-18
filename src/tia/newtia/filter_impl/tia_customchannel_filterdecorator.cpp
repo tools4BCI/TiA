@@ -26,7 +26,7 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &d
 
         if(custom_signal == custom_signals.end())
         {
-            std::cout << "Signal " << mod_signal_it->first << ": is not present in client config!" << std::endl;
+//            std::cout << "Signal " << mod_signal_it->first << ": is not present in custom config!" << std::endl;
             signals_to_exclude_.push_back(constants_.getSignalFlag(mod_signal_it->first));
             modified_signal_info_.signals().erase(mod_signal_it);
         }
@@ -44,7 +44,7 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &d
                 {
                     if(channel_it->number() == custom_channel.number())
                     {
-                        std::cout << "found channel: " << channel_it->id() << " in custom config" << std::endl;
+//                        std::cout << "found channel: " << channel_it->id() << " in custom config" << std::endl;
                         if(channel_it->id() != custom_channel.id())
                         {
                             //custom signal info is invalid
@@ -52,9 +52,7 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &d
                             std::cerr << "Signal " << mod_signal_it->first << ": Inkonsistent channels!" << std::endl;
 
                             return;
-                        }
-                        channels_to_include_[constants_.getSignalFlag(mod_signal_it->first)].push_back(custom_channel.number());
-
+                        }                        
                         chan_is_in_custom_chans = true;
                         break;
                     }
@@ -63,37 +61,55 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &d
                 if(chan_is_in_custom_chans)
                     ++channel_it;
                 else
-                    channel_it = channels.erase(channel_it);
+                {
+                    channels_to_exclude_[constants_.getSignalFlag(mod_signal_it->first)].push_back(channel_it->number());
+                    channel_it = channels.erase(channel_it);                    
+                }
             }
 
-            if(channels_to_include_[constants_.getSignalFlag(mod_signal_it->first)].size() == channels.size())
+            if(channels_to_exclude_[constants_.getSignalFlag(mod_signal_it->first)].size() == 0)
             {
                 //there are all channels used for this signal
-                channels_to_include_.erase(constants_.getSignalFlag(mod_signal_it->first));
-                std::cout << "Signal " << mod_signal_it->first << ": No channels to filter!" << std::endl;
+                channels_to_exclude_.erase(constants_.getSignalFlag(mod_signal_it->first));
+//                std::cout << "Signal " << mod_signal_it->first << ": No channels to filter!" << std::endl;
             }
             else
             {
 //                std::cout << "Signal " << mod_signal_it->first << ": Sorting channels!" << std::endl;
-                std::sort(channels_to_include_[constants_.getSignalFlag(mod_signal_it->first)].begin(),channels_to_include_[constants_.getSignalFlag(mod_signal_it->first)].end());
+                std::sort(channels_to_exclude_[constants_.getSignalFlag(mod_signal_it->first)].begin(),channels_to_exclude_[constants_.getSignalFlag(mod_signal_it->first)].end(), std::greater<boost::uint32_t>());
             }
         }
     }
 
     is_applicable_ = true;
 
-    has_configured_work_ = (signals_to_exclude_.size() > 0 || channels_to_include_.size() > 0);
+    has_configured_work_ = (signals_to_exclude_.size() > 0 || channels_to_exclude_.size() > 0);
 }
 
 //-----------------------------------------------------------------------------
 
 void CustomChannelFilterDecorator::applyFilter(DataPacket &packet)
 {
-    decorated_filter_.applyFilter(packet);
+    decorated_filter_.applyFilter(packet);    
 
-    std::cout << " chan filter ";
+    BOOST_FOREACH(boost::uint32_t signal_flag, signals_to_exclude_)
+    {
+//        std::cout << " remove signal:" << constants_.getSignalName(signal_flag) << std::endl;
+        packet.removeDataBlock(signal_flag);
+    }
 
-    //TODO: filter the data in the packet!
+    BOOST_FOREACH(ChannelNrMap::value_type signal, channels_to_exclude_)
+    {
+
+        BOOST_FOREACH(boost::uint32_t channel, signal.second)
+        {
+//            std::cout << " remove channel: "<< channel <<" signal:"
+//            std::cout << constants_.getSignalName(signal.first) << std::endl;
+            packet.removeSamples(signal.first,channel - 1);
+        }
+
+    }
+
 }
 
 //-----------------------------------------------------------------------------

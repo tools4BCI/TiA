@@ -244,6 +244,21 @@ class DataPacket3Impl : public DataPacket
     std::vector<double> getSingleDataBlock(boost::uint32_t flag);
 
     /**
+    * @brief Removes all entries of this signal type form the DataPacket
+    *        and updates the packets header.
+    * @param[in] flag that specifies the signal type
+    */
+    virtual void removeDataBlock(boost::uint32_t flag);
+
+    /**
+    * @brief Removes all samples of the channel of the signal type form the DataPacket
+    *        and updates the packets header.
+    * @param[in] flag that specifies the signal type
+    * @param[in] channel that specifies the channels index in the signal
+    */
+    virtual void removeSamples(boost::uint32_t flag, boost::uint32_t channel);
+
+    /**
     * @brief Get a pointer to a memory region, containing the raw representation of the DataPacket.
     * @return A pointer pointing to the beginning of the memory region.
     *
@@ -280,7 +295,7 @@ class DataPacket3Impl : public DataPacket
     */
     boost::uint32_t getRequiredRawMemorySize(void* mem, boost::uint32_t bytes_available);
 
-  private:
+private:
     /**
     * @brief Calculate the number of different signaltypes (equal to bits == 1) defined in a flag.
     * @return The number of bits == 1.
@@ -296,6 +311,13 @@ class DataPacket3Impl : public DataPacket
     * @param[in] flag The Flag to set.
     */
     void setFlag(boost::uint32_t flag);
+
+    /**
+    * @brief Clears a flag in flags.
+    * @param[in] flag The Flag to be cleard.
+    */
+    void clearFlag(boost::uint32_t f);
+
     /**
     * @brief Get the data position (first signal, second, ...) of a signal type in the DataPacket.
     * @param[in] flag The signal type to get the position for.

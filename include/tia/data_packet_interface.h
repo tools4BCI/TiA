@@ -66,7 +66,7 @@ class DataPacket
     virtual void setPacketID(boost::uint64_t nr) = 0;
     virtual boost::uint64_t getPacketID() = 0;
 
-     virtual void insertDataBlock(std::vector<double> v, boost::uint32_t signal_flag,
+    virtual void insertDataBlock(std::vector<double> v, boost::uint32_t signal_flag,
                                   boost::uint16_t blocksize, bool prepend = false)  = 0;
 
     virtual void setConnectionPacketNr(boost::uint64_t) = 0;
@@ -91,6 +91,9 @@ class DataPacket
 
     virtual const std::vector<double>& getData() = 0;
     virtual std::vector<double> getSingleDataBlock(boost::uint32_t flag) = 0;
+
+    virtual void removeDataBlock(boost::uint32_t flag) = 0;
+    virtual void removeSamples(boost::uint32_t flag, boost::uint32_t channel) = 0;
 
     virtual void* getRaw() = 0;
     virtual boost::uint32_t getRawMemorySize() = 0;
