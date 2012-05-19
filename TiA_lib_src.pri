@@ -64,7 +64,8 @@ HEADERS += include/tia/tia_server.h \
     include/tia-private/newtia/tia_custom_signal_info_parse_and_build_functions.h \
     include/tia-private/newtia/tia_parse_and_build_helper_functions.h \
     include/tia-private/newtia/filter/tia_datapacket_custom_filter.h \
-    include/tia-private/newtia/filter_impl/tia_customchannel_filterdecorator.h
+    include/tia-private/newtia/filter_impl/tia_customchannel_filterdecorator.h \
+    include/tia-private/newtia/commands/set_custom_signalinfo_control_command.h
 
 contains( DEFINES, TIMING_TEST )::HEADERS += extern/include/LptTools/LptTools.h
 
@@ -105,7 +106,8 @@ SOURCES += src/tia/tia_server.cpp \
     src/tia/datapacket/data_packet_3_impl.cpp \
     src/tia/newtia/tia_custom_signal_info_parse_and_build_functions.cpp \
     src/tia/newtia/tia_parse_and_build_helper_functions.cpp \
-    src/tia/newtia/filter_impl/tia_customchannel_filterdecorator.cpp
+    src/tia/newtia/filter_impl/tia_customchannel_filterdecorator.cpp \
+    src/tia/newtia/commands/set_custom_signalinfo_control_command.cpp
 
 unix {
   contains( DEFINES, TIMING_TEST )::SOURCES += extern/include/LptTools/LptToolsLinux.cpp

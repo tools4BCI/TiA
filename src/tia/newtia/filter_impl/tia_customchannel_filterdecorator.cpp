@@ -11,15 +11,15 @@
 namespace tia
 {
 
-CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &decorated_filter)
+CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilterPtr decorated_filter)
     : CustomPacketFilterDecorator(decorated_filter)
 {  
-    SignalInfo::SignalMap custom_signals = custom_sig_info_.signals();
+    SignalInfo::SignalMap custom_signals = custom_sig_info_ptr_->signals();
 
     modified_signal_info_ = default_sig_info_;
 
     for(SignalInfo::SignalMap::iterator mod_signal_it = modified_signal_info_.signals().begin();
-        mod_signal_it != modified_signal_info_.signals().end(); ++mod_signal_it)
+        mod_signal_it != modified_signal_info_.signals().end();)
     {
 
         SignalInfo::SignalMap::iterator custom_signal = custom_signals.find(mod_signal_it->first);
@@ -28,7 +28,12 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &d
         {
 //            std::cout << "Signal " << mod_signal_it->first << ": is not present in custom config!" << std::endl;
             signals_to_exclude_.push_back(constants_.getSignalFlag(mod_signal_it->first));
-            modified_signal_info_.signals().erase(mod_signal_it);
+
+            SignalInfo::SignalMap::iterator helper = mod_signal_it;
+
+            ++mod_signal_it;
+            modified_signal_info_.signals().erase(helper);
+
         }
         else
         {
@@ -37,7 +42,6 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &d
             for(std::vector<Channel>::iterator channel_it = channels.begin();
                 channel_it != channels.end();)
             {
-
                 bool chan_is_in_custom_chans = false;
 
                 BOOST_FOREACH(Channel custom_channel, custom_signal->second.channels())
@@ -52,7 +56,7 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &d
                             std::cerr << "Signal " << mod_signal_it->first << ": Inkonsistent channels!" << std::endl;
 
                             return;
-                        }                        
+                        }
                         chan_is_in_custom_chans = true;
                         break;
                     }
@@ -63,7 +67,7 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &d
                 else
                 {
                     channels_to_exclude_[constants_.getSignalFlag(mod_signal_it->first)].push_back(channel_it->number());
-                    channel_it = channels.erase(channel_it);                    
+                    channel_it = channels.erase(channel_it);
                 }
             }
 
@@ -78,6 +82,8 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &d
 //                std::cout << "Signal " << mod_signal_it->first << ": Sorting channels!" << std::endl;
                 std::sort(channels_to_exclude_[constants_.getSignalFlag(mod_signal_it->first)].begin(),channels_to_exclude_[constants_.getSignalFlag(mod_signal_it->first)].end(), std::greater<boost::uint32_t>());
             }
+
+            ++mod_signal_it;
         }
     }
 
@@ -90,7 +96,7 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilter &d
 
 void CustomChannelFilterDecorator::applyFilter(DataPacket &packet)
 {
-    decorated_filter_.applyFilter(packet);    
+    decorated_filter_->applyFilter(packet);
 
     BOOST_FOREACH(boost::uint32_t signal_flag, signals_to_exclude_)
     {

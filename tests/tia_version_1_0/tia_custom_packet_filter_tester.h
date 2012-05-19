@@ -119,7 +119,7 @@ struct TiACustomFilterTests
 
   DataPacket3Impl packet_;
   SignalInfo default_sig_info_;
-  SignalInfo custom_sig_info_;
+  SignalInfoPtr custom_sig_info_;
   std::vector<double> target_raw_data_eeg_, target_raw_data_eog_, target_raw_data_bp_;
   std::vector<double> raw_data_;
 };

@@ -37,23 +37,24 @@ SUITE (TiAVersion10)
 TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
 {
     //check custom signal info parser
-    string tmp_info_str = buildTiACustomSignalInfoXMLString(custom_sig_info_);
+    string tmp_info_str = buildTiACustomSignalInfoXMLString(*custom_sig_info_);
 
-    SignalInfo tmp_info = parseTiACustomSignalInfoFromXMLString(tmp_info_str, default_sig_info_);
+    SignalInfoPtr tmp_info = parseTiACustomSignalInfoFromXMLString(tmp_info_str, default_sig_info_);
 
-    string new_info_str = buildTiACustomSignalInfoXMLString(tmp_info);
+    string new_info_str = buildTiACustomSignalInfoXMLString(*tmp_info);
 
     CHECK_EQUAL(tmp_info_str,new_info_str);
 
     //-----------------------------------------------------------------------------
     //check channel filter
-    DummyCustomPacketFilter dummy_filter (default_sig_info_, custom_sig_info_);
-    CustomChannelFilterDecorator chan_filter (dummy_filter);
+    CustomPacketFilterPtr filter_chain (new DummyCustomPacketFilter(default_sig_info_, custom_sig_info_));
 
-    CHECK(chan_filter.isApplicable());
-    CHECK(chan_filter.hasConfiguredWork());
+    filter_chain = CustomPacketFilterPtr(new CustomChannelFilterDecorator(filter_chain));
 
-    chan_filter.applyFilter(packet_);
+    CHECK(filter_chain->isApplicable());
+    CHECK(filter_chain->hasConfiguredWork());
+
+    filter_chain->applyFilter(packet_);
 
     CHECK_THROW(packet_.getSingleDataBlock(SIG_EMG), invalid_argument);
 

@@ -41,6 +41,7 @@
 #define SERVER_META_INFO_H
 
 #include <boost/cstdint.hpp>
+#include <boost/shared_ptr.hpp>
 
 // STL
 #include <string>
@@ -301,6 +302,8 @@ class SignalInfo
     #undef SIGNAL_INFO_HELPER
 #endif
 };
+
+typedef boost::shared_ptr<SignalInfo> SignalInfoPtr;
 
 } // Namespace tobiss
 

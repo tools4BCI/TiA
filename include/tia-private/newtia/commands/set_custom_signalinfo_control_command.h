@@ -31,27 +31,33 @@
     Contact: TiA@tobi-project.org
 */
 
-#ifndef TIA_CUSTOM_SIGNAL_INFO_PARSE_AND_BUILD_FUNCTIONS_H
-#define TIA_CUSTOM_SIGNAL_INFO_PARSE_AND_BUILD_FUNCTIONS_H
 
-#include "tia/ss_meta_info.h"
+#ifndef SET_CUSTOM_SIGNALINFO_CONTROLCOMMAND_H
+#define SET_CUSTOM_SIGNALINFO_CONTROLCOMMAND_H
+
+#include "../tia_control_command.h"
+#include "../tia_control_command_context.h"
+#include "../server_impl/control_connection_2.h"
 
 namespace tia
 {
 
-namespace XML_TAGS
+class SetCustomSignalInfoControlCommand : public TiAControlCommand
 {
-    std::string const TIA_CUSTOM_SIGNAL_INFO = "tiaCustomSignalInfo";
-    std::string const TIA_CUSTOM_SIGNAL_INFO_VERSION = "version";
-    std::string const TIA_CUSTOM_SIGNAL_INFO_CURRENT_VERSION = "1.0";
+public:
+    SetCustomSignalInfoControlCommand(TiAControlCommandContext& command_context, ControlConnection2& connection)
+        : command_context_ (command_context), connection_ (connection)
+    {}
+
+    virtual ~SetCustomSignalInfoControlCommand () {}
+
+    virtual TiAControlMessage execute (TiAControlMessage const& command);
+
+private:
+    TiAControlCommandContext& command_context_;
+    ControlConnection2& connection_;
+};
+
 }
 
-//-----------------------------------------------------------------------------
-SignalInfoPtr parseTiACustomSignalInfoFromXMLString (std::string const& custom_signal_info_xml_str, const SignalInfo &default_signal_info);
-
-//-----------------------------------------------------------------------------
-std::string buildTiACustomSignalInfoXMLString (SignalInfo const& custom_signal_info);
-
-}
-
-#endif // TIA_CUSTOM_SIGNAL_INFO_PARSE_AND_BUILD_FUNCTIONS_H
+#endif // SET_CUSTOM_SIGNALINFO_CONTROLCOMMAND_H

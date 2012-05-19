@@ -12,7 +12,7 @@ class CustomChannelFilterDecorator : public CustomPacketFilterDecorator
 
     typedef std::map<boost::uint32_t, std::vector<boost::uint32_t> > ChannelNrMap;
 public:
-    CustomChannelFilterDecorator(CustomPacketFilter &decorated_filter);   
+    CustomChannelFilterDecorator(CustomPacketFilterPtr decorated_filter);
 
     virtual void applyFilter(DataPacket &packet);
 

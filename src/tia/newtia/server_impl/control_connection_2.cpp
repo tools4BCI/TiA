@@ -39,6 +39,7 @@
 #include "tia-private/newtia/commands/stop_data_transmission_control_command.h"
 #include "tia-private/newtia/commands/get_metainfo_control_command.h"
 #include "tia-private/newtia/commands/get_serverstate_connection_command.h"
+#include "tia-private/newtia/commands/set_custom_signalinfo_control_command.h"
 
 #include "tia-private/newtia/messages/tia_control_message_tags_1_0.h"
 #include "tia-private/newtia/messages_impl/tia_control_message_parser_1_0.h"
@@ -71,7 +72,8 @@ ControlConnection2::ControlConnection2 (boost::shared_ptr<Socket> socket, DataSe
     command_map_[TiAControlMessageTags10::GET_DATA_CONNECTION] = new GetDataConnectionControlCommand (command_context_, data_server_);
     command_map_[TiAControlMessageTags10::START_DATA_TRANSMISSION] = new StartDataTransmissionControlCommand (command_context_, data_server_);
     command_map_[TiAControlMessageTags10::STOP_DATA_TRANSMISSION] = new StopDataTransmissionControlCommand (command_context_, data_server_);
-    command_map_[TiAControlMessageTags10::GET_SERVER_STATE_CONNECTION] = new GetServerStateConnectionCommand (server_state_server_.getPort());
+    command_map_[TiAControlMessageTags10::GET_SERVER_STATE_CONNECTION] = new GetServerStateConnectionCommand (server_state_server_.getPort());    
+    command_map_[TiAControlMessageTags10::SET_CUSTOM_SIGNALINFO] = new SetCustomSignalInfoControlCommand(command_context_,*this);
 }
 
 //-----------------------------------------------------------------------------

@@ -44,6 +44,8 @@
 #include "tia-private/newtia/hardware_interface.h"
 #include "tia-private/newtia/server/data_server.h"
 
+#include "tia-private/newtia/filter/tia_datapacket_custom_filter.h"
+
 #include <boost/thread.hpp>
 #include <map>
 
@@ -66,6 +68,9 @@ public:
     unsigned getId () const {return id_;}
     std::string getRemoteEndPointAsString() { return socket_->getRemoteEndPointAsString();}
 
+    void setPacketFilter(CustomPacketFilterPtr filter_ptr) { filter_ptr_ = filter_ptr; }
+    CustomPacketFilterPtr getPacketFilter() { return filter_ptr_; }
+
 private:
     void run ();
 
@@ -78,9 +83,11 @@ private:
     typedef std::map<std::string, TiAControlCommand*> CommandMap;
     CommandMap command_map_;
 
+    CustomPacketFilterPtr filter_ptr_;
+
     std::auto_ptr<TiAControlMessageParser> parser_;
     std::auto_ptr<TiAControlMessageBuilder> builder_;
-    boost::thread* thread_;
+    boost::thread* thread_;       
 
     unsigned id_;
     static unsigned next_free_id_;
