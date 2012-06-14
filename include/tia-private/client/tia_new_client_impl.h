@@ -85,6 +85,7 @@ public:
     * @brief todo
     */
     virtual DataPacket* getEmptyDataPacket();
+    virtual DataPacket* createDataPacket();
 
     virtual void setBufferSize (size_t size);
 

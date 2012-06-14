@@ -490,6 +490,13 @@ DataPacket* TiAClientImpl::getEmptyDataPacket()
 
 //-----------------------------------------------------------------------------
 
+DataPacket* TiAClientImpl::createDataPacket()
+{
+  return(new DataPacketImpl);
+}
+
+//-----------------------------------------------------------------------------
+
 void TiAClientImpl::getDataPacket(DataPacket& packet)
 {
   if ((ctl_conn_state_ == ControlConnState_NotConnected))
@@ -679,8 +686,8 @@ void TiAClientImpl::getDataPacket(DataPacket& packet)
 
 void TiAClientImpl::setBufferSize(size_t size)
 {
-	recv_buf_.resize(size);
-	buffer_size_ = size;
+  recv_buf_.resize(size);
+  buffer_size_ = size;
 }
 
 //-----------------------------------------------------------------------------

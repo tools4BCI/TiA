@@ -1,7 +1,6 @@
 # -----------------------------------------------------------------------
 TEMPLATE = app
-CONFIG += release \
-    console \
+CONFIG += console \
     thread \
     warn_on \
     exceptions \
@@ -9,6 +8,12 @@ CONFIG += release \
 QT -= core \
     gui
 DEFINES += TIXML_USE_TICPP
+
+CONFIG( debug, debug|release ) {
+    DEFINES += DEBUG
+} else {
+
+}
 
 # TIMING_TEST
 TARGET = tia-client
