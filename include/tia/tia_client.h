@@ -53,6 +53,7 @@ namespace tia
 class DataPacket;
 class TiAClientImplBase;
 class SSConfig;
+class SignalInfo;
 
 /**
 * @class TiAClient
@@ -149,6 +150,17 @@ public:
    * @sa requestConfig()
    */
   virtual SSConfig config() const;
+
+  /**
+   * @brief Asks the server to use a custom signal info for this client
+   * The caller will be blocked until the server returns its answer or an error has occurred.
+   * @param custom_sig_info: the customized signal info that the server should use
+   * @param error_msg: when an error occurs the reason is stored into this string
+   * @throw std::ios_base::failure if the client is not connected or if an error occurred
+   * @throw std::runtime_error for all implementations that do not support this
+   * feature due to they are deprecated versions
+   */
+  virtual bool trySetCustomSignalInfo(SignalInfo &custom_sig_info, std::string &error_msg);
 
   /**
    * @brief Establishes a DataConnection to the server either

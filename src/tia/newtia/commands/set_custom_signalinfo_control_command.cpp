@@ -57,7 +57,15 @@ TiAControlMessage SetCustomSignalInfoControlCommand::execute(const TiAControlMes
     if(command.getCommand() != TiAControlMessageTags10::SET_CUSTOM_SIGNALINFO)
         throw std::invalid_argument("Not able to handle this type of controlmessage!");
 
+    CustomPacketFilter *packet_filter =
+            connection_.getPacketFilter().get();
+
+    if(packet_filter != NULL)
+        return CustomErrorControlMessage(version,"Details:This connection already has a custom config that can not be altered!");
+
     content = command.getContent();
+
+//    std::cout << "execute setCustomSignalInfo: " << std::endl << content << std::endl;
 
     const SSConfig &meta_info = command_context_.getHardwareInterface().getTiAMetaInfo();
 
@@ -75,11 +83,13 @@ TiAControlMessage SetCustomSignalInfoControlCommand::execute(const TiAControlMes
 
         connection_.setPacketFilter(filter_chain_ptr);
 
+        return OkControlMessage(version);
+
 
     }catch(std::exception &ex)
     {
         return CustomErrorControlMessage (version,
-                    std::string("Invalid custom signal info! Details:").append(ex.what()));
+                    std::string("Invalid custom signal info. Details:").append(ex.what()));
     }
 }
 

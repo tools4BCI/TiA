@@ -68,10 +68,10 @@ TiAControlMessage GetDataConnectionControlCommand::execute (TiAControlMessage co
         return CustomErrorControlMessage (version,
                                           "Target and remote subnet do not match!");
       else
-        data_connection = data_server_.addConnection (true);
+        data_connection = data_server_.addConnection (true, connection_.getPacketFilter());
     }
     else if (command.getParameters() == TiAControlMessageTags10::TCP)
-        data_connection = data_server_.addConnection (false);
+        data_connection = data_server_.addConnection (false, connection_.getPacketFilter());
     else
         return ErrorControlMessage (version);
 

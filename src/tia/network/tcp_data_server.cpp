@@ -48,6 +48,7 @@
 // local
 #include "tia-private/network/tcp_data_server.h"
 #include "tia/data_packet_interface.h"
+#include "tia-private/datapacket/data_packet_3_impl.h"
 
 namespace tia
 {
@@ -94,23 +95,64 @@ void TCPDataConnection::sendDataPacket(DataPacket& packet)
 
   if (!connection_ || !connection_->socket().is_open()) return;
 
-  void* data = packet.getRaw();
-  uint32_t size = packet.getRawMemorySize();
+  void* data = NULL;
+  uint32_t size = 0;
 
-  assert(data != 0);
-  assert(size != 0);
+  if( packet_filter_.get() != NULL && packet_filter_->isApplicable())
+  {
+      DataPacket3Impl *packet_3impl = dynamic_cast<DataPacket3Impl *>(&packet);
 
-#ifdef DEBUG
-  std::cout << "TCPDataConnection::sendDataPacket: sending data packet to "
-                << remote_endpoint_.address().to_string() << ":" << remote_endpoint_.port()
-                << std::endl;
-#endif
+      if(packet_3impl != NULL)
+      {
 
-  connection_->socket().async_send(boost::asio::buffer(data, size),
-      boost::bind(&TCPDataConnection::handleWrite,
-          shared_from_this(),
-          boost::asio::placeholders::error,
-          boost::asio::placeholders::bytes_transferred));
+        DataPacket3Impl packet_to_filter;
+
+        packet_to_filter.reset(packet_3impl->getRaw());
+
+        packet_filter_->applyFilter(packet_to_filter);
+
+        data = packet_to_filter.getRaw();
+        size = packet_to_filter.getRawMemorySize();
+
+
+        assert(data != 0);
+        assert(size != 0);
+
+      #ifdef DEBUG
+        std::cout << "TCPDataConnection::sendDataPacket: sending data packet to "
+                      << remote_endpoint_.address().to_string() << ":" << remote_endpoint_.port()
+                      << std::endl;
+      #endif
+
+        connection_->socket().async_send(boost::asio::buffer(data, size),
+            boost::bind(&TCPDataConnection::handleWrite,
+                shared_from_this(),
+                boost::asio::placeholders::error,
+                boost::asio::placeholders::bytes_transferred));
+
+      }
+  }
+  else
+  {
+      data = packet.getRaw();
+      size = packet.getRawMemorySize();
+
+      assert(data != 0);
+      assert(size != 0);
+
+    #ifdef DEBUG
+      std::cout << "TCPDataConnection::sendDataPacket: sending data packet to "
+                    << remote_endpoint_.address().to_string() << ":" << remote_endpoint_.port()
+                    << std::endl;
+    #endif
+
+      connection_->socket().async_send(boost::asio::buffer(data, size),
+          boost::bind(&TCPDataConnection::handleWrite,
+              shared_from_this(),
+              boost::asio::placeholders::error,
+              boost::asio::placeholders::bytes_transferred));
+  }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -180,6 +222,20 @@ bool TCPDataServer::connected(const boost::asio::ip::tcp::endpoint& endpoint) co
 
   TCPDataConnection::pointer connection = (*it).second;
   return connection->connected();
+}
+
+//-----------------------------------------------------------------------------
+
+boost::asio::ip::tcp::endpoint TCPDataServer::addConnection(CustomPacketFilterPtr packet_filter)
+{
+
+    boost::asio::ip::tcp::endpoint key = addConnection();
+
+    TCPDataConnection::pointer connection = connections_[key];
+
+    connection->setPacketFiler(packet_filter);
+
+    return key;
 }
 
 //-----------------------------------------------------------------------------

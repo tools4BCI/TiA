@@ -115,7 +115,7 @@ public:
    * @brief Asks the server to accept the custom signal info.
    *        NOT implemented yet due to deprecated tia version!
    */
-  virtual bool trySetCustomSignalInfo(SignalInfo &custom_sig_info);
+  virtual bool trySetCustomSignalInfo(SignalInfo &custom_sig_info, std::string &error_msg);
 
   /**
    * @brief Establishes a DataConnection to the server either

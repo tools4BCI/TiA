@@ -57,7 +57,7 @@ public:
     virtual Port localPort (ConnectionID connection) const;
     virtual std::string getTargetIP () const;
 
-    virtual ConnectionID addConnection (bool udp);
+    virtual ConnectionID addConnection (bool udp, CustomPacketFilterPtr packet_filter);
 
     virtual bool hasConnection (ConnectionID connection) const;
 

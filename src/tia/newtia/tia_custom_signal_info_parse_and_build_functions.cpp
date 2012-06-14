@@ -63,7 +63,7 @@ SignalInfoPtr parseTiACustomSignalInfoFromXMLString (std::string const& custom_s
 
     rapidxml::xml_node<>* tia_custom_sig_info_node = xml_doc.first_node ();
     if (tia_custom_sig_info_node->next_sibling ())
-        throw TiAException ("Parsing TiACustomSignalInfo String: Too many first level nodes.");
+        throw TiAException ("Too many first level nodes.");
 
     // parse master signal info
     rapidxml::xml_node<>* master_signal_node = 0;
@@ -96,7 +96,7 @@ SignalInfoPtr parseTiACustomSignalInfoFromXMLString (std::string const& custom_s
         SignalInfo::SignalMap::const_iterator default_signal_it = default_signals.find(signal.type());
 
         if(default_signal_it == default_signals.end())
-            throw TiAException ("Parsing TiACustomSignalInfo String: Invalid Signal that is not in default SignalInfo.");
+            throw TiAException ("Invalid Signal that is not in default SignalInfo.");
 
         // parse channels
         std::vector<Channel>& channel_vector = signal.channels();
@@ -111,12 +111,8 @@ SignalInfoPtr parseTiACustomSignalInfoFromXMLString (std::string const& custom_s
             map<string, string> channel_attributes = getAttributes (channel_node, XML_TAGS::CHANNEL_REQUIRED_ATTRIBUTES);
             unsigned channel_nr = toUnsigned (channel_attributes[XML_TAGS::CHANNEL_NR]);
 
-            if(channel_nr > default_signal_it->second.channels().size())
-                throw TiAException ("Parsing TiACustomSignalInfo String: Too great channel number.");
-
-            if(channel_nr == 0 )
-                throw TiAException ("Parsing TiACustomSignalInfo String: Channel number 0 is invalid.");
-
+            if(channel_nr > default_signal_it->second.channels().size() - 1)
+                throw TiAException ("Too great channel number.");
 
             channel.setId (channel_attributes[XML_TAGS::CHANNEL_LABEL]);
             channel.setNumber(channel_nr);
@@ -128,14 +124,20 @@ SignalInfoPtr parseTiACustomSignalInfoFromXMLString (std::string const& custom_s
         }
 
         if(num_channels != 0)
-            throw TiAException ("Parsing TiACustomSignalInfo String: Number of channels doesn't fit to actual channel amount.");
+            throw TiAException ("Number of channels doesn't fit to actual channel amount.");
 
         if(signal.channels().size() > default_signal_it->second.channels().size())
-            throw TiAException ("Parsing TiACustomSignalInfo String: Too many custom channels.");
+            throw TiAException ("Too many custom channels.");
+
+        if(signal.channels().size() == 0)
+            throw TiAException ("Signal without any channel is invalid!");
 
         signal_map[signal_attributes[XML_TAGS::SIGNAL_TYPE]] = signal;
         signal_node = signal_node->next_sibling (XML_TAGS::SIGNAL.c_str ());
     }
+
+    if(custom_signal_info->signals().size() == 0)
+        throw TiAException ("SignalInfo without any signal is invalid!");
 
     return custom_signal_info;
 }

@@ -33,7 +33,7 @@ public:
 
     virtual tia::Port localPort (tia::ConnectionID /*connection*/) const {return 1000;}
 
-    virtual tia::ConnectionID addConnection (bool /*udp*/)
+    virtual tia::ConnectionID addConnection (bool /*udp*/, tia::CustomPacketFilterPtr)
     {
         tia::ConnectionID id = next_free_id_++;
         connections_.insert(id);

@@ -99,7 +99,7 @@ public:
    * @returns Either true if the server accepts the custom signal_info or
    *          false if the signal info is invalid.
    */
-  virtual bool trySetCustomSignalInfo(SignalInfo &custom_sig_info) = 0;
+  virtual bool trySetCustomSignalInfo(SignalInfo &custom_sig_info, std::string &error_msg) = 0;
 
   /**
    * @brief Establishes a DataConnection to the server either

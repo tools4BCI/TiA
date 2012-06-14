@@ -34,6 +34,8 @@
 #ifndef DATA_SERVER_H
 #define DATA_SERVER_H
 
+#include "tia-private/newtia/filter/tia_datapacket_custom_filter.h"
+
 namespace tia
 {
 
@@ -52,7 +54,7 @@ public:
     virtual Port localPort (ConnectionID connection) const = 0;
     virtual std::string getTargetIP() const = 0;
 
-    virtual ConnectionID addConnection (bool udp) = 0;
+    virtual ConnectionID addConnection (bool udp, CustomPacketFilterPtr packet_filter) = 0;
 
     virtual bool hasConnection (ConnectionID connection) const = 0;
 

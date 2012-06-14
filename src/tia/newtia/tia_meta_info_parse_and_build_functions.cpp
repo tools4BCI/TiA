@@ -113,8 +113,8 @@ SSConfig parseTiAMetaInfoFromXMLString (std::string const& tia_meta_info_xml_str
         for (unsigned channel_nr = 0; channel_nr < num_channels; channel_nr++)
         {
             Channel channel;
-            channel.setId (toString (channel_nr + 1));
-            channel.setNumber(channel_nr + 1);
+            channel.setId (toString (channel_nr));
+            channel.setNumber(channel_nr);
             channel_vector.push_back (channel);
         }
 
@@ -123,11 +123,11 @@ SSConfig parseTiAMetaInfoFromXMLString (std::string const& tia_meta_info_xml_str
         {
             map<string, string> channel_attributes = getAttributes (channel_node, XML_TAGS::CHANNEL_REQUIRED_ATTRIBUTES);
             unsigned channel_nr = toUnsigned (channel_attributes[XML_TAGS::CHANNEL_NR]);
-            if (channel_nr > num_channels)
+            if (channel_nr > num_channels - 1)
                 throw TiAException ("Parse TiAMetaInfo: nr-attribute of channel exceeds numChannels attribute of signal!");
 
-            channel_vector[channel_nr - 1].setNumber (channel_nr);
-            channel_vector[channel_nr - 1].setId (channel_attributes[XML_TAGS::CHANNEL_LABEL]);
+            channel_vector[channel_nr].setNumber (channel_nr);
+            channel_vector[channel_nr].setId (channel_attributes[XML_TAGS::CHANNEL_LABEL]);
             channel_node = channel_node->next_sibling (XML_TAGS::CHANNEL.c_str ());
         }
 
@@ -182,7 +182,6 @@ std::string buildTiAMetaInfoXMLString (SSConfig const& tia_meta_info)
         {
             char *channel_node_name = xml_doc.allocate_string (XML_TAGS::CHANNEL.c_str ());
             rapidxml::xml_node<>* channel_node = xml_doc.allocate_node (rapidxml::node_element, channel_node_name);
-//            addAttribute (&xml_doc, channel_node, XML_TAGS::CHANNEL_NR, channel_nr + 1);
             addAttribute (&xml_doc, channel_node, XML_TAGS::CHANNEL_NR, signal_iter->second.channels ()[channel_nr].number());
             addAttribute (&xml_doc, channel_node, XML_TAGS::CHANNEL_LABEL, signal_iter->second.channels ()[channel_nr].id());
             signal_node->append_node (channel_node);

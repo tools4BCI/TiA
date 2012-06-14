@@ -116,11 +116,25 @@ SSConfig TiANewClientImpl::config () const
 }
 
 //-----------------------------------------------------------------------------
-bool TiANewClientImpl::trySetCustomSignalInfo(SignalInfo &custom_sig_info)
+bool TiANewClientImpl::trySetCustomSignalInfo(SignalInfo &custom_sig_info, std::string &error_msg)
 {
   sendMessage (SetCustomSignalInfo (MESSAGE_VERSION_,custom_sig_info));
 
-  //TODO: check response!
+  TiAControlMessage msg = waitForResponse();
+
+  if(msg.getCommand() == TiAControlMessageTags10::OK)
+      //server accepted the custom signal info
+      return true;
+  else if(msg.getCommand().substr(0,TiAControlMessageTags10::ERROR_STR.size()) == TiAControlMessageTags10::ERROR_STR)
+  {
+      //server declined the custom config
+
+      error_msg = msg.getParameters();
+
+      return false;
+  }
+  else
+      throw std::runtime_error("TiANewClientImpl::trySetCustomSignalInfo(): Invalid response from server!");
 }
 
 //-----------------------------------------------------------------------------
@@ -237,18 +251,34 @@ void TiANewClientImpl::waitForErrorResponse ()
 //-----------------------------------------------------------------------------
 TiAControlMessage TiANewClientImpl::waitForControlMessage (std::string const& command_name)
 {
-  if (!socket_.get ())
-    throw TiAException ("TiANewClientImpl: Connection to server not initializsed.");
+//  if (!socket_.get ())
+//    throw TiAException ("TiANewClientImpl: Connection to server not initializsed.");
 
-  TiAControlMessage message = message_parser_->parseMessage (*socket_);
+//  TiAControlMessage message = message_parser_->parseMessage (*socket_);
 
-  if (message.getVersion () != TiAControlMessageTags10::VERSION)
-    throw std::runtime_error (string ("wrong server response: awaiting \"") + TiAControlMessageTags10::VERSION + "\" but was \"" + message.getVersion() + "\"");
+//  if (message.getVersion () != TiAControlMessageTags10::VERSION)
+//    throw std::runtime_error (string ("wrong server response: awaiting \"") + TiAControlMessageTags10::VERSION + "\" but was \"" + message.getVersion() + "\"");
+
+  TiAControlMessage message = waitForResponse();
 
   if (message.getCommand () != command_name)
     throw std::runtime_error (string ("wrong server response: awaiting \"") + command_name + "\" but was \"" + message.getCommand () + "\"");
 
   return message;
+}
+
+//-----------------------------------------------------------------------------
+TiAControlMessage TiANewClientImpl::waitForResponse()
+{
+    if (!socket_.get ())
+      throw TiAException ("TiANewClientImpl: Connection to server not initializsed.");
+
+    TiAControlMessage message = message_parser_->parseMessage (*socket_);
+
+    if (message.getVersion () != TiAControlMessageTags10::VERSION)
+      throw std::runtime_error (string ("wrong server response: awaiting \"") + TiAControlMessageTags10::VERSION + "\" but was \"" + message.getVersion() + "\"");
+
+    return message;
 }
 
 

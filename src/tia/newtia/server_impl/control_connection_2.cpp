@@ -68,8 +68,8 @@ ControlConnection2::ControlConnection2 (boost::shared_ptr<Socket> socket, DataSe
       id_ (next_free_id_++)
 {
     command_map_[TiAControlMessageTags10::CHECK_PROTOCOL_VERSION] = new CheckProtocolVersionControlCommand ();
-    command_map_[TiAControlMessageTags10::GET_METAINFO] = new GetMetaInfoControlCommand (command_context_);
-    command_map_[TiAControlMessageTags10::GET_DATA_CONNECTION] = new GetDataConnectionControlCommand (command_context_, data_server_);
+    command_map_[TiAControlMessageTags10::GET_METAINFO] = new GetMetaInfoControlCommand (command_context_, *this);
+    command_map_[TiAControlMessageTags10::GET_DATA_CONNECTION] = new GetDataConnectionControlCommand (command_context_, data_server_, *this);
     command_map_[TiAControlMessageTags10::START_DATA_TRANSMISSION] = new StartDataTransmissionControlCommand (command_context_, data_server_);
     command_map_[TiAControlMessageTags10::STOP_DATA_TRANSMISSION] = new StopDataTransmissionControlCommand (command_context_, data_server_);
     command_map_[TiAControlMessageTags10::GET_SERVER_STATE_CONNECTION] = new GetServerStateConnectionCommand (server_state_server_.getPort());    

@@ -376,7 +376,7 @@ void TiAServer::createSignalInfo()
       std::vector<std::string>::const_iterator it_channels = channel_names.begin();
       std::vector<std::string>::const_iterator end_channels = channel_names.end();
 
-      boost::uint32_t channel_number = 1;
+      boost::uint32_t channel_number = 0;
 
       for (; it_channels != end_channels; ++it_channels)
       {

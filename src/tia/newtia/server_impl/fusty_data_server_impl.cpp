@@ -71,7 +71,7 @@ Port FustyDataServerImpl::localPort (ConnectionID connection) const
 }
 
 //-----------------------------------------------------------------------------
-ConnectionID  FustyDataServerImpl::addConnection (bool udp)
+ConnectionID  FustyDataServerImpl::addConnection (bool udp, CustomPacketFilterPtr packet_filter)
 {
     ConnectionID new_connection_id = next_free_connection_id_;
     next_free_connection_id_++;
@@ -84,7 +84,7 @@ ConnectionID  FustyDataServerImpl::addConnection (bool udp)
     else
     {
         // std::cout << "call addconneciton on tcp server" << std::endl;
-        boost::asio::ip::tcp::endpoint tcp_endpoint = tcp_data_server_.addConnection ();
+        boost::asio::ip::tcp::endpoint tcp_endpoint = tcp_data_server_.addConnection (packet_filter);
         // std::cout << "call addconneciton on tcp server done" << std::endl;
         tcp_connections_.insert (new_connection_id);
         id_tcp_endpoint_map_[new_connection_id] = tcp_endpoint;

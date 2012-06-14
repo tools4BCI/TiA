@@ -146,7 +146,7 @@ SSConfig TiAClientImpl::config() const
 }
 
 //-----------------------------------------------------------------------------
-bool TiAClientImpl::trySetCustomSignalInfo(SignalInfo &custom_sig_info)
+bool TiAClientImpl::trySetCustomSignalInfo(SignalInfo &custom_sig_info, std::string &error_msg)
 {
     throw std::runtime_error("NOT implemented yet");
 }

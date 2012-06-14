@@ -50,6 +50,7 @@
 
 // local
 #include "tcp_server.h"
+#include "tia-private/newtia/filter/tia_datapacket_custom_filter.h"
 
 namespace tia
 {
@@ -102,6 +103,11 @@ public:
     return acceptor_.local_endpoint();
   }
 
+  inline void setPacketFiler(CustomPacketFilterPtr packet_filter)
+  {
+    packet_filter_ = packet_filter;
+  }
+
   /**
    * @brief Sends a DataPacket to the clients
    * @param packet the DataPacket to send
@@ -135,6 +141,8 @@ private:
   boost::asio::ip::tcp::endpoint remote_endpoint_;  ///<
 
   boost::mutex                   mutex_; ///<
+
+  CustomPacketFilterPtr packet_filter_;
 };
 
 //-----------------------------------------------------------------------------
@@ -158,6 +166,8 @@ public:
    * @param endpoint the address and port of the client
    */
   bool connected(const boost::asio::ip::tcp::endpoint& endpoint) const;
+
+  boost::asio::ip::tcp::endpoint addConnection(CustomPacketFilterPtr packet_filter);
 
   /**
    * @brief Adds a new client connection

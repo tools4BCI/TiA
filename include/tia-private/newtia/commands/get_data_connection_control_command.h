@@ -37,6 +37,7 @@
 #include "../tia_control_command.h"
 #include "../tia_control_command_context.h"
 #include "../server/data_server.h"
+#include "../server_impl/control_connection_2.h"
 
 namespace tia
 {
@@ -45,8 +46,9 @@ namespace tia
 class GetDataConnectionControlCommand : public TiAControlCommand
 {
 public:
-    GetDataConnectionControlCommand (TiAControlCommandContext& command_context, DataServer& data_server)
+    GetDataConnectionControlCommand (TiAControlCommandContext& command_context, DataServer& data_server, ControlConnection2 &connection)
         : command_context_ (command_context), data_server_ (data_server)
+        , connection_(connection)
     {}
 
     virtual ~GetDataConnectionControlCommand () {}
@@ -56,6 +58,8 @@ public:
 private:
     TiAControlCommandContext& command_context_;
     DataServer& data_server_;
+
+    ControlConnection2 &connection_;
 };
 
 }

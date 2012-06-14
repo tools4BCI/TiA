@@ -101,7 +101,8 @@ void CustomChannelFilterDecorator::applyFilter(DataPacket &packet)
     BOOST_FOREACH(boost::uint32_t signal_flag, signals_to_exclude_)
     {
 //        std::cout << " remove signal:" << constants_.getSignalName(signal_flag) << std::endl;
-        packet.removeDataBlock(signal_flag);
+        if(packet.hasFlag(signal_flag))
+            packet.removeDataBlock(signal_flag);
     }
 
     BOOST_FOREACH(ChannelNrMap::value_type signal, channels_to_exclude_)
@@ -109,9 +110,10 @@ void CustomChannelFilterDecorator::applyFilter(DataPacket &packet)
 
         BOOST_FOREACH(boost::uint32_t channel, signal.second)
         {
-//            std::cout << " remove channel: "<< channel <<" signal:"
+//            std::cout << " remove channel: "<< channel <<" signal:";
 //            std::cout << constants_.getSignalName(signal.first) << std::endl;
-            packet.removeSamples(signal.first,channel - 1);
+            if(packet.hasFlag(signal.first))
+                packet.removeSamples(signal.first,channel);
         }
 
     }
@@ -122,6 +124,22 @@ void CustomChannelFilterDecorator::applyFilter(DataPacket &packet)
 
 const SignalInfo &CustomChannelFilterDecorator::getSignalInfoAfterFiltering()
 {
+    //reset channel numbers of modified meta info
+    for(SignalInfo::SignalMap::iterator mod_signal_it = modified_signal_info_.signals().begin();
+        mod_signal_it != modified_signal_info_.signals().end();++mod_signal_it)
+    {
+        std::vector<Channel> &channels = mod_signal_it->second.channels();
+
+        boost::uint32_t new_chan_number = 0;
+
+        for(std::vector<Channel>::iterator channel_it = channels.begin();
+            channel_it != channels.end();++channel_it)
+        {
+            channel_it->setNumber(new_chan_number);
+            ++new_chan_number;
+        }
+    }
+
     return modified_signal_info_;
 }
 
