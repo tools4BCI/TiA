@@ -73,6 +73,16 @@ public:
     virtual ~CustomErrorControlMessage () {}
 };
 
+//-----------------------------------------------------------------------------
+class ValidationErrorControlMessage : public TiAControlMessage
+{
+public:
+    ValidationErrorControlMessage (std::string const& version,
+                               std::string const& description)
+        : TiAControlMessage (version, "ValidationError","",description)
+    {}
+    virtual ~ValidationErrorControlMessage () {}
+};
 
 //-----------------------------------------------------------------------------
 class CheckProtocolVersionTiAControlMessage : public TiAControlMessage

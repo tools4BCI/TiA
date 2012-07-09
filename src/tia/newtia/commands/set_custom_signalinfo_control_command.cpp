@@ -88,8 +88,7 @@ TiAControlMessage SetCustomSignalInfoControlCommand::execute(const TiAControlMes
 
     }catch(std::exception &ex)
     {
-        return CustomErrorControlMessage (version,
-                    std::string("Invalid custom signal info. Details:").append(ex.what()));
+        return ValidationErrorControlMessage(version, ex.what());
     }
 }
 

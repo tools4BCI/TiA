@@ -111,7 +111,7 @@ SignalInfoPtr parseTiACustomSignalInfoFromXMLString (std::string const& custom_s
             map<string, string> channel_attributes = getAttributes (channel_node, XML_TAGS::CHANNEL_REQUIRED_ATTRIBUTES);
             unsigned channel_nr = toUnsigned (channel_attributes[XML_TAGS::CHANNEL_NR]);
 
-            if(channel_nr > default_signal_it->second.channels().size() - 1)
+            if(channel_nr > default_signal_it->second.channels().size())
                 throw TiAException ("Too great channel number.");
 
             channel.setId (channel_attributes[XML_TAGS::CHANNEL_LABEL]);
@@ -134,7 +134,7 @@ SignalInfoPtr parseTiACustomSignalInfoFromXMLString (std::string const& custom_s
 
         signal_map[signal_attributes[XML_TAGS::SIGNAL_TYPE]] = signal;
         signal_node = signal_node->next_sibling (XML_TAGS::SIGNAL.c_str ());
-    }
+    }    
 
     if(custom_signal_info->signals().size() == 0)
         throw TiAException ("SignalInfo without any signal is invalid!");

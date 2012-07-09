@@ -91,8 +91,7 @@ SSConfig parseTiAMetaInfoFromXMLString (std::string const& tia_meta_info_xml_str
             tia_meta_info.signal_info.setMasterSamplingRate (toUnsigned (attributes.at(XML_TAGS::SIGNAL_SAMPLINGRATE)));
         if (attributes.count (XML_TAGS::SIGNAL_BLOCKSIZE))
             tia_meta_info.signal_info.setMasterBlockSize (toUnsigned (attributes.at(XML_TAGS::SIGNAL_BLOCKSIZE)));
-    }
-
+    }    
 
     // parse signals
     rapidxml::xml_node<>* signal_node = 0;
@@ -110,7 +109,7 @@ SSConfig parseTiAMetaInfoFromXMLString (std::string const& tia_meta_info_xml_str
 
         // parse channels
         std::vector<Channel>& channel_vector = signal.channels();
-        for (unsigned channel_nr = 0; channel_nr < num_channels; channel_nr++)
+        for (unsigned channel_nr = 1; channel_nr <= num_channels; ++channel_nr)
         {
             Channel channel;
             channel.setId (toString (channel_nr));
@@ -119,15 +118,39 @@ SSConfig parseTiAMetaInfoFromXMLString (std::string const& tia_meta_info_xml_str
         }
 
         rapidxml::xml_node<>* channel_node = signal_node->first_node (XML_TAGS::CHANNEL.c_str());
+
+
+        //FIXME: Bad hack: Is used to tempolarily distinguish between TiA version 1.0 and 1.1
+//        bool use_v1_0 = false, already_extracted_version = false;
+
         while (channel_node)
         {
             map<string, string> channel_attributes = getAttributes (channel_node, XML_TAGS::CHANNEL_REQUIRED_ATTRIBUTES);
             unsigned channel_nr = toUnsigned (channel_attributes[XML_TAGS::CHANNEL_NR]);
-            if (channel_nr > num_channels - 1)
-                throw TiAException ("Parse TiAMetaInfo: nr-attribute of channel exceeds numChannels attribute of signal!");
 
-            channel_vector[channel_nr].setNumber (channel_nr);
-            channel_vector[channel_nr].setId (channel_attributes[XML_TAGS::CHANNEL_LABEL]);
+//            if(!already_extracted_version)
+//            {
+//                use_v1_0 = (channel_nr == 1); //in v1.0 the channel number starts with 1 in v1.1 with 0
+//                already_extracted_version = true;
+//            }
+
+//            if(!use_v1_0)
+//            {
+//                if (channel_nr > num_channels - 1)
+//                    throw TiAException ("Parse TiAMetaInfo: nr-attribute of channel exceeds numChannels attribute of signal!");
+
+//                channel_vector[channel_nr].setNumber (channel_nr);
+//                channel_vector[channel_nr].setId (channel_attributes[XML_TAGS::CHANNEL_LABEL]);
+//            }
+//            else
+//            {
+                if (channel_nr > num_channels)
+                    throw TiAException ("Parse TiAMetaInfo: nr-attribute of channel exceeds numChannels attribute of signal!");
+
+                channel_vector[channel_nr - 1].setNumber (channel_nr);
+                channel_vector[channel_nr - 1].setId (channel_attributes[XML_TAGS::CHANNEL_LABEL]);
+//            }
+
             channel_node = channel_node->next_sibling (XML_TAGS::CHANNEL.c_str ());
         }
 

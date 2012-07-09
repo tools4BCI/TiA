@@ -66,7 +66,7 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilterPtr
                     ++channel_it;
                 else
                 {
-                    channels_to_exclude_[constants_.getSignalFlag(mod_signal_it->first)].push_back(channel_it->number());
+                    channels_to_exclude_[constants_.getSignalFlag(mod_signal_it->first)].push_back(channel_it->number() - 1);
                     channel_it = channels.erase(channel_it);
                 }
             }
@@ -130,7 +130,7 @@ const SignalInfo &CustomChannelFilterDecorator::getSignalInfoAfterFiltering()
     {
         std::vector<Channel> &channels = mod_signal_it->second.channels();
 
-        boost::uint32_t new_chan_number = 0;
+        boost::uint32_t new_chan_number = 1;
 
         for(std::vector<Channel>::iterator channel_it = channels.begin();
             channel_it != channels.end();++channel_it)

@@ -125,11 +125,16 @@ bool TiANewClientImpl::trySetCustomSignalInfo(SignalInfo &custom_sig_info, std::
   if(msg.getCommand() == TiAControlMessageTags10::OK)
       //server accepted the custom signal info
       return true;
-  else if(msg.getCommand().substr(0,TiAControlMessageTags10::ERROR_STR.size()) == TiAControlMessageTags10::ERROR_STR)
+  else if(msg.getCommand() == TiAControlMessageTags10::VALIDATION_ERROR_STR)
   {
       //server declined the custom config
+      error_msg = msg.getContent();
 
-      error_msg = msg.getParameters();
+      return false;
+  }
+  else if(msg.getCommand().substr(0,TiAControlMessageTags10::ERROR_STR.size()) == TiAControlMessageTags10::ERROR_STR)
+  {      
+      error_msg = "The servers version doesn't support the custom connection mode. Please update it to a newer build.";
 
       return false;
   }
