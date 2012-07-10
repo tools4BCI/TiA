@@ -172,6 +172,8 @@ public:
   */
   virtual DataPacket* getEmptyDataPacket();
 
+  virtual DataPacket* createDataPacket();
+
   /**
    * @brief Sets the client's data input buffer size to the given value
    * @param size the size of the input buffer in [byte]

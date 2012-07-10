@@ -75,7 +75,7 @@ public:
 
     virtual bool trySetCustomSignalInfo(SignalInfo &custom_sig_info, std::string &error_msg);
 
-    virtual void createDataConnection(bool use_udp);
+    virtual void createDataConnection(bool use_udp_bc);
 
     virtual void startReceiving();
 
@@ -91,6 +91,7 @@ public:
     * @brief todo
     */
     virtual DataPacket* getEmptyDataPacket();
+    virtual DataPacket* createDataPacket();
 
     virtual void setBufferSize (size_t size);
 

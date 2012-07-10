@@ -158,6 +158,14 @@ DataPacket* TiAClient::getEmptyDataPacket()
 
 //-----------------------------------------------------------------------------
 
+DataPacket* TiAClient::createDataPacket()
+{
+  return impl_->createDataPacket();
+}
+
+
+//-----------------------------------------------------------------------------
+
 void TiAClient::setBufferSize(size_t size)
 {
   impl_->setBufferSize(size);

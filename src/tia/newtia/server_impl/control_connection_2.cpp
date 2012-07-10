@@ -51,6 +51,10 @@ using std::string;
 
 #include <iostream>
 
+#ifdef WIN32
+  #include <windows.h>
+#endif
+
 namespace tia
 {
 unsigned ControlConnection2::next_free_id_ = 0;
@@ -92,11 +96,12 @@ ControlConnection2::~ControlConnection2 ()
 //-----------------------------------------------------------------------------
 void ControlConnection2::asyncStart ()
 {
-  #ifdef WIN32
-    SetPriorityClass(sig_server_ptr->native_handle(),  HIGH_PRIORITY_CLASS);
-    SetThreadPriority(sig_server_ptr->native_handle(), THREAD_PRIORITY_HIGHEST );
-  #endif
   thread_ = new boost::thread (boost::bind (&ControlConnection2::run, boost::ref(*this)));
+
+  #ifdef WIN32
+    SetPriorityClass(thread_->native_handle(),  HIGH_PRIORITY_CLASS);
+    SetThreadPriority(thread_->native_handle(), THREAD_PRIORITY_HIGHEST );
+  #endif
 }
 
 //-----------------------------------------------------------------------------

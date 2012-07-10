@@ -146,6 +146,7 @@ public:
   * @brief todo
   */
   virtual DataPacket* getEmptyDataPacket() = 0;
+  virtual DataPacket* createDataPacket() = 0;
 };
 
 } // Namespace tobiss

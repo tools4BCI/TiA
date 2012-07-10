@@ -1,7 +1,6 @@
 TEMPLATE = lib
 VERSION = 1.0
 CONFIG += thread \
-    release \
     warn_on \
     exceptions \
     stl
@@ -10,6 +9,12 @@ QT -= core \
 
 DEFINES += TIXML_USE_TICPP
 #DEFINES += TIMING_TEST
+
+CONFIG( debug, debug|release ){
+    DEFINES += DEBUG
+}else{
+
+}
 
 TARGET = tia
 

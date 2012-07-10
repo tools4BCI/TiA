@@ -215,6 +215,9 @@ public:
   */
   virtual DataPacket* getEmptyDataPacket();
 
+  virtual DataPacket* createDataPacket();
+
+
   virtual void getDataPacket(DataPacket& packet);
   /**
    * @brief Sets the client's data input buffer size to the given value

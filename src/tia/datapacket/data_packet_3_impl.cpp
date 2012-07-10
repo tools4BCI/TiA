@@ -38,6 +38,12 @@
 #include <sstream>
 #include <stdexcept>
 
+#ifdef DEBUG
+    #include <iostream>
+    using std::endl;
+    using std::cout;
+#endif
+
 #include "tia/defines.h"
 
 #include "tia-private/datapacket/data_packet_3_impl.h"

@@ -47,6 +47,12 @@
 #include "tia-private/newtia/tia_datapacket_parser.h"
 #include "tia-private/datapacket/data_packet_3_impl.h"
 
+#include <boost/current_function.hpp>
+
+#ifdef DEBUG
+  #include <iostream>
+#endif
+
 using namespace std;
 
 namespace tia
@@ -63,6 +69,10 @@ TiANewClientImpl::TiANewClientImpl ()
     message_parser_ (new TiAControlMessageParser10),
     data_packet_parser(0)
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   packet_.reset( new DataPacket3Impl);
 }
 
@@ -70,13 +80,19 @@ TiANewClientImpl::TiANewClientImpl ()
 
 TiANewClientImpl::~TiANewClientImpl()
 {
-
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
 }
 
 //-----------------------------------------------------------------------------
 
 void TiANewClientImpl::connect (const std::string& address, short unsigned port)
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   server_ip_address_ = address;
   boost::asio::ip::tcp::endpoint server_address (boost::asio::ip::address_v4::from_string (address), port);
   socket_.reset (new BoostTCPSocketImpl (io_service_, server_address, buffer_size_));
@@ -87,12 +103,20 @@ void TiANewClientImpl::connect (const std::string& address, short unsigned port)
 //-----------------------------------------------------------------------------
 bool TiANewClientImpl::connected () const
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   return socket_.get ();
 }
 
 //-----------------------------------------------------------------------------
 void TiANewClientImpl::disconnect ()
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   if (receiving_)
     stopReceiving ();
   if (data_socket_.get ())
@@ -104,6 +128,10 @@ void TiANewClientImpl::disconnect ()
 //-----------------------------------------------------------------------------
 void TiANewClientImpl::requestConfig ()
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   sendMessage (GetMetaInfoTiAControlMessage (MESSAGE_VERSION_));
   TiAControlMessage metainfo_message = waitForControlMessage (TiAControlMessageTags10::METAINFO);
   config_ = parseTiAMetaInfoFromXMLString (metainfo_message.getContent ());
@@ -112,6 +140,10 @@ void TiANewClientImpl::requestConfig ()
 //-----------------------------------------------------------------------------
 SSConfig TiANewClientImpl::config () const
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   return config_;
 }
 
@@ -144,24 +176,33 @@ bool TiANewClientImpl::trySetCustomSignalInfo(SignalInfo &custom_sig_info, std::
 
 //-----------------------------------------------------------------------------
 
-void TiANewClientImpl::createDataConnection(bool use_udp)
+void TiANewClientImpl::createDataConnection(bool use_udp_bc)
 {
-    if (!data_socket_.get ())
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
+  if (receiving_)
+    return;
+
+  if (!data_socket_.get ())
+  {
+    sendMessage (GetDataConnectionTiAControlMessage (MESSAGE_VERSION_, use_udp_bc));
+    TiAControlMessage dataconnection_message = waitForControlMessage (TiAControlMessageTags10::DATA_CONNECTION_PORT);
+    unsigned port = toUnsigned (dataconnection_message.getParameters ());
+    if (use_udp_bc)
     {
-      sendMessage (GetDataConnectionTiAControlMessage (MESSAGE_VERSION_, use_udp));
-      TiAControlMessage dataconnection_message = waitForControlMessage (TiAControlMessageTags10::DATA_CONNECTION_PORT);
-      unsigned port = toUnsigned (dataconnection_message.getParameters ());
-      if (use_udp)
-      {
-        boost::asio::ip::udp::endpoint server_data_address (boost::asio::ip::address_v4::from_string (server_ip_address_), port);
-        data_socket_.reset (new BoostUDPReadSocket (io_service_, server_data_address, buffer_size_));
-      }
-      else
-      {
-        boost::asio::ip::tcp::endpoint server_data_address (boost::asio::ip::address_v4::from_string (server_ip_address_), port);
-        data_socket_.reset (new BoostTCPSocketImpl (io_service_, server_data_address, buffer_size_));
-      }
+      boost::asio::ip::udp::endpoint server_data_address (boost::asio::ip::address_v4::from_string (server_ip_address_), port);
+      data_socket_.reset (new BoostUDPReadSocket (io_service_, server_data_address, buffer_size_));
     }
+    else
+    {
+      boost::asio::ip::tcp::endpoint server_data_address (boost::asio::ip::address_v4::from_string (server_ip_address_), port);
+      data_socket_.reset (new BoostTCPSocketImpl (io_service_, server_data_address, buffer_size_));
+    }
+  }
+
+  data_packet_parser.reset(new TiADataPacketParser(*data_socket_) );
 
     data_packet_parser.reset(new TiADataPacketParser(*data_socket_) );
 }
@@ -170,6 +211,11 @@ void TiANewClientImpl::createDataConnection(bool use_udp)
 
 void TiANewClientImpl::startReceiving()
 {
+
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
     if(receiving_)
         return;
 
@@ -189,12 +235,21 @@ void TiANewClientImpl::startReceiving (bool use_udp_bc)
 //-----------------------------------------------------------------------------
 bool TiANewClientImpl::receiving() const
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   return receiving_;
 }
 
 //-----------------------------------------------------------------------------
+
 void TiANewClientImpl::stopReceiving()
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   if (receiving_)
   {
     sendMessage (TiAControlMessage (MESSAGE_VERSION_, TiAControlMessageTags10::STOP_DATA_TRANSMISSION, "", ""));
@@ -208,13 +263,32 @@ void TiANewClientImpl::stopReceiving()
 
 DataPacket* TiANewClientImpl::getEmptyDataPacket()
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   return(packet_.get());
+}
+
+//-----------------------------------------------------------------------------
+
+DataPacket* TiANewClientImpl::createDataPacket()
+{
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
+  return( new DataPacket3Impl );
 }
 
 //-----------------------------------------------------------------------------
 
 void TiANewClientImpl::getDataPacket (DataPacket& packet)
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   if (!receiving_)
     return;
 
@@ -231,12 +305,20 @@ void TiANewClientImpl::getDataPacket (DataPacket& packet)
 //-----------------------------------------------------------------------------
 void TiANewClientImpl::setBufferSize (size_t size)
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   buffer_size_ = size;
 }
 
 //-----------------------------------------------------------------------------
 void TiANewClientImpl::sendMessage (TiAControlMessage const& message)
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   if (socket_.get ())
     socket_->sendString (message_builder_->buildTiAMessage (message));
 }
@@ -244,25 +326,30 @@ void TiANewClientImpl::sendMessage (TiAControlMessage const& message)
 //-----------------------------------------------------------------------------
 void TiANewClientImpl::waitForOKResponse ()
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   waitForControlMessage (TiAControlMessageTags10::OK);
 }
 
 //-----------------------------------------------------------------------------
 void TiANewClientImpl::waitForErrorResponse ()
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   waitForControlMessage (TiAControlMessageTags10::ERROR_STR);
 }
 
 //-----------------------------------------------------------------------------
 TiAControlMessage TiANewClientImpl::waitForControlMessage (std::string const& command_name)
 {
-//  if (!socket_.get ())
-//    throw TiAException ("TiANewClientImpl: Connection to server not initializsed.");
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
 
-//  TiAControlMessage message = message_parser_->parseMessage (*socket_);
-
-//  if (message.getVersion () != TiAControlMessageTags10::VERSION)
-//    throw std::runtime_error (string ("wrong server response: awaiting \"") + TiAControlMessageTags10::VERSION + "\" but was \"" + message.getVersion() + "\"");
 
   TiAControlMessage message = waitForResponse();
 

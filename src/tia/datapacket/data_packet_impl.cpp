@@ -42,6 +42,12 @@
 #include "tia-private/datapacket/data_packet_impl.h"
 #include "tia-private/datapacket/raw_mem.h"
 
+#ifdef DEBUG
+    #include <iostream>
+    using std::endl;
+    using std::cout;
+#endif
+
 namespace tia
 {
 
