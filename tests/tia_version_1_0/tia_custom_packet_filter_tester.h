@@ -44,17 +44,17 @@ struct TiACustomFilterTests
       default_sig_info_ = meta_info.signal_info;
 
       std::string custom_str = "<tiaCustomSignalInfo version=\"1.0\">\n"
-                                  "\t<masterSignal samplingRate=\"500\" blockSize=\"1\"/>\n"
+                                  "\t<masterSignal samplingRate=\"250\" blockSize=\"1\"/>\n"
                                   "\t<signal type=\"eeg\" samplingRate=\"500\" blockSize=\"1\" numChannels=\"2\">\n"
                                       "\t\t<channel nr=\"1\" label=\"eeg1\"/>\n"
                                       "\t\t<channel nr=\"3\" label=\"eeg3\"/>\n"
                                   "\t</signal>\n"
-                                  "\t<signal type=\"eog\" samplingRate=\"200\" blockSize=\"2\" numChannels=\"3\">\n"
+                                  "\t<signal type=\"eog\" samplingRate=\"50\" blockSize=\"2\" numChannels=\"3\">\n"
                                       "\t\t<channel nr=\"1\" label=\"A\"/>\n"
                                       "\t\t<channel nr=\"3\" label=\"3\"/>\n"
                                       "\t\t<channel nr=\"5\" label=\"5\"/>\n"
                                   "\t</signal>\n"
-                                  "\t<signal type=\"bp\" samplingRate=\"50\" blockSize=\"4\" numChannels=\"1\">\n"
+                                  "\t<signal type=\"bp\" samplingRate=\"25\" blockSize=\"4\" numChannels=\"1\">\n"
                                       "\t\t<channel nr=\"1\" label=\"bp\"/>\n"
                                   "\t</signal>\n"
                                  "</tiaCustomSignalInfo>\n\n";

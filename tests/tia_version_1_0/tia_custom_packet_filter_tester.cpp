@@ -24,6 +24,7 @@
 
 #include "tia-private/newtia/filter/tia_datapacket_custom_filter.h"
 #include "tia-private/newtia/filter_impl/tia_customchannel_filterdecorator.h"
+#include "tia-private/newtia/filter_impl/tia_downsampling_filterdecorator.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -50,6 +51,14 @@ TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
     CustomPacketFilterPtr filter_chain (new DummyCustomPacketFilter(default_sig_info_, custom_sig_info_));
 
     filter_chain = CustomPacketFilterPtr(new CustomChannelFilterDecorator(filter_chain));
+
+    CHECK(filter_chain->isApplicable());
+    CHECK(filter_chain->hasConfiguredWork());
+
+    filter_chain = CustomPacketFilterPtr(new DownsamplingFilterDecorator(filter_chain));
+
+//    std:: cout << "Signal info after filtering: " << buildTiACustomSignalInfoXMLString(filter_chain->getSignalInfoAfterFiltering())
+//                  << std::endl;
 
     CHECK(filter_chain->isApplicable());
     CHECK(filter_chain->hasConfiguredWork());

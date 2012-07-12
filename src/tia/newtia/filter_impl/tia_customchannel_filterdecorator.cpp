@@ -90,6 +90,22 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilterPtr
     is_applicable_ = true;
 
     has_configured_work_ = (signals_to_exclude_.size() > 0 || channels_to_exclude_.size() > 0);
+
+    //reset channel numbers of modified meta info
+    for(SignalInfo::SignalMap::iterator mod_signal_it = modified_signal_info_.signals().begin();
+        mod_signal_it != modified_signal_info_.signals().end();++mod_signal_it)
+    {
+        std::vector<Channel> &channels = mod_signal_it->second.channels();
+
+        boost::uint32_t new_chan_number = 1;
+
+        for(std::vector<Channel>::iterator channel_it = channels.begin();
+            channel_it != channels.end();++channel_it)
+        {
+            channel_it->setNumber(new_chan_number);
+            ++new_chan_number;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -124,22 +140,6 @@ void CustomChannelFilterDecorator::applyFilter(DataPacket &packet)
 
 const SignalInfo &CustomChannelFilterDecorator::getSignalInfoAfterFiltering()
 {
-    //reset channel numbers of modified meta info
-    for(SignalInfo::SignalMap::iterator mod_signal_it = modified_signal_info_.signals().begin();
-        mod_signal_it != modified_signal_info_.signals().end();++mod_signal_it)
-    {
-        std::vector<Channel> &channels = mod_signal_it->second.channels();
-
-        boost::uint32_t new_chan_number = 1;
-
-        for(std::vector<Channel>::iterator channel_it = channels.begin();
-            channel_it != channels.end();++channel_it)
-        {
-            channel_it->setNumber(new_chan_number);
-            ++new_chan_number;
-        }
-    }
-
     return modified_signal_info_;
 }
 
