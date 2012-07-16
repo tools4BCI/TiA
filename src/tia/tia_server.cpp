@@ -47,8 +47,6 @@
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 
-// TICPP
-#include "ticpp/ticpp.h"
 
 // local
 #include "tia/data_packet_interface.h"

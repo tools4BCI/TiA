@@ -42,6 +42,11 @@
 #include "tia-private/datapacket/data_packet_impl.h"
 #include "tia-private/datapacket/raw_mem.h"
 
+#ifdef DEBUG
+  #include <iostream>
+#endif
+
+
 namespace tia
 {
 
@@ -62,7 +67,7 @@ uint64_t  DataPacketImpl::sample_nr_ = 0;
 void DataPacketImpl::reset(void* mem)
 {
   #ifdef DEBUG
-      cout << "DataPacket: RAW Constructor" << endl;
+      std::cout << "DataPacket: RAW Constructor" << std::endl;
   #endif
 
   flags_ = 0;
@@ -129,12 +134,16 @@ void DataPacketImpl::reset(void* mem)
 //-----------------------------------------------------------------------------
 DataPacketImpl::~DataPacketImpl()
 {
-	for(std::map<boost::uint32_t, RawMem*>::iterator it(raw_map_.begin());
-		it != raw_map_.end(); it++)
-	{
-		delete(it->second);
-		it->second = 0;
-	}
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
+  for(std::map<boost::uint32_t, RawMem*>::iterator it(raw_map_.begin());
+    it != raw_map_.end(); it++)
+  {
+    delete(it->second);
+    it->second = 0;
+  }
 }
 
 
@@ -143,7 +152,7 @@ DataPacketImpl::~DataPacketImpl()
 void DataPacketImpl::reset()
 {
   #ifdef DEBUG
-    cout << "DataPacket: reset" << endl;
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
   #endif
 
   flags_ = 0;

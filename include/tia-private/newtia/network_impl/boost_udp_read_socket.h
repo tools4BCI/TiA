@@ -37,6 +37,7 @@
 #include "tia-private/newtia/network/read_socket.h"
 
 #include <boost/asio/ip/udp.hpp>
+#include <boost/asio/streambuf.hpp>
 
 namespace tia
 {
@@ -54,8 +55,8 @@ public:
     virtual char readCharacter ();
     virtual void waitForData ();
 
-    virtual size_t readBytes (char* data, size_t bytes_to_read) { return 0;}
-    virtual size_t getAvailableData (char* data, size_t max_size) { return 0; }
+    virtual size_t readBytes (char* data, size_t bytes_to_read);
+    virtual size_t getAvailableData (char* data, size_t max_size);
 
 private:
     void readBytes (unsigned num_bytes);
@@ -63,6 +64,15 @@ private:
     std::string buffered_string_;
     unsigned buffer_size_;
     std::vector<char> rec_buffer_;
+
+
+    boost::asio::streambuf                             stream_buffer_;
+    boost::asio::streambuf::mutable_buffers_type       mutable_buffer_;
+
+    std::istream                                       input_stream_;
+    std::string                                        str_buffer_;
+    boost::system::error_code                          error_;
+
 };
 
 }

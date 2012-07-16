@@ -34,6 +34,8 @@
 #include <string>
 #include <iostream>
 
+#include <boost/current_function.hpp>
+
 #include "tia-private/newtia/tia_datapacket_parser.h"
 #include "tia/defines.h"
 
@@ -50,6 +52,10 @@ static const int MINIMAL_DATA_PACKET_SIZE = 32;  /// todo: implement function in
 TiADataPacketParser::TiADataPacketParser(InputStream& input_stream)
   :input_stream_(input_stream)
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   buffer_ = new char[BUFFER_SIZE];
 }
 
@@ -57,6 +63,10 @@ TiADataPacketParser::TiADataPacketParser(InputStream& input_stream)
 
 TiADataPacketParser::~TiADataPacketParser()
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   if(buffer_)
     delete[] buffer_;
 }
@@ -65,6 +75,10 @@ TiADataPacketParser::~TiADataPacketParser()
 
 void TiADataPacketParser::parseDataPacket (DataPacket& packet)
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   size_t received = input_stream_.readBytes(buffer_,MINIMAL_DATA_PACKET_SIZE);
 
   size_t needed = packet.getRequiredRawMemorySize(buffer_,received);
