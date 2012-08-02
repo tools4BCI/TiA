@@ -75,7 +75,7 @@ TiAControlMessage SetCustomSignalInfoControlCommand::execute(const TiAControlMes
     {
         const SignalInfo &default_sig_info = meta_info.signal_info;
 
-        const SignalInfoPtr &custom_sig_info_ptr = parseTiACustomSignalInfoFromXMLString(content,default_sig_info);
+        const CustomSignalInfoPtr &custom_sig_info_ptr = parseTiACustomSignalInfoFromXMLString(content,default_sig_info);
 
 
         CustomPacketFilter *dummy_filter_ptr = new DummyCustomPacketFilter(default_sig_info,custom_sig_info_ptr);

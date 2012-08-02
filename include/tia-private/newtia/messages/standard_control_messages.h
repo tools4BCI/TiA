@@ -106,7 +106,7 @@ public:
 class SetCustomSignalInfo : public TiAControlMessage
 {
 public:
-    SetCustomSignalInfo (std::string const& version, SignalInfo custom_sig_info)
+    SetCustomSignalInfo (std::string const& version, CustomSignalInfoPtr custom_sig_info)
         : TiAControlMessage (version, TiAControlMessageTags10::SET_CUSTOM_SIGNALINFO, "" , buildTiACustomSignalInfoXMLString(custom_sig_info) )
     {}
     virtual ~SetCustomSignalInfo () {}

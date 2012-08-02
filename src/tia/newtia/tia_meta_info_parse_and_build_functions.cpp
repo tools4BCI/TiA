@@ -119,37 +119,16 @@ SSConfig parseTiAMetaInfoFromXMLString (std::string const& tia_meta_info_xml_str
 
         rapidxml::xml_node<>* channel_node = signal_node->first_node (XML_TAGS::CHANNEL.c_str());
 
-
-        //FIXME: Bad hack: Is used to tempolarily distinguish between TiA version 1.0 and 1.1
-//        bool use_v1_0 = false, already_extracted_version = false;
-
         while (channel_node)
         {
             map<string, string> channel_attributes = getAttributes (channel_node, XML_TAGS::CHANNEL_REQUIRED_ATTRIBUTES);
             unsigned channel_nr = toUnsigned (channel_attributes[XML_TAGS::CHANNEL_NR]);
 
-//            if(!already_extracted_version)
-//            {
-//                use_v1_0 = (channel_nr == 1); //in v1.0 the channel number starts with 1 in v1.1 with 0
-//                already_extracted_version = true;
-//            }
+            if (channel_nr > num_channels)
+                throw TiAException ("Parse TiAMetaInfo: nr-attribute of channel exceeds numChannels attribute of signal!");
 
-//            if(!use_v1_0)
-//            {
-//                if (channel_nr > num_channels - 1)
-//                    throw TiAException ("Parse TiAMetaInfo: nr-attribute of channel exceeds numChannels attribute of signal!");
-
-//                channel_vector[channel_nr].setNumber (channel_nr);
-//                channel_vector[channel_nr].setId (channel_attributes[XML_TAGS::CHANNEL_LABEL]);
-//            }
-//            else
-//            {
-                if (channel_nr > num_channels)
-                    throw TiAException ("Parse TiAMetaInfo: nr-attribute of channel exceeds numChannels attribute of signal!");
-
-                channel_vector[channel_nr - 1].setNumber (channel_nr);
-                channel_vector[channel_nr - 1].setId (channel_attributes[XML_TAGS::CHANNEL_LABEL]);
-//            }
+            channel_vector[channel_nr - 1].setNumber (channel_nr);
+            channel_vector[channel_nr - 1].setId (channel_attributes[XML_TAGS::CHANNEL_LABEL]);
 
             channel_node = channel_node->next_sibling (XML_TAGS::CHANNEL.c_str ());
         }

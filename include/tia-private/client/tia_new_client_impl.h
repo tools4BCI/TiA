@@ -36,6 +36,7 @@
 
 #include "tia_client_impl_base.h"
 #include "tia/ssconfig.h"
+#include "tia/custom_signal_info.h"
 #include "../newtia/network/socket.h"
 #include "../newtia/messages/tia_control_message_builder.h"
 #include "../newtia/messages/tia_control_message_parser.h"
@@ -73,7 +74,9 @@ public:
 
     virtual SSConfig config () const;
 
-    virtual bool trySetCustomSignalInfo(SignalInfo &custom_sig_info, std::string &error_msg);
+    virtual CustomSignalInfoPtr getConfigAsCustomConfig() const;
+
+    virtual bool trySetCustomSignalInfo(CustomSignalInfoPtr custom_sig_info, std::string &error_msg);
 
     virtual void createDataConnection(bool use_udp_bc);
 

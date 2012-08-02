@@ -57,7 +57,7 @@ namespace XML_TAGS
     std::string const SIGNAL_TYPE = "type";
     std::string const SIGNAL_SAMPLINGRATE = "samplingRate";
     std::string const SIGNAL_NUMCHANNELS = "numChannels";
-    std::string const SIGNAL_BLOCKSIZE = "blockSize";
+    std::string const SIGNAL_BLOCKSIZE = "blockSize";    
     std::string const SIGNAL_REQUIRED_ATTRIBUTES_ARRAY[] = {SIGNAL_TYPE, SIGNAL_SAMPLINGRATE, SIGNAL_BLOCKSIZE, SIGNAL_NUMCHANNELS};
     std::set<std::string> const SIGNAL_REQUIRED_ATTRIBUTES (SIGNAL_REQUIRED_ATTRIBUTES_ARRAY, SIGNAL_REQUIRED_ATTRIBUTES_ARRAY + 4);
 

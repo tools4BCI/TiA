@@ -39,11 +39,11 @@ SUITE (TiAVersion10)
 TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
 {
     //check custom signal info parser
-    string tmp_info_str = buildTiACustomSignalInfoXMLString(*custom_sig_info_);
+    string tmp_info_str = buildTiACustomSignalInfoXMLString(custom_sig_info_);
 
-    SignalInfoPtr tmp_info = parseTiACustomSignalInfoFromXMLString(tmp_info_str, default_sig_info_);
+    CustomSignalInfoPtr tmp_info = parseTiACustomSignalInfoFromXMLString(tmp_info_str, default_sig_info_);
 
-    string new_info_str = buildTiACustomSignalInfoXMLString(*tmp_info);
+    string new_info_str = buildTiACustomSignalInfoXMLString(tmp_info);
 
     CHECK_EQUAL(tmp_info_str,new_info_str);
 
@@ -55,12 +55,6 @@ TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
 
     CHECK(filter_chain->isApplicable());
     CHECK(filter_chain->hasConfiguredWork());
-
-//    std:: cout << "Signal info after filtering: " << buildTiACustomSignalInfoXMLString(filter_chain->getSignalInfoAfterFiltering())
-//                  << std::endl;
-
-//    CHECK(filter_chain->isApplicable());
-//    CHECK(filter_chain->hasConfiguredWork());
 
     filter_chain->applyFilter(packet_);
 
@@ -81,7 +75,7 @@ TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
     //-----------------------------------------------------------------------------
     //check downsampling filter
 
-    std::string default_str = "<tiaCustomSignalInfo version=\"1.0\">\n"
+    std::string default_str = "<tiaMetaInfo version=\"1.0\">\n"
                                 "\t<masterSignal samplingRate=\"500\" blockSize=\"1\"/>\n"
                                 "\t<signal type=\"eeg\" samplingRate=\"500\" blockSize=\"1\" numChannels=\"4\">\n"
                                     "\t\t<channel nr=\"1\" label=\"eeg1\"/>\n"
@@ -97,7 +91,7 @@ TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
                                     "\t\t<channel nr=\"1\" label=\"C\"/>\n"
                                     "\t\t<channel nr=\"2\" label=\"D\"/>\n"
                                 "\t</signal>\n"
-                               "</tiaCustomSignalInfo>\n\n";
+                               "</tiaMetaInfo>\n\n";
 
 
     SSConfig meta_info = parseTiAMetaInfoFromXMLString(default_str);
@@ -106,17 +100,17 @@ TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
 
     std::string custom_str = "<tiaCustomSignalInfo version=\"1.0\">\n"
                             "\t<masterSignal samplingRate=\"500\" blockSize=\"1\"/>\n"
-                            "\t<signal type=\"eeg\" samplingRate=\"250\" blockSize=\"1\" numChannels=\"4\">\n"
+                            "\t<signal type=\"eeg\" samplingRate=\"500\" blockSize=\"1\" downsamplingFactor=\"2\" numChannels=\"4\">\n"
                                 "\t\t<channel nr=\"1\" label=\"eeg1\"/>\n"
                                 "\t\t<channel nr=\"2\" label=\"eeg2\"/>\n"
                                 "\t\t<channel nr=\"3\" label=\"eeg3\"/>\n"
                                 "\t\t<channel nr=\"4\" label=\"eeg4\"/>\n"
                             "\t</signal>\n"
-                            "\t<signal type=\"eog\" samplingRate=\"100\" blockSize=\"2\" numChannels=\"2\">\n"
+                            "\t<signal type=\"eog\" samplingRate=\"300\" blockSize=\"2\" downsamplingFactor=\"3\" numChannels=\"2\">\n"
                                 "\t\t<channel nr=\"1\" label=\"A\"/>\n"
                                 "\t\t<channel nr=\"2\" label=\"B\"/>\n"
                             "\t</signal>\n"
-                            "\t<signal type=\"emg\" samplingRate=\"30\" blockSize=\"3\" numChannels=\"2\">\n"
+                            "\t<signal type=\"emg\" samplingRate=\"60\" blockSize=\"3\" downsamplingFactor=\"2\" numChannels=\"2\">\n"
                                 "\t\t<channel nr=\"1\" label=\"C\"/>\n"
                                 "\t\t<channel nr=\"2\" label=\"D\"/>\n"
                             "\t</signal>\n"

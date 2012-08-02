@@ -112,10 +112,17 @@ public:
   virtual SSConfig config() const;
 
   /**
+   * @brief Returns a custom signal info extracted from meta data information prevoisly requested from the server
+   * \sa requestConfig()
+   *        NOT implemented yet due to deprecated tia version!
+   */
+  virtual CustomSignalInfoPtr getConfigAsCustomConfig() const;
+
+  /**
    * @brief Asks the server to accept the custom signal info.
    *        NOT implemented yet due to deprecated tia version!
    */
-  virtual bool trySetCustomSignalInfo(SignalInfo &custom_sig_info, std::string &error_msg);
+  virtual bool trySetCustomSignalInfo(CustomSignalInfoPtr custom_sig_info, std::string &error_msg);
 
   /**
    * @brief Establishes a DataConnection to the server either

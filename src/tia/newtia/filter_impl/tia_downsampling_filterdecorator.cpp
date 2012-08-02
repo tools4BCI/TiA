@@ -18,7 +18,7 @@ namespace tia
 DownsamplingFilterDecorator::DownsamplingFilterDecorator(CustomPacketFilterPtr decorated_filter)
     : CustomPacketFilterDecorator(decorated_filter)
 {
-    SignalInfo::SignalMap custom_signals = custom_sig_info_ptr_->signals();
+    CustomSignalInfo::CustomSignalMap custom_signals = custom_sig_info_ptr_->signals();
 
     modified_signal_info_ = default_sig_info_;
 
@@ -27,7 +27,7 @@ DownsamplingFilterDecorator::DownsamplingFilterDecorator(CustomPacketFilterPtr d
         mod_signal_it != modified_signal_info_.signals().end();)
     {
 
-        SignalInfo::SignalMap::iterator custom_signal = custom_signals.find(mod_signal_it->first);
+        CustomSignalInfo::CustomSignalMap::iterator custom_signal = custom_signals.find(mod_signal_it->first);
 
         if(custom_signal == custom_signals.end())
         {
@@ -37,7 +37,9 @@ DownsamplingFilterDecorator::DownsamplingFilterDecorator(CustomPacketFilterPtr d
         else
         {
             double signal_fs = mod_signal_it->second.samplingRate();
-            double rational_ds_factor = signal_fs / ((double)custom_signal->second.samplingRate());
+//            double rational_ds_factor = signal_fs / ((double)custom_signal->second.samplingRate());
+
+            double rational_ds_factor = custom_signal->second.DSFactor();
 
             if((rational_ds_factor - ((boost::uint16_t)rational_ds_factor)) > 0.001)
             {
@@ -66,7 +68,7 @@ DownsamplingFilterDecorator::DownsamplingFilterDecorator(CustomPacketFilterPtr d
 
                 ds_filters_[constants_.getSignalFlag(mod_signal_it->first)] = ds_param;
 
-                mod_signal_it->second.setSamplingRate(custom_signal->second.samplingRate());
+                mod_signal_it->second.setSamplingRate(custom_signal->second.samplingRate() / (boost::uint16_t)rational_ds_factor);
             }
 
             ++mod_signal_it;
@@ -116,7 +118,6 @@ void DownsamplingFilterDecorator::applyFilter(DataPacket &packet)
 //            BasicFilter<double> *lpf = filter_params->getLpFilter();
 
             //TODO: uncomment after testing!
-
             filter_params->filter(signal_samples,filtered_samples,bs_old);
 
 //            lpf->filter(signal_samples, filtered_samples);

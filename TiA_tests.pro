@@ -65,7 +65,7 @@ SOURCES += \
     tests/tia_version_1_0/tia_tcp_server_socket_tests.cpp \
     tests/tia_server_state_server_tests.cpp \
     tests/tia_version_1_0/tia_custom_packet_filter_tester.cpp \
-    tests/tia_version_1_0/tia_custom_signal_info_exchange_tester.cpp
+    tests/tia_version_1_0/tia_custom_parse_functions_tester.cpp
 
 HEADERS += \
     tests/datapacket_tests_fixtures.h \

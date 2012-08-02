@@ -47,13 +47,15 @@
   #define DECL_EXPORT
 #endif
 
+#include "tia/custom_signal_info.h"
+
 namespace tia
 {
 // forward declarations
 class DataPacket;
 class TiAClientImplBase;
 class SSConfig;
-class SignalInfo;
+
 
 /**
 * @class TiAClient
@@ -152,6 +154,12 @@ public:
   virtual SSConfig config() const;
 
   /**
+   * @brief Returns a custom signal info extracted from meta data information prevoisly requested from the server
+   * \sa requestConfig()
+   */
+  virtual CustomSignalInfoPtr getConfigAsCustomConfig() const;
+
+  /**
    * @brief Asks the server to use a custom signal info for this client
    * The caller will be blocked until the server returns its answer or an error has occurred.
    * @param custom_sig_info: the customized signal info that the server should use
@@ -160,7 +168,7 @@ public:
    * @throw std::runtime_error for all implementations that do not support this
    * feature due to they are deprecated versions
    */
-  virtual bool trySetCustomSignalInfo(SignalInfo &custom_sig_info, std::string &error_msg);
+  virtual bool trySetCustomSignalInfo(CustomSignalInfoPtr custom_sig_info, std::string &error_msg);
 
   /**
    * @brief Establishes a DataConnection to the server either

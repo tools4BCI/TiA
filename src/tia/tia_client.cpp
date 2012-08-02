@@ -102,8 +102,14 @@ SSConfig TiAClient::config() const
 }
 
 //-----------------------------------------------------------------------------
+CustomSignalInfoPtr TiAClient::getConfigAsCustomConfig() const
+{
+    return impl_->getConfigAsCustomConfig();
+}
 
-bool TiAClient::trySetCustomSignalInfo(tia::SignalInfo &custom_sig_info, std::string &error_msg)
+//-----------------------------------------------------------------------------
+
+bool TiAClient::trySetCustomSignalInfo(tia::CustomSignalInfoPtr custom_sig_info, std::string &error_msg)
 {
     return impl_->trySetCustomSignalInfo(custom_sig_info, error_msg);
 }

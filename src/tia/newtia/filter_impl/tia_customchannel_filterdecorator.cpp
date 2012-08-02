@@ -14,7 +14,7 @@ namespace tia
 CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilterPtr decorated_filter)
     : CustomPacketFilterDecorator(decorated_filter)
 {  
-    SignalInfo::SignalMap custom_signals = custom_sig_info_ptr_->signals();
+    CustomSignalInfo::CustomSignalMap custom_signals = custom_sig_info_ptr_->signals();
 
     modified_signal_info_ = default_sig_info_;
 
@@ -22,7 +22,7 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilterPtr
         mod_signal_it != modified_signal_info_.signals().end();)
     {
 
-        SignalInfo::SignalMap::iterator custom_signal = custom_signals.find(mod_signal_it->first);
+        CustomSignalInfo::CustomSignalMap::iterator custom_signal = custom_signals.find(mod_signal_it->first);
 
         if(custom_signal == custom_signals.end())
         {
@@ -44,7 +44,7 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilterPtr
             {
                 bool chan_is_in_custom_chans = false;
 
-                BOOST_FOREACH(Channel custom_channel, custom_signal->second.channels())
+                BOOST_FOREACH(CustomChannel custom_channel, custom_signal->second.channels())
                 {
                     if(channel_it->number() == custom_channel.number())
                     {

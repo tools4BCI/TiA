@@ -34,7 +34,7 @@
 #ifndef TIA_CUSTOM_SIGNAL_INFO_PARSE_AND_BUILD_FUNCTIONS_H
 #define TIA_CUSTOM_SIGNAL_INFO_PARSE_AND_BUILD_FUNCTIONS_H
 
-//#include "tia/ss_meta_info.h"
+#include "tia/ss_meta_info.h"
 #include "tia/custom_signal_info.h"
 
 namespace tia
@@ -45,13 +45,17 @@ namespace XML_TAGS
     std::string const TIA_CUSTOM_SIGNAL_INFO = "tiaCustomSignalInfo";
     std::string const TIA_CUSTOM_SIGNAL_INFO_VERSION = "version";
     std::string const TIA_CUSTOM_SIGNAL_INFO_CURRENT_VERSION = "1.0";
+    std::string const TIA_CUSTOM_SIGNAL_DSFACTOR = "downsamplingFactor";
 }
 
 //-----------------------------------------------------------------------------
-SignalInfoPtr parseTiACustomSignalInfoFromXMLString (std::string const& custom_signal_info_xml_str, const SignalInfo &default_signal_info);
+CustomSignalInfoPtr parseTiACustomSignalInfoFromXMLString (std::string const& custom_signal_info_xml_str, const SignalInfo &default_signal_info);
 
 //-----------------------------------------------------------------------------
-std::string buildTiACustomSignalInfoXMLString (SignalInfo const& custom_signal_info);
+std::string buildTiACustomSignalInfoXMLString (CustomSignalInfoPtr const& custom_signal_info);
+
+//-----------------------------------------------------------------------------
+CustomSignalInfoPtr parseCustomSignalInfoFromTiAMetaInfoXMLString (std::string const& tia_meta_info_xml_string);
 
 }
 

@@ -43,12 +43,13 @@
 
 #include <string>
 
+#include "tia/custom_signal_info.h"
+
 namespace tia
 {
 // forward declarations;
 class SSConfig;
 class DataPacket;
-class SignalInfo;
 
 //-----------------------------------------------------------------------------
 /**
@@ -95,11 +96,17 @@ public:
   virtual SSConfig config() const = 0;
 
   /**
+   * @brief Returns a custom signal info extracted from meta data information prevoisly requested from the server
+   * \sa requestConfig()
+   */
+  virtual CustomSignalInfoPtr getConfigAsCustomConfig() const = 0;
+
+  /**
    * @brief Asks the server to accept the custom signal info.
    * @returns Either true if the server accepts the custom signal_info or
    *          false if the signal info is invalid.
    */
-  virtual bool trySetCustomSignalInfo(SignalInfo &custom_sig_info, std::string &error_msg) = 0;
+  virtual bool trySetCustomSignalInfo(CustomSignalInfoPtr custom_sig_info, std::string &error_msg) = 0;
 
   /**
    * @brief Establishes a DataConnection to the server either

@@ -111,9 +111,12 @@ void TCPDataConnection::sendDataPacket(DataPacket& packet)
 
         packet_filter_->applyFilter(packet_to_filter);
 
+        if(!packet_to_filter.getNrOfSignalTypes())
+            //there is no data stored in the packet anymore
+            return;
+
         data = packet_to_filter.getRaw();
         size = packet_to_filter.getRawMemorySize();
-
 
         assert(data != 0);
         assert(size != 0);

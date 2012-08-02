@@ -31,12 +31,6 @@
     Contact: TiA@tobi-project.org
 */
 
-/**
-* @file ss_meta_info.h
-* @brief This file includes classes used to store meta information used in TiA.
-* @todo Rename file to TiA_meta_information
-**/
-
 #ifndef CUSTOM_SIGNAL_INFO_H
 #define CUSTOM_SIGNAL_INFO_H
 
@@ -48,8 +42,6 @@
 #include <map>
 #include <vector>
 
-#include "ss_meta_info.h"
-
 namespace tia
 {
 
@@ -57,61 +49,102 @@ namespace tia
 
 /**
  * @class CustomChannel
- *
  */
-class CustomChannel : public Channel
+class CustomChannel
 {
-    //TODO: For future add channel specific customization attributes here!
+  public:
+    /**
+     * @brief Get the channel name (e.g. C3).
+     */
+    std::string id() const { return id_; }
+    /**
+     * @brief Set the channel name.
+     */
+    void setId(const std::string& id) { id_ = id; }
+
+    boost::uint32_t number() const { return number_; }
+
+    void setNumber(boost::uint32_t number) { number_ = number; }
+
+  private:
+    std::string id_;    ///<
+    boost::uint32_t number_;
+
 };
 
 //-----------------------------------------------------------------------------
 
 /**
  * @class CustomSignal
- *
- * @brief This class is written to store information for a specific signal type.
- *
- * This class is designed to hold information which is consistent
- * within a single signal type like sampling rate or block size.
- *
- * @todo Find a way to be consistent with signal types and signal type names within TiA.
  */
-class CustomSignal : public Signal
+class CustomSignal
 {
   public:
+      /**
+       * @brief Set the name of the signal type.
+       */
+      void setType(const std::string& type) { type_ = type; }
 
+      /**
+       * @brief Get the name of the stored signal type.
+       */
+      std::string type() const { return type_; }
 
-      boost::uint16_t getDSFactor() const { return downsampling_factor_; }
+      /**
+       * @brief Get the blocksize of the stored signal type.
+       */
+      boost::uint16_t blockSize() const { return block_size_; }
 
-      void setDSFactor(boost::uint16_t downsampling_factor) { downsampling_factor_ = downsampling_factor; }
+      /**
+       * @brief Set the blocksize of the stored signal type.
+       */
+      void setBlockSize(boost::uint16_t block_size) { block_size_ = block_size; }
+
+      /**
+       * @brief Get the sampling rate of the stored signal type.
+       */
+      boost::uint16_t samplingRate() const { return sampling_rate_; }
+
+      /**
+       * @brief Returns wheter the signal is apreiodic or not. Is similar to a sampling rate equal to zero.
+       */
+      bool isAperiodic() const { return sampling_rate_ == 0; }
+
+      /**
+       * @brief Set the sampling rate of the stored signal type.
+       */
+      void setSamplingRate(boost::uint16_t sampling_rate) { sampling_rate_ = sampling_rate; }
+
+      /**
+       * @brief Get the downsampling factor of the custom signal type.
+       */
+      boost::uint16_t DSFactor() const { return ds_factor_; }
+
+      /**
+       * @brief Set the downsampling factor for the custom signal type.
+       */
+      void setDSFactor(boost::uint16_t ds_factor) { ds_factor_ = ds_factor; }
+
 
       /**
        * @brief Get a vector holding specific information for every channel of this signal type.
        */
-      const std::vector<CustomChannel>& custom_channels() const
-      {
-          return static_cast<const std::vector<CustomChannel> >( channels());
-      }
+      const std::vector<CustomChannel>& channels() const { return channels_; }
 
-      std::vector<CustomChannel>& custom_channels()
-      {
-          return static_cast<std::vector<CustomChannel> >( channels());
-      }
+      std::vector<CustomChannel>& channels() { return channels_; }
 
   private:
-    boost::uint16_t       downsampling_factor_;
+    std::string           type_;
+    boost::uint16_t       block_size_;
+    boost::uint16_t       sampling_rate_;
+    boost::uint16_t       ds_factor_;
+    std::vector<CustomChannel>  channels_;
 };
 
 //-----------------------------------------------------------------------------
 
 /**
  * @class CustomSignalInfo
- *
- * @brief This class stores information for all transmitted signals.
- *
- * This class stores information for all signal transmitted via TiA.
- * It also stores information concerning the master device, as this
- * device is responsible for the rate, data packets are delivered with.
  */
 class CustomSignalInfo
 {
@@ -125,15 +158,12 @@ class CustomSignalInfo
     #undef signals
 #endif
 
-    const CustomSignalMap& custom_signals() const
-    {
-        return static_cast<const CustomSignalMap >( signals());
-    }
+    const CustomSignalMap& signals() const { return signals_; }
 
-    CustomSignalMap& custom_signals()
-    {
-        return static_cast<CustomSignalMap >( signals());
-    }
+    CustomSignalMap& signals() { return signals_; }
+
+  private:
+    CustomSignalMap signals_;                       ///<
 
 #ifdef SIGNAL_INFO_HELPER
     #define signals SIGNAL_INFO_HELPER
