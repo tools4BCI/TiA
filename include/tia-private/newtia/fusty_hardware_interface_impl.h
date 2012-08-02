@@ -66,6 +66,11 @@ public:
         return tia_meta_info_;
     }
 
+    SSConfig const &getTiAMetaInfoAsConstRef () const
+    {
+        return tia_meta_info_;
+    }
+
 private:
 //    tobiss::ControlConnectionServer& cc_server_;
     SSConfig tia_meta_info_;

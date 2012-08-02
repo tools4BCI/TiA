@@ -66,7 +66,9 @@ HEADERS += include/tia/tia_server.h \
     include/tia-private/newtia/filter/tia_datapacket_custom_filter.h \
     include/tia-private/newtia/filter_impl/tia_customchannel_filterdecorator.h \
     include/tia-private/newtia/commands/set_custom_signalinfo_control_command.h \
-    include/tia-private/newtia/filter_impl/tia_downsampling_filterdecorator.h
+    include/tia-private/newtia/filter_impl/tia_downsampling_filterdecorator.h \
+    include/tia-private/newtia/filter_impl/downsampling_filterparam.h \
+    include/tia/custom_signal_info.h
 
 contains( DEFINES, TIMING_TEST )::HEADERS += extern/include/LptTools/LptTools.h
 

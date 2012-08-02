@@ -34,7 +34,8 @@
 #ifndef TIA_CUSTOM_SIGNAL_INFO_PARSE_AND_BUILD_FUNCTIONS_H
 #define TIA_CUSTOM_SIGNAL_INFO_PARSE_AND_BUILD_FUNCTIONS_H
 
-#include "tia/ss_meta_info.h"
+//#include "tia/ss_meta_info.h"
+#include "tia/custom_signal_info.h"
 
 namespace tia
 {

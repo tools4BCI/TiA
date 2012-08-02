@@ -4,9 +4,13 @@
 #include <boost/cast.hpp>
 #include <string>
 #include <sstream>
+#include <utility>
+#include <string.h>
 
 #include "tia-private/newtia/tia_exceptions.h"
 #include "tia/constants.h"
+
+#include "extern/include/filterTools/iirbutterlpf.h"
 
 namespace tia
 {
@@ -44,15 +48,23 @@ DownsamplingFilterDecorator::DownsamplingFilterDecorator(CustomPacketFilterPtr d
             }
             else if(rational_ds_factor > 1)
             {
-                std::cout << "Adding signal " << mod_signal_it->first << " with ds factor" << rational_ds_factor << "!" << std::endl;
+//                std::cout << "Adding signal " << mod_signal_it->first << " with ds factor" << rational_ds_factor << "!" << std::endl;
 
-                signal_ds_factor_map_[constants_.getSignalFlag(mod_signal_it->first)] = (boost::uint16_t)rational_ds_factor;
 
-                std::pair<boost::uint16_t, IIRButterLpf<double> > new_filter
-                        (constants_.getSignalFlag(mod_signal_it->first),
-                         IIRButterLpf<double>(signal_fs, signal_fs / 2.0 / rational_ds_factor, 5.0, 4, false));
+                //TODO: handle out of memory!
+                DownsamplingFilterParam *ds_param = new DownsamplingFilterParam ( signal_fs ,
+                                                  (boost::uint16_t)rational_ds_factor, 0,
+                                                  mod_signal_it->second.channels().size());
 
-                lp_filters_.insert(new_filter);
+
+
+//                std::pair<boost::uint32_t, DownsamplingFilterParam > new_filter
+//                        (constants_.getSignalFlag(mod_signal_it->first),
+//                         ds_param);
+
+//                ds_filters_.insert(new_filter);
+
+                ds_filters_[constants_.getSignalFlag(mod_signal_it->first)] = ds_param;
 
                 mod_signal_it->second.setSamplingRate(custom_signal->second.samplingRate());
             }
@@ -63,7 +75,17 @@ DownsamplingFilterDecorator::DownsamplingFilterDecorator(CustomPacketFilterPtr d
 
     is_applicable_ = true;
 
-    has_configured_work_ = signal_ds_factor_map_.size() > 0;
+    has_configured_work_ = ds_filters_.size() > 0;
+}
+
+//-----------------------------------------------------------------------------
+
+DownsamplingFilterDecorator::~DownsamplingFilterDecorator()
+{
+    BOOST_FOREACH(SignalFilterMap::value_type signal_filter, ds_filters_)
+    {
+        delete signal_filter.second;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -72,36 +94,102 @@ void DownsamplingFilterDecorator::applyFilter(DataPacket &packet)
 {
     decorated_filter_->applyFilter(packet);    
 
-    BOOST_FOREACH(SignalFilterMap::value_type signal_filter, lp_filters_)
+    BOOST_FOREACH(SignalFilterMap::value_type signal_filter, ds_filters_)
     {
-        std::cout << "Filtering signal type " << constants_.getSignalName(signal_filter.first);
+//        std::cout << "Filtering signal type " << constants_.getSignalName(signal_filter.first);
 
         if(packet.hasFlag(signal_filter.first))
         {
             std::vector<double> signal_samples = packet.getSingleDataBlock(signal_filter.first);
             boost::uint16_t nr_of_channels = packet.getNrOfChannels(signal_filter.first);
 
-            boost::uint16_t block_size = packet.getNrSamplesPerChannel(signal_filter.first);
+            boost::uint16_t bs_old = packet.getNrSamplesPerChannel(signal_filter.first);
 
-            std::cout << " with " << nr_of_channels << " channels and blocksize "<< block_size <<"." << std::endl;
+//            std::cout << " with " << nr_of_channels << " channels and blocksize "<< bs_old <<"." << std::endl;
 
-            std::vector<double> filtered_samples (signal_samples.size());
+//            std::vector<double> filtered_samples (signal_samples.size());
+            //TODO: delete after testing and uncomment line before
+            std::vector<double> filtered_samples (signal_samples.begin(), signal_samples.end());
 
-            signal_filter.second.filter(signal_samples, filtered_samples);
+            DownsamplingFilterParam *filter_params = signal_filter.second;
 
-            packet.removeDataBlock(signal_filter.first);
+//            BasicFilter<double> *lpf = filter_params->getLpFilter();
 
-            packet.insertDataBlock(filtered_samples,signal_filter.first,block_size);
+            //TODO: uncomment after testing!
+
+            filter_params->filter(signal_samples,filtered_samples,bs_old);
+
+//            lpf->filter(signal_samples, filtered_samples);
+
+            boost::uint16_t sc = filter_params->getSampleCounter();
+            boost::uint16_t ds = filter_params->getDsFactor();
+            boost::uint16_t chan_nr = 0;
+
+            //position of first downsampled channel within this datablock
+            boost::uint16_t sample_pos = (sc == 0 ? 0 : ds - sc);
+
+            //calculate new block size after downsampling this data block
+            //therefore start with last taken sample (= modeled with sc) and add
+            //the current block size - 1 (-1 is because we want the position
+            //of the last sample in the data block in relation to the last sample accepted (which is our origin)
+            //dividing this sum by the ds factor already computes the new block size
+            boost::uint16_t bs_new = (boost::uint16_t)((((double) bs_old - 1.0) + (double)sc) / (double) ds);
+            //if sc is zero the last sample accepted is the first one of this block
+            //thus it has to be added and we get the new block size
+            bs_new += (sc == 0 ? 1 : 0);
+
+//            std::cout << "bs_new: " << bs_new << ", sc: " << sc << ", ds: " << ds << ", channels: " << nr_of_channels << std::endl;
+
+            //update sample counter for next packet
+            filter_params->setSampleCounter((sc + bs_old) % ds);
+
+            if(bs_new)
+            {
+
+                double buffer [bs_new * nr_of_channels];
+
+                //now start with the first downsampled sample
+                //and take every ds. sample
+                for(; sample_pos < bs_old; sample_pos += ds)
+                {
+                    //take every ds. sample of each channel of this signal type
+                    for(chan_nr = 0; chan_nr < nr_of_channels; ++chan_nr)
+                        buffer[sample_pos / ds + chan_nr * bs_new] = filtered_samples[sample_pos + chan_nr * bs_old];
+                }
+
+                //for faster performance extract the vectors underlying array
+                double *filtered_samples_ptr = &(filtered_samples[0]);
+
+//                std::cout << "new values: ";
+
+//                for (int var = 0; var < bs_new * nr_of_channels; ++var) {
+//                    std::cout << ", " << buffer[var];
+//                }
+//                std::cout << std::endl;
+
+                //finally copy the buffer back to the vector and
+                //adjust the vectors size
+                memcpy(filtered_samples_ptr, buffer,sizeof(double) * bs_new * nr_of_channels);
+                filtered_samples.resize(bs_new * nr_of_channels);
+
+//                std::cout << "new values in vector: ";
+
+//                for (int var = 0; var < filtered_samples.size(); ++var) {
+//                    std::cout << ", " << filtered_samples[var];
+//                }
+//                std::cout << std::endl;
+
+                packet.removeDataBlock(signal_filter.first);
+
+                packet.insertDataBlock(filtered_samples,signal_filter.first,bs_new);
+            }
+            else
+            {
+                packet.removeDataBlock(signal_filter.first);
+            }
 
         }
     }
-
-//    BOOST_FOREACH(boost::uint32_t signal_flag, signals_to_exclude_)
-//    {
-////        std::cout << " remove signal:" << constants_.getSignalName(signal_flag) << std::endl;
-//        if(packet.hasFlag(signal_flag))
-//            packet.removeDataBlock(signal_flag);
-//    }
 }
 
 //-----------------------------------------------------------------------------

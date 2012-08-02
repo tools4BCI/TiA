@@ -47,6 +47,8 @@ public:
 
     virtual SSConfig getTiAMetaInfo () const = 0;
 
+    virtual SSConfig const &getTiAMetaInfoAsConstRef () const = 0;
+
     // TODO: setHardwareConfig
 };
 

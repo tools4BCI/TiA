@@ -55,7 +55,7 @@ public:
 
 private:
     TiAControlCommandContext& command_context_;
-    ControlConnection2& connection_;
+    ControlConnection2& connection_;    
 };
 
 }

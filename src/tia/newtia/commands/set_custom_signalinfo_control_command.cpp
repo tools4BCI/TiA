@@ -39,6 +39,7 @@
 #include "tia-private/newtia/tia_custom_signal_info_parse_and_build_functions.h"
 
 #include "tia-private/newtia/filter_impl/tia_customchannel_filterdecorator.h"
+#include "tia-private/newtia/filter_impl/tia_downsampling_filterdecorator.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -67,7 +68,8 @@ TiAControlMessage SetCustomSignalInfoControlCommand::execute(const TiAControlMes
 
 //    std::cout << "execute setCustomSignalInfo: " << std::endl << content << std::endl;
 
-    const SSConfig &meta_info = command_context_.getHardwareInterface().getTiAMetaInfo();
+    const SSConfig &meta_info = command_context_.getHardwareInterface().getTiAMetaInfoAsConstRef();
+
 
     try
     {
@@ -76,12 +78,32 @@ TiAControlMessage SetCustomSignalInfoControlCommand::execute(const TiAControlMes
         const SignalInfoPtr &custom_sig_info_ptr = parseTiACustomSignalInfoFromXMLString(content,default_sig_info);
 
 
-        CustomPacketFilterPtr filter_chain_ptr
-                (new DummyCustomPacketFilter(default_sig_info,custom_sig_info_ptr));
+        CustomPacketFilter *dummy_filter_ptr = new DummyCustomPacketFilter(default_sig_info,custom_sig_info_ptr);
 
-        filter_chain_ptr = CustomPacketFilterPtr(new CustomChannelFilterDecorator(filter_chain_ptr));
+        CustomPacketFilterPtr filter_chain_ptr =
+                CustomPacketFilterPtr(dummy_filter_ptr);
 
-        connection_.setPacketFilter(filter_chain_ptr);
+        CustomPacketFilterPtr channel_filter_ptr =
+                 CustomPacketFilterPtr(new CustomChannelFilterDecorator(filter_chain_ptr));
+
+        if(channel_filter_ptr->hasConfiguredWork())
+            filter_chain_ptr = channel_filter_ptr;
+        else
+            std::cout << "SetCustomSignalInfoControlCommand::NO channel filtering necessary.. " << std::endl;
+
+        CustomPacketFilterPtr downsampling_filter_ptr =
+                CustomPacketFilterPtr(new DownsamplingFilterDecorator(filter_chain_ptr));
+
+        if(downsampling_filter_ptr->hasConfiguredWork())
+            filter_chain_ptr = downsampling_filter_ptr;
+        else
+            std::cout << "SetCustomSignalInfoControlCommand::NO downsampling necessary.. " << std::endl;
+
+
+        if(filter_chain_ptr.get() == dummy_filter_ptr)
+            std::cout << "SetCustomSignalInfoControlCommand::NO customization necessary.." << std::endl;
+        else
+            connection_.setPacketFilter(filter_chain_ptr);
 
         return OkControlMessage(version);
 
