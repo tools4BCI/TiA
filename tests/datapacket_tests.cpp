@@ -82,7 +82,7 @@ TEST(setterGetterDataPacket)
 
     // wait some time
     boost::xtime xt;
-    boost::xtime_get (&xt, boost::TIME_UTC);
+    boost::xtime_get (&xt, boost::TIME_UTC_);
     xt.nsec += 10000;
     boost::thread::sleep (xt);
 
