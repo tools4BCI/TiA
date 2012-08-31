@@ -158,7 +158,7 @@ namespace tia
       * @brief Maps a given std::string to the respective SignalType flag.
       * @param[in] s std::string to be checked.
       * @return flag
-      * @throw ticpp::Exception thrown if std::string not representing any valid signaltype!
+      * @throw std::invalid_argument thrown if std::string not representing any valid signaltype!
       *
       */
       boost::uint32_t getSignalFlag(const std::string& s);
@@ -167,7 +167,7 @@ namespace tia
       * @brief Returns the name to a given SignalType flaf.
       * @param[in] s Flag to be checked.
       * @return std::string
-      * @throw ticpp::Exception thrown if flag does not represent any valid signaltype!
+      * @throw std::invalid_argument thrown if flag does not represent any valid signaltype!
       *
       */
       std::string getSignalName(const boost::uint32_t& flag);
@@ -205,18 +205,12 @@ namespace tia
       static const std::string fr_speedup;
       static const std::string fr_stop;
 
-        //Mouse specific start
-//          static const std::string hw_vid;
-//          static const std::string hw_pid;
-//          static const std::string usb_port;
-        //Mouse specific end
-
     private:
       /**
       * @brief Mapping std::strings, representing signaltypes, and identifiers together.
       *
       */
-      std::map<std::string, boost::uint32_t> signaltypes;
+      std::map<std::string, boost::uint32_t> signaltypes_;
   };
 
 } // Namespace tobiss

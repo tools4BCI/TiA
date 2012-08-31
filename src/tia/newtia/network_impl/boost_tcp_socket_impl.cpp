@@ -37,6 +37,8 @@
 
 #include <boost/asio.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/current_function.hpp>
+
 #include <iostream>
 
 using std::string;
@@ -50,6 +52,10 @@ BoostTCPSocketImpl::BoostTCPSocketImpl (boost::asio::io_service& io_service,
                                         boost::asio::ip::tcp::endpoint const& endpoint, unsigned buffer_size)
   : socket_ (new boost::asio::ip::tcp::socket (io_service) ), input_stream_(&stream_buffer_)
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   socket_->connect (endpoint);
   boost::asio::socket_base::receive_buffer_size option (buffer_size);
   socket_->set_option (option);
@@ -70,6 +76,10 @@ BoostTCPSocketImpl::BoostTCPSocketImpl (boost::asio::io_service& io_service,
 BoostTCPSocketImpl::BoostTCPSocketImpl (boost::shared_ptr<boost::asio::ip::tcp::socket> boost_socket)
     : socket_ (boost_socket), input_stream_(&stream_buffer_)
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   remote_endpoint_str_ = socket_->remote_endpoint().address().to_string() + ":"
       + boost::lexical_cast<std::string>( socket_->remote_endpoint().port() );
 
@@ -83,6 +93,10 @@ BoostTCPSocketImpl::BoostTCPSocketImpl (boost::shared_ptr<boost::asio::ip::tcp::
 //-----------------------------------------------------------------------------
 BoostTCPSocketImpl::~BoostTCPSocketImpl ()
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
     if (socket_)
     {
         socket_->close ();
@@ -213,6 +227,9 @@ void BoostTCPSocketImpl::sendString (string const& str) throw (TiALostConnection
 
 size_t BoostTCPSocketImpl::readBytes (char* data, size_t bytes_to_read)
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
 
   if(stream_buffer_.size () < bytes_to_read )
   {
@@ -237,6 +254,9 @@ size_t BoostTCPSocketImpl::readBytes (char* data, size_t bytes_to_read)
 
 size_t BoostTCPSocketImpl::getAvailableData (char* data, size_t max_size)
 {
+  #ifdef DEBUG
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
 
   size_t available_data = stream_buffer_.size ();
   if ( !available_data )

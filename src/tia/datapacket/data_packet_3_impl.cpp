@@ -37,6 +37,7 @@
 
 #include <sstream>
 #include <stdexcept>
+#include <boost/current_function.hpp>
 
 #ifdef DEBUG
     #include <iostream>
@@ -49,6 +50,10 @@
 #include "tia-private/datapacket/data_packet_3_impl.h"
 #include "tia-private/clock.h"
 #include "tia-private/datapacket/raw_mem3.h"
+
+#ifdef DEBUG
+  #include <iostream>
+#endif
 
 namespace tia
 {
@@ -119,7 +124,7 @@ DataPacket3Impl& DataPacket3Impl::operator=(const DataPacket3Impl &src)
 void DataPacket3Impl::reset(void* mem)
 {
   #ifdef DEBUG
-      cout << "DataPacket: RAW Constructor" << endl;
+      std::cout << BOOST_CURRENT_FUNCTION << std::endl;
   #endif
 
   flags_ = 0;
@@ -179,12 +184,12 @@ void DataPacket3Impl::reset(void* mem)
 //-----------------------------------------------------------------------------
 DataPacket3Impl::~DataPacket3Impl()
 {
-	for(std::map<boost::uint32_t, RawMem3*>::iterator it(raw_map_.begin());
-			it != raw_map_.end(); it++)
-	{
-		delete(it->second);
-		it->second = 0;
-	}
+  for(std::map<boost::uint32_t, RawMem3*>::iterator it(raw_map_.begin());
+      it != raw_map_.end(); it++)
+  {
+    delete(it->second);
+    it->second = 0;
+  }
 }
 
 
@@ -193,7 +198,7 @@ DataPacket3Impl::~DataPacket3Impl()
 void DataPacket3Impl::reset()
 {
   #ifdef DEBUG
-    cout << "DataPacket: reset" << endl;
+    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
   #endif
 
   flags_ = 0;

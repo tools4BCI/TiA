@@ -130,6 +130,8 @@ class TiAClientDataReader
                 v = packet_->getSingleDataBlock(SIG_MBUTTON);
                 cout<<" ... buttons: "<<packet_->getSingleDataBlock(SIG_MBUTTON)[1]<<packet_->getSingleDataBlock(SIG_MBUTTON)[2]<<packet_->getSingleDataBlock(SIG_MBUTTON)[3]<<endl;
               }
+              */
+
               if( ((client_.config().signal_info.masterSamplingRate()/client_.config().signal_info.masterBlockSize()) < 1) ||
                 (counter%(
                 (client_.config().signal_info.masterSamplingRate()/client_.config().signal_info.masterBlockSize()) *2 ) == 0) )
@@ -138,7 +140,7 @@ class TiAClientDataReader
                 //                client_.requestConfig();
                 //                cerr << " -- got config ... "  << endl;
               }
-              */
+
 
               v = packet_->getSingleDataBlock(SIG_EEG);
 
@@ -287,7 +289,7 @@ int main(int argc, const char* argv[])
   }
   catch(std::exception& e)
   {
-    cerr << e.what() << endl;
+    cerr << "Error when connecting or receiving config -- " << e.what() << endl;
     return 1;
   }
 

@@ -38,9 +38,9 @@
 #include "tia/constants.h"
 
 #include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "tia/defines.h"
-#include "ticpp/ticpp.h"
 
 namespace tia
 {
@@ -80,38 +80,36 @@ const string Constants::file_reader("file-reader");
 const string Constants::fr_speedup("speedup");
 const string Constants::fr_stop("stop_at_end");
 
-//Mouse specific start
-//const string Constants::hw_vid("vendorid");
-//const string Constants::hw_pid("productid");
-//const string Constants::usb_port("usb_port");
-//Mouse specific end
-
 //-----------------------------------------------------------------------------
 
 Constants::Constants()
 {
-  signaltypes.insert(pair <string,uint32_t>("eeg", SIG_EEG));
-  signaltypes.insert(pair <string,uint32_t>("emg", SIG_EMG));
-  signaltypes.insert(pair <string,uint32_t>("eog", SIG_EOG));
-  signaltypes.insert(pair <string,uint32_t>("ecg", SIG_ECG));
-  signaltypes.insert(pair <string,uint32_t>("hr",  SIG_HR));
-  signaltypes.insert(pair <string,uint32_t>("bp", SIG_BP));
-  signaltypes.insert(pair <string,uint32_t>("button", SIG_BUTTON));
-  signaltypes.insert(pair <string,uint32_t>("axis", SIG_AXIS));
-  signaltypes.insert(pair <string,uint32_t>("sensor", SIG_SENSOR));
-  signaltypes.insert(pair <string,uint32_t>("nirs",  SIG_NIRS));
-  signaltypes.insert(pair <string,uint32_t>("fmri",  SIG_FMRI));
+  signaltypes_.insert(pair <string,uint32_t>("eeg", SIG_EEG));
+  signaltypes_.insert(pair <string,uint32_t>("emg", SIG_EMG));
+  signaltypes_.insert(pair <string,uint32_t>("eog", SIG_EOG));
+  signaltypes_.insert(pair <string,uint32_t>("ecg", SIG_ECG));
+  signaltypes_.insert(pair <string,uint32_t>("hr",  SIG_HR));
+  signaltypes_.insert(pair <string,uint32_t>("bp", SIG_BP));
+  signaltypes_.insert(pair <string,uint32_t>("button", SIG_BUTTON));
+  signaltypes_.insert(pair <string,uint32_t>("axis", SIG_AXIS));
 
-  signaltypes.insert(pair <string,uint32_t>("user_1", SIG_USER_1));
-  signaltypes.insert(pair <string,uint32_t>("user_2", SIG_USER_2));
-  signaltypes.insert(pair <string,uint32_t>("user_3", SIG_USER_3));
-  signaltypes.insert(pair <string,uint32_t>("user_4", SIG_USER_4));
-  signaltypes.insert(pair <string,uint32_t>("user1", SIG_USER_1));
-  signaltypes.insert(pair <string,uint32_t>("user2", SIG_USER_2));
-  signaltypes.insert(pair <string,uint32_t>("user3", SIG_USER_3));
-  signaltypes.insert(pair <string,uint32_t>("user4", SIG_USER_4));
-  signaltypes.insert(pair <string,uint32_t>("undefined", SIG_UNDEFINED));
-  signaltypes.insert(pair <string,uint32_t>("event", SIG_EVENT));
+  signaltypes_.insert(pair <string,uint32_t>("joystick", SIG_AXIS));  // deprecated !!
+
+  signaltypes_.insert(pair <string,uint32_t>("sensor", SIG_SENSOR));
+  signaltypes_.insert(pair <string,uint32_t>("nirs",  SIG_NIRS));
+  signaltypes_.insert(pair <string,uint32_t>("fmri",  SIG_FMRI));
+  signaltypes_.insert(pair <string,uint32_t>("keycode",  SIG_KEYCODE));
+
+  signaltypes_.insert(pair <string,uint32_t>("user_1", SIG_USER_1));
+  signaltypes_.insert(pair <string,uint32_t>("user_2", SIG_USER_2));
+  signaltypes_.insert(pair <string,uint32_t>("user_3", SIG_USER_3));
+  signaltypes_.insert(pair <string,uint32_t>("user_4", SIG_USER_4));
+  signaltypes_.insert(pair <string,uint32_t>("user1", SIG_USER_1));
+  signaltypes_.insert(pair <string,uint32_t>("user2", SIG_USER_2));
+  signaltypes_.insert(pair <string,uint32_t>("user3", SIG_USER_3));
+  signaltypes_.insert(pair <string,uint32_t>("user4", SIG_USER_4));
+  signaltypes_.insert(pair <string,uint32_t>("undefined", SIG_UNDEFINED));
+  signaltypes_.insert(pair <string,uint32_t>("event", SIG_EVENT));
 
 }
 
@@ -120,11 +118,11 @@ Constants::Constants()
 uint32_t Constants::getSignalFlag(const std::string& s)
 {
   map<string, uint32_t>::iterator it;
-  it = signaltypes.find(to_lower_copy(s));
- if(it == signaltypes.end())
+  it = signaltypes_.find(to_lower_copy(s));
+ if(it == signaltypes_.end())
  {
-   string e = "Signal type not found!";
-   throw ticpp::Exception(e);
+   string e = "Signal type:" + s + "not found!";
+   throw (std::invalid_argument(e));
  }
   return(it->second);
 }
@@ -133,12 +131,16 @@ uint32_t Constants::getSignalFlag(const std::string& s)
 
 string Constants::getSignalName(const uint32_t& flag)
 {
-  for(map<string, uint32_t>::iterator it(signaltypes.begin()); it != signaltypes.end(); it++)
+  // FIXXXX ME   -->  BAD HACK to still support joystick signaltype, but get axes instead
+  std::map<std::string, boost::uint32_t> signaltypes_tmp(signaltypes_);
+  signaltypes_tmp.erase("joystick");
+
+  for(map<string, uint32_t>::iterator it(signaltypes_tmp.begin()); it != signaltypes_tmp.end(); it++)
     if(it->second == flag)
       return(it->first);
 
-  string e = "Signal type not found!";
-  throw ticpp::Exception(e);
+  string e = "Signal flag: " + boost::lexical_cast<std::string>(flag)  +  "not found!";
+  throw (std::invalid_argument(e));
 }
 
 //-----------------------------------------------------------------------------

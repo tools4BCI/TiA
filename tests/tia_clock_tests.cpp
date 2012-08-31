@@ -30,6 +30,7 @@
 using namespace tia;
 
 //-------------------------------------------------------------------------------------------------
+
 TEST (clockTest)
 {
     boost::posix_time::ptime start_time = boost::date_time::microsec_clock<boost::posix_time::ptime>::local_time ();
@@ -38,7 +39,7 @@ TEST (clockTest)
     clock.reset ();
 
     boost::xtime xt;
-    boost::xtime_get (&xt, boost::TIME_UTC);
+    boost::xtime_get (&xt, boost::TIME_UTC_);
     xt.nsec += 10000;
     boost::thread::sleep (xt);
 

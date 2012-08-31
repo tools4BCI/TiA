@@ -13,6 +13,8 @@ template<typename T> class  BasicFilter
     virtual T clock(T sample) = 0;
     virtual void filter(std::vector<T>& in, std::vector<T>& out) = 0;
 
+    virtual ~BasicFilter() {}
+
   protected:
     BasicFilter();
 

@@ -1,19 +1,19 @@
-// 
+//
 // author="Tony Kirke" *
 // Copyright(c) 1993-1996 Tony Kirke
 /*
  * SPUC - Signal processing using C++ - A DSP library
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -38,8 +38,9 @@ template <class T> class complex
     im = 0;
   }
   void*  operator new (size_t) {
-	  T* re = new T;
-	  T* im = new T;
+    T* re = new T;
+    T* im = new T;
+    return 0;
   }
   complex(T r, T i) :re(r), im(i) {}
   complex(T r) : re(r), im(0) {}
@@ -58,24 +59,24 @@ template <class T> class complex
     return r;
   }
 
-  inline complex  operator =(const complex<T>& y)   {   
-	  re = (T)y.re; im = (T)y.im; return *this; 
-  } 
+  inline complex  operator =(const complex<T>& y)   {
+    re = (T)y.re; im = (T)y.im; return *this;
+  }
   inline complex  operator *=(const complex<T>& y) {
-	  T r = re*y.re - im*y.im;
-	  im  = re*y.im + im*y.re;
-	  re = r;
-	  return *this;
+    T r = re*y.re - im*y.im;
+    im  = re*y.im + im*y.re;
+    re = r;
+    return *this;
   }
   inline complex  operator +=(const complex<T>& y) {
-	  re += y.re;
-	  im += y.im;
-	  return *this;
+    re += y.re;
+    im += y.im;
+    return *this;
   }
   inline complex  operator -=(const complex<T>& y) {
-	  re -= y.re;
-	  im -= y.im;
-	  return *this;
+    re -= y.re;
+    im -= y.im;
+    return *this;
   }
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -90,32 +91,32 @@ template <class T1, class T2> inline complex<T1> operator *(complex<T1> r, compl
   complex<T1> x;
   x.re = ((r.re*l.re) - (r.im*l.im));
   x.im = (r.re*l.im + r.im*l.re);
-  return x;  
-  };
+  return x;
+  }
 //!
 template <class T1, class T2> inline complex<T1> operator +(complex<T1> r, complex<T2> l)
 {
   complex<T1> x;
   x.re = r.re + l.re;
   x.im = r.im + l.im;
-  return x;  
-};
+  return x;
+}
 //!
 template <class T> inline complex<T> operator +(complex<T> r, T l)
 {
   complex<T> x;
   x.re = r.re + l;
   x.im = r.im;
-  return x;  
-};
+  return x;
+}
 //!
 template <class T> inline complex<T> operator +(T r, complex<T> l)
 {
   complex<T> x;
   x.re = r + l.re;
   x.im = l.im;
-  return x;  
-};
+  return x;
+}
 
 //!
 template <class T1, class T2> inline complex<T1> operator -(complex<T1> r, complex<T2> l)
@@ -123,90 +124,90 @@ template <class T1, class T2> inline complex<T1> operator -(complex<T1> r, compl
   complex<T1> x;
   x.re = r.re - l.re;
   x.im = r.im - l.im;
-  return x;  
-};
+  return x;
+}
 //!
 template <class T> inline complex<T> operator -(complex<T> r, T l)
 {
   complex<T> x;
   x.re = r.re - l;
   x.im = r.im;
-  return x;  
-};
+  return x;
+}
 //!
 template <class T> inline complex<T> operator -(T r, complex<T> l)
 {
   complex<T> x;
   x.re = r - l.re;
   x.im = -l.im;
-  return x;  
-};
+  return x;
+}
 //!
 template <class T> inline complex<T> operator &(complex<T> r, T l)
 {
   complex<T> x;
   x.re = r.re & l;
   x.im = r.im & l;
-  return x;  
-};
+  return x;
+}
 //!
 template <class T> inline complex<T> operator &(T r, complex<T> l)
 {
   complex<T> x;
   x.re = r & l.re;
   x.im = r & l.im;
-  return x;  
-};
+  return x;
+}
 template <class T> inline complex<T> operator %(complex<T> r, T l)
 {
   complex<T> x;
   x.re = r.re % l;
   x.im = r.im % l;
-  return x;  
-};
+  return x;
+}
 //!
 template <class T> inline complex<T> operator ^(complex<T> r, T l)
 {
   complex<T> x;
   x.re = r.re ^ l;
   x.im = r.im ^ l;
-  return x;  
-};
+  return x;
+}
 //!
 template <class T> inline complex<T> operator ^(T r, complex<T> l)
 {
   complex<T> x;
   x.re = r ^ l.re;
   x.im = r ^ l.im;
-  return x;  
-};
+  return x;
+}
 template <class T> inline complex<T> operator |(complex<T> r, T l)
 {
   complex<T> x;
   x.re = r.re | l;
   x.im = r.im | l;
-  return x;  
-};
+  return x;
+}
 //!
 template <class T> inline complex<T> operator |(T r, complex<T> l)
 {
   complex<T> x;
   x.re = r | l.re;
   x.im = r | l.im;
-  return x;  
-};
+  return x;
+}
 
 //! Left shift
-template <class T> inline complex<T>  operator <<(complex<T> r, const long shift) 
+template <class T> inline complex<T>  operator <<(complex<T> r, const long shift)
 {
-	  complex<long> res = complex<long>(r.re << shift, r.im << shift);
-	  return(res);
+    complex<long> res = complex<long>(r.re << shift, r.im << shift);
+    return(res);
 }
 //! Right shift
-template <class T> inline complex<T>  operator >>(complex<T> r, const long shift) 
+template <class T> inline complex<T>  operator >>(complex<T> r, const long shift)
 {
-	  complex<long> res = complex<long>(r.re >> shift, r.im >> shift);
-	  return(res);
+    complex<long> res = complex<long>(r.re >> shift, r.im >> shift);
+    return(res);
 }
 //!
 template <class T> inline complex<T> operator -(complex<T> r)
@@ -214,8 +215,8 @@ template <class T> inline complex<T> operator -(complex<T> r)
   complex<T> x;
   x.re = -r.re;
   x.im = -r.im;
-  return x;  
-};
+  return x;
+}
 
 
 
@@ -223,26 +224,26 @@ template <class T> inline complex<T> operator -(complex<T> r)
 //!
 inline complex<long> operator *( double r, complex<long> l)
 {
-	return(complex<long>((long)floor((double)(r*l.re+0.5)),
-						 (long)floor((double)(r*l.im+0.5))));
+  return(complex<long>((long)floor((double)(r*l.re+0.5)),
+             (long)floor((double)(r*l.im+0.5))));
 
-};
+}
 //!
 inline complex<double> operator *( long r, complex<double> l)
 {
   complex<double> x;
   x.re = (r*l.re);
   x.im = (r*l.im);
-  return x;   
-};
+  return x;
+}
 //!
 inline complex<double> operator *( double r, complex<double> l)
 {
   complex<double> x;
   x.re = (r*l.re);
   x.im = (r*l.im);
-  return x;   
-};
+  return x;
+}
 
 //!
 template <class T> inline complex<T> operator *(complex<T> r, T l)
@@ -250,8 +251,8 @@ template <class T> inline complex<T> operator *(complex<T> r, T l)
   complex<T> x;
   x.re = r.re*l;
   x.im = r.im*l;
-  return x;  
-};
+  return x;
+}
 
 //!
 template <class T> complex<T> operator /(complex<T> l, T r)
@@ -263,8 +264,8 @@ template <class T> complex<T> operator /(complex<T> l, T r)
     x.im = l.im/r;
   }
   //! else is an error condition!
-  return x;  
-};
+  return x;
+}
 
 //!
 template <class T1, class T2> complex<T1> operator /(complex<T1> r, complex<T2> l)
@@ -273,20 +274,20 @@ template <class T1, class T2> complex<T1> operator /(complex<T1> r, complex<T2> 
   T2 den;
   den = magsq(l);
   x = (r * conj(l))/den;
-  return x;  
-};
+  return x;
+}
 
 //!
 template <class T1, class T2> inline bool operator ==(complex<T1> r, complex<T2> l)
 {
-  return ((r.re == l.re) && (r.im == l.im));  
-};
+  return ((r.re == l.re) && (r.im == l.im));
+}
 
 //!
 template <class T1, class T2> inline bool operator !=(complex<T1> r, complex<T2> l)
 {
-  return ((r.re != l.re) || (r.im != l.im));  
-};
+  return ((r.re != l.re) || (r.im != l.im));
+}
 
 //! Unit magnitude polar to rectangular conversion
 inline complex<double> expj(double x)
@@ -305,7 +306,7 @@ inline complex<double> polar(double amp,double arg)
   return y;
 }
 
-//! Complex value (0,1) 
+//! Complex value (0,1)
 template <class T> inline complex<T> complexj(void)
 {
   return(complex<T>(0,1));
@@ -316,14 +317,14 @@ template <class T> inline T re(complex<T> x)
   T y;
   y = x.re;
   return y;
-};
+}
 
 template <class T> inline T im(complex<T> x)
 {
   T y;
   y = x.im;
   return y;
-};
+}
 
 //! Conjugate
 template <class T> inline complex<T> conj(complex<T> x)
@@ -339,25 +340,25 @@ template <class T> inline T magsq(complex<T> x)
   T y;
   y = (x.re*x.re + x.im*x.im);
   return y;
-};
+}
 //! Normalized vector (magnitude = 1)
 template <class T> inline complex<double> norm(complex<T> x)
 {
   T y;
   y = ::sqrt(x.re*x.re + x.im*x.im);
   return (complex<double>(x.re/y,x.im/y));
-};
+}
 
 
 template <class T> inline T approx_mag(complex<T> x)
 {
   return(MAX(abs(x.re),abs(x.im)) + MIN(abs(x.re),abs(x.im))/4);
-};
+}
 
 template <class T> inline complex<T> maxvalue(complex<T> x1)
 {
   return(complex<T>(MAX(x1.re,x1.im)));
-};
+}
 
 template <class T> inline complex<T> minimum(complex<T> x1, complex<T> x2)
 {
@@ -366,7 +367,7 @@ template <class T> inline complex<T> minimum(complex<T> x1, complex<T> x2)
 template <class T> inline complex<T> maximum(complex<T> x1, complex<T> x2)
 {
   return(complex<T>(MAX(x1.re,x2.re),MAX(x1.im,x2.im)));
-};
+}
 //! Return phase angle (radians) of complex number
 template <class T> inline double arg(const complex<T> x)
 {
@@ -391,7 +392,7 @@ inline complex<long> round(complex<long> in, long bits)
 {
   double scale = 1.0/(double)(1 << bits);
   return(complex<long>((long)floor((double)(scale*in.re)+0.5),
-		     (long)floor((double)(scale*in.im)+0.5)));
+         (long)floor((double)(scale*in.im)+0.5)));
 }
 //! Saturate to specific number of bits (signed)
 inline complex<long> saturate(complex<long> in, long bits)
@@ -417,28 +418,28 @@ template <class T> inline complex<double> reciprocal(complex<T> x)
   T y;
   y = (x.re*x.re + x.im*x.im);
   return (complex<double>(x.re/y,-x.im/y));
-};
+}
 //! squaring function
 template <class T> inline complex<T> sqr(complex<T> x)
 {
   return (x*x);
-};
+}
 //! square root function (same as sqrt in spuc_math.h)
 template <class T> inline complex<double> csqrt(complex<T> x)
 {
   double mag = sqrt(sqrt(magsq(x)));
   double ang = 0.5*arg(x); // ambiguity
   return(polar(mag,ang));
-};
+}
 //! complex exponential
 inline complex<double> exp(complex<double> x)
-  { 
-	  return (::exp(x.real()) * expj(x.imag()));
+  {
+    return (::exp(x.real()) * expj(x.imag()));
   }
 //! same name as math library
-inline double hypot(complex<double> z) { 
-	double _hypot(double x, double y);
-	return _hypot(z.imag(), z.real()); }
+inline double hypot(complex<double> z) {
+  double _hypot(double x, double y);
+  return _hypot(z.imag(), z.real()); }
 #endif
-} // namespace SPUC 
+} // namespace SPUC
 #endif
