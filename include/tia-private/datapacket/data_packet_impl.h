@@ -316,7 +316,7 @@ class DataPacketImpl :public DataPacket
 
     virtual boost::uint16_t getNrSamplesPerChannel(boost::uint32_t flag)
     {
-      return(getNrSamplesPerChannel(flag));
+      return(getNrOfBlocks(flag));
     }
 
 
