@@ -8,12 +8,9 @@ QT -= core \
     gui
 
 DEFINES += TIXML_USE_TICPP
-#DEFINES += TIMING_TEST
 
-CONFIG( debug, debug|release ){
+CONFIG(debug, debug|release) {
     DEFINES += DEBUG
-}else{
-
 }
 
 TARGET = tia
@@ -21,23 +18,23 @@ TARGET = tia
 OBJECTS_DIR = tmp
 INCLUDEPATH += . \
     include \
-    extern/include/LptTools
+    extern/include
 
 DEPENDPATH += $$INCLUDEPATH
-INCLUDEPATH += extern/include
 
-unix:QMAKE_CXXFLAGS += -pedantic
-QMAKE_CXXFLAGS_WARN_ON = -Wall \
-    -pedantic
+linux:QMAKE_CXXFLAGS += -pedantic
+QMAKE_CXXFLAGS += -Wall
 
-#--------------------------------------------------------------------
+macx:QMAKE_LFLAGS += -undefined dynamic_lookup
 
-HARDWARE_PLATFORM = $$system(uname -m)
-contains( HARDWARE_PLATFORM, x86_64 )::{
-    message(Building 64 bit )
-    DESTDIR = lib/amd64
-  }else::{
-    message(Building 32 bit )
-    DESTDIR = lib/x86
-  }
-
+linux {
+    contains(QMAKE_HOST.arch, x86_64) {
+        message("x86_64 (64bit) build")
+        DESTDIR = lib/amd64
+    } else {
+       message("x86 (32bit) build")
+       DESTDIR = lib/x86
+    }
+} else {
+    DESTDIR = lib/macx
+}

@@ -1,4 +1,3 @@
-
 HEADERS += include/tia/tia_server.h \
     include/tia/defines.h \
     include/tia/constants.h \
@@ -70,9 +69,7 @@ HEADERS += include/tia/tia_server.h \
     include/tia-private/newtia/filter_impl/downsampling_filterparam.h \
     include/tia/custom_signal_info.h
 
-contains( DEFINES, TIMING_TEST )::HEADERS += extern/include/LptTools/LptTools.h
-
-#---------------------------
+contains(DEFINES, TIMING_TEST)::HEADERS += extern/include/LptTools/LptTools.h
 
 SOURCES += src/tia/tia_server.cpp \
     src/tia/constants.cpp \
@@ -111,14 +108,17 @@ SOURCES += src/tia/tia_server.cpp \
     src/tia/newtia/tia_parse_and_build_helper_functions.cpp \
     src/tia/newtia/filter_impl/tia_customchannel_filterdecorator.cpp \
     src/tia/newtia/commands/set_custom_signalinfo_control_command.cpp \
-    src/tia/newtia/filter_impl/tia_downsampling_filterdecorator.cpp
+    src/tia/newtia/filter_impl/tia_downsampling_filterdecorator.cpp \
+    extern/ticpp/tinyxmlparser.cpp \
+    extern/ticpp/tinyxmlerror.cpp \
+    extern/ticpp/tinyxml.cpp \
+    extern/ticpp/tinystr.cpp \
+    extern/ticpp/ticpp.cpp
 
 unix {
-  contains( DEFINES, TIMING_TEST )::SOURCES += extern/include/LptTools/LptToolsLinux.cpp
+  contains(DEFINES, TIMING_TEST)::SOURCES += extern/include/LptTools/LptToolsLinux.cpp
 }
 
 win32 {
-  contains( DEFINES, TIMING_TEST )::SOURCES += extern/include/LptTools/LptTools_.cpp
+  contains(DEFINES, TIMING_TEST)::SOURCES += extern/include/LptTools/LptTools_.cpp
 }
-
-
