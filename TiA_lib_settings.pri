@@ -22,12 +22,12 @@ INCLUDEPATH += . \
 
 DEPENDPATH += $$INCLUDEPATH
 
-linux:QMAKE_CXXFLAGS += -pedantic
+unix:!macx: QMAKE_CXXFLAGS += -pedantic
 QMAKE_CXXFLAGS += -Wall
 
 macx:QMAKE_LFLAGS += -undefined dynamic_lookup
 
-linux {
+unix:!macx {
     contains(QMAKE_HOST.arch, x86_64) {
         message("x86_64 (64bit) build")
         DESTDIR = lib/amd64

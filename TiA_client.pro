@@ -21,14 +21,14 @@ INCLUDEPATH += . \
 DEPENDPATH += $$INCLUDEPATH
 INCLUDEPATH += extern/include
 
-linux:QMAKE_CXXFLAGS += -pedantic
+unix:!macx:QMAKE_CXXFLAGS += -pedantic
 QMAKE_CXXFLAGS += -Wall
 
 DESTDIR = bin
 
 SOURCES += src/tia_client_main.cpp
 
-linux {
+unix:!macx {
     LIBS += -Lextern/lib/ticpp/linux \
             -lboost_thread -lboost_system
 
