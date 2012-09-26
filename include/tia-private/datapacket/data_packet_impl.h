@@ -115,6 +115,7 @@ class DataPacketImpl :public DataPacket
     * @todo Check for memory leaks! (can occur, if raw_mem objects are built)
     */
     DataPacketImpl(const DataPacketImpl &src)
+      : DataPacket()
     {
       #ifdef DEBUG
         //std::cout << "DataPacketImpl::CopyConstr" << std::endl;

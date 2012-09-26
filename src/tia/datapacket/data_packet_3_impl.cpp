@@ -84,6 +84,7 @@ DataPacket3Impl::DataPacket3Impl()
 //-----------------------------------------------------------------------------
 
 DataPacket3Impl::DataPacket3Impl(const DataPacket3Impl &src)
+  : DataPacket()
 {
   version_ = src.version_;
   packet_id_ = src.packet_id_;

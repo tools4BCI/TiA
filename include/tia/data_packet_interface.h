@@ -104,8 +104,8 @@ class DataPacket
     DataPacket() {}
 
   private:
-    DataPacket(const DataPacket &src) { }
-    virtual DataPacket& operator=(const DataPacket &src)  {return *this;};
+    DataPacket(const DataPacket& /*src*/) { }
+    virtual DataPacket& operator=(const DataPacket& /*src*/)  {return *this;};
 
 
 };
