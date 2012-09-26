@@ -26,9 +26,7 @@ INCLUDEPATH += . \
 DEPENDPATH += $$INCLUDEPATH
 INCLUDEPATH += extern/include
 
-unix:QMAKE_CXXFLAGS += -pedantic
-QMAKE_CXXFLAGS_WARN_ON = -Wall \
-    -pedantic
+unix: QMAKE_CXXFLAGS_WARN_ON += -Wall -pedantic
 
 #--------------------------------------------------------------------
 

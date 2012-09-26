@@ -152,7 +152,7 @@ CustomSignalInfoPtr TiAClientImpl::getConfigAsCustomConfig() const
 }
 
 //-----------------------------------------------------------------------------
-bool TiAClientImpl::trySetCustomSignalInfo(CustomSignalInfoPtr custom_sig_info, std::string &error_msg)
+bool TiAClientImpl::trySetCustomSignalInfo(CustomSignalInfoPtr /*custom_sig_info*/, std::string& /*error_msg*/)
 {
     throw std::runtime_error("NOT implemented yet");
 }
@@ -376,7 +376,7 @@ void TiAClientImpl::closeDataConnection()
 
 //-----------------------------------------------------------------------------
 
-void TiAClientImpl::createDataConnection(bool use_udp)
+void TiAClientImpl::createDataConnection(bool /*use_udp*/)
 {
     //TODO: May implement, or use startReceiving(bool use_udp_bc) instead
     throw std::runtime_error("Not implemented yet. Use startReceiving(bool use_udp_bc) instead");

@@ -93,7 +93,7 @@ void BoostUDPReadSocket::setReceiveBufferSize (unsigned size)
 
 //-----------------------------------------------------------------------------
 
-string BoostUDPReadSocket::readUntil (char delimiter)
+string BoostUDPReadSocket::readUntil (char /*delimiter*/)
 {
 //  boost::system::error_code  error;
 
@@ -121,7 +121,7 @@ string BoostUDPReadSocket::readUntil (char delimiter)
 
 //-----------------------------------------------------------------------------
 
-string BoostUDPReadSocket::readUntil (std::string delimiter)
+string BoostUDPReadSocket::readUntil (std::string /*delimiter*/)
 {
 
 //  boost::system::error_code  error;
@@ -146,7 +146,6 @@ string BoostUDPReadSocket::readUntil (std::string delimiter)
 //    input_stream_.get();
 
   throw(TiAException("Error -- BoostUDPReadSocket::readUntil not supported yet!"));
-
   return(buffered_string_);
 }
 
@@ -201,16 +200,19 @@ void BoostUDPReadSocket::readBytes (unsigned num_bytes)
 
   boost::system::error_code error;
 
+  if (error)
+    throw TiALostConnection ("BoostUDPReadSocket");
+
+  unsigned int received = 0;
+
+  while(received < num_bytes)
+  {
+    socket_->receive (boost::asio::buffer (rec_buffer_), 0, error);
     if (error)
       throw TiALostConnection ("BoostUDPReadSocket");
 
-    unsigned received = socket_->receive (boost::asio::buffer (rec_buffer_), 0, error);
-    //std::cout << __FUNCTION__ << " received: " << received << "; data size = " << rec_buffer_.size()  <<  std::endl;
-    if (error)
-    {
-      throw TiALostConnection ("BoostUDPReadSocket");
-    }
     buffered_string_.append (rec_buffer_.data(), received);
+  }
 }
 
 //-----------------------------------------------------------------------------

@@ -346,7 +346,7 @@ vector<double> DataPacketImpl::getSingleDataBlock(boost::uint32_t flag)
 
 //-----------------------------------------------------------------------------
 
-void DataPacketImpl::removeDataBlock(boost::uint32_t flag)
+void DataPacketImpl::removeDataBlock(boost::uint32_t /*flag*/)
 {
     throw std::runtime_error("NOT IMPLEMENTED DUE TO OLD TIA VERSION");
 }
