@@ -146,8 +146,7 @@ void DownsamplingFilterDecorator::applyFilter(DataPacket &packet)
 
       if(bs_new)
       {
-        // FIXXXME: warning: ISO C++ forbids variable length array 'buffer'
-        double buffer [bs_new * nr_of_channels];
+        double *buffer = new double[bs_new * nr_of_channels];
 
         //now start with the first downsampled sample
         //and take every ds. sample
@@ -183,6 +182,8 @@ void DownsamplingFilterDecorator::applyFilter(DataPacket &packet)
         packet.removeDataBlock(signal_filter.first);
 
         packet.insertDataBlock(filtered_samples,signal_filter.first,bs_new);
+
+        delete[] buffer;
       }
       else
       {
