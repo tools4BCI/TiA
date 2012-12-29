@@ -146,39 +146,19 @@ void DownsamplingFilterDecorator::applyFilter(DataPacket &packet)
 
       if(bs_new)
       {
-        // FIXXXME: warning: ISO C++ forbids variable length array 'buffer'
-        double buffer [bs_new * nr_of_channels];
 
-        //now start with the first downsampled sample
-        //and take every ds. sample
-        for(; sample_pos < bs_old; sample_pos += ds)
+        //take every ds. sample of each channel of this signal type
+        for(chan_nr = 0; chan_nr < nr_of_channels; ++chan_nr)
         {
-          //take every ds. sample of each channel of this signal type
-          for(chan_nr = 0; chan_nr < nr_of_channels; ++chan_nr)
-            buffer[sample_pos / ds + chan_nr * bs_new] = filtered_samples[sample_pos + chan_nr * bs_old];
+            //now start with the first downsampled sample
+            //and take every ds. sample
+            for(; sample_pos < bs_old; sample_pos += ds)
+                filtered_samples[sample_pos / ds + chan_nr * bs_new] = filtered_samples[sample_pos + chan_nr * bs_old];
         }
 
-        //for faster performance extract the vectors underlying array
-        double *filtered_samples_ptr = &(filtered_samples[0]);
-
-        //                std::cout << "new values: ";
-
-        //                for (int var = 0; var < bs_new * nr_of_channels; ++var) {
-        //                    std::cout << ", " << buffer[var];
-        //                }
-        //                std::cout << std::endl;
-
-        //finally copy the buffer back to the vector and
         //adjust the vectors size
-        memcpy(filtered_samples_ptr, buffer,sizeof(double) * bs_new * nr_of_channels);
         filtered_samples.resize(bs_new * nr_of_channels);
 
-        //                std::cout << "new values in vector: ";
-
-        //                for (int var = 0; var < filtered_samples.size(); ++var) {
-        //                    std::cout << ", " << filtered_samples[var];
-        //                }
-        //                std::cout << std::endl;
 
         packet.removeDataBlock(signal_filter.first);
 

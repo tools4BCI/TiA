@@ -18,7 +18,7 @@ public:
     {
         for(boost::uint16_t chan_idx = 0; chan_idx < num_channels; ++chan_idx)
         {
-            lpf_.push_back(new IIRButterLpf<double>(sampling_rate,((double)sampling_rate) / 2.0  / ds_factor,5,4 ));
+            lpf_.push_back(new IIRButterLpf<double>(sampling_rate,((double)sampling_rate) / (2.0 /* *5.0*/ * ((double)ds_factor)),5,16 ));
         }
     }
 
