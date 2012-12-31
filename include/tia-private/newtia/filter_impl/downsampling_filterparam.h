@@ -3,6 +3,8 @@
 
 #include "extern/include/filterTools/BasicFilter.h"
 #include "extern/include/filterTools/iirbutterlpf.h"
+#include "extern/include/filterTools/iirchebylpf.h"
+
 
 #include <boost/cstdint.hpp>
 
@@ -16,9 +18,16 @@ public:
                             boost::uint16_t sample_counter, boost::uint16_t num_channels) :
         sampling_rate_(sampling_rate), ds_factor_(ds_factor), sample_counter_(sample_counter)
     {
+
+        double cut_off_frequz = 0.8 * ((double)sampling_rate) / 2.0 / ((double)ds_factor);
+
         for(boost::uint16_t chan_idx = 0; chan_idx < num_channels; ++chan_idx)
         {
-            lpf_.push_back(new IIRButterLpf<double>(sampling_rate,((double)sampling_rate) / (2.0 /* *5.0*/ * ((double)ds_factor)),5,16 ));
+            BasicFilter<double> *chan_lpf = new IIRButterLpf<double>(sampling_rate, cut_off_frequz, 5, 8 );
+
+//            BasicFilter<double> *chan_lpf = new IIRChebyLpf<double>(false,sampling_rate, cut_off_frequz ,0.5,8,false);
+
+            lpf_.push_back(chan_lpf);
         }
     }
 

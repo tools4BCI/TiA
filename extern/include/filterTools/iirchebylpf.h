@@ -61,10 +61,10 @@ template<typename T> IIRChebyLpf<T>::IIRChebyLpf(bool cheby2, double sampling_ra
     if(order%2 != 0)
       throw(std::invalid_argument("Using ZeroPhase filtering, order has to be an even number!"));
 
-    lpf_ = new SPUC::chebyshev(cutoff_freq/sampling_rate, order/2, ripple);
+    lpf_ = new SPUC::chebyshev<T>(cutoff_freq/sampling_rate, order/2, ripple);
   }
   else
-    lpf_ = new SPUC::chebyshev(cutoff_freq/sampling_rate, order, ripple);
+    lpf_ = new SPUC::chebyshev<T>(cutoff_freq/sampling_rate, order, ripple);
 }
 
 //----------------------------------------------------------------------------------
@@ -86,7 +86,7 @@ template<typename T> void IIRChebyLpf<T>::filter(std::vector<T>& in, std::vector
     throw(std::invalid_argument("IIRChebyLpf::filter -- In- and out vector sizes different!"));
 
   for(unsigned int n =0; n < in.size(); n++)
-    out[n] = lpf_.clock(in[n]);
+    out[n] = lpf_->clock(in[n]);
 
   if(!zero_phase_)
     return;
