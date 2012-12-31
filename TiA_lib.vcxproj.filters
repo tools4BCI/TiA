@@ -128,6 +128,21 @@
     <ClCompile Include="src\tia\clock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tia\newtia\tia_parse_and_build_helper_functions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tia\newtia\tia_custom_signal_info_parse_and_build_functions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tia\newtia\commands\set_custom_signalinfo_control_command.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tia\newtia\filter_impl\tia_customchannel_filterdecorator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tia\newtia\filter_impl\tia_downsampling_filterdecorator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\tia\ss_meta_info.h">
