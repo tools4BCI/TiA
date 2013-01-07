@@ -50,21 +50,16 @@ DownsamplingFilterDecorator::DownsamplingFilterDecorator(CustomPacketFilterPtr d
       }
       else if(rational_ds_factor > 1)
       {
-        //                std::cout << "Adding signal " << mod_signal_it->first << " with ds factor" << rational_ds_factor << "!" << std::endl;
+        //  std::cout << "Adding signal " << mod_signal_it->first << " with ds factor" << rational_ds_factor << "!" << std::endl;
 
-
-        //TODO: handle out of memory!
         DownsamplingFilterParam *ds_param = new DownsamplingFilterParam ( signal_fs ,
                                                                           (boost::uint16_t)rational_ds_factor, 0,
                                                                           mod_signal_it->second.channels().size());
-
-
-
-        //                std::pair<boost::uint32_t, DownsamplingFilterParam > new_filter
-        //                        (constants_.getSignalFlag(mod_signal_it->first),
-        //                         ds_param);
-
-        //                ds_filters_.insert(new_filter);
+        // test out of memory
+        if(ds_param == NULL)
+        {
+            throw runtime_error("Ran out of memory during creating downsamlpingfilterdecorator.");
+        }
 
         ds_filters_[constants_.getSignalFlag(mod_signal_it->first)] = ds_param;
 
@@ -108,8 +103,6 @@ void DownsamplingFilterDecorator::applyFilter(DataPacket &packet)
       //            std::cout << " with " << nr_of_channels << " channels and blocksize "<< bs_old <<"." << std::endl;
 
       std::vector<double> filtered_samples (signal_samples.size());
-      //TODO: delete after testing and uncomment line before
-      //std::vector<double> filtered_samples (signal_samples.begin(), signal_samples.end());
 
       DownsamplingFilterParam *filter_params = signal_filter.second;
 
