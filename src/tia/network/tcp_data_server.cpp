@@ -98,7 +98,7 @@ void TCPDataConnection::sendDataPacket(DataPacket& packet)
   void* data = NULL;
   uint32_t size = 0;
 
-  if( packet_filter_.get() != NULL && packet_filter_->isApplicable())
+  if( packet_filter_.get() != NULL && packet_filter_->hasConfiguredWork())
   {
       DataPacket3Impl *packet_3impl = dynamic_cast<DataPacket3Impl *>(&packet);
 

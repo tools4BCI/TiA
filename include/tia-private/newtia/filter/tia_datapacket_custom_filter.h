@@ -24,8 +24,6 @@ public:
 
     virtual const SignalInfo &getSignalInfoAfterFiltering() = 0;
 
-    virtual bool isApplicable() = 0;
-
     virtual bool hasConfiguredWork() = 0;
 
 protected:
@@ -54,11 +52,6 @@ public:
         return default_sig_info_;
     }
 
-    virtual bool isApplicable()
-    {
-        return true;
-    }
-
     virtual bool hasConfiguredWork()
     {
         return false;
@@ -73,17 +66,13 @@ class CustomPacketFilterDecorator : public CustomPacketFilter
 public:
     CustomPacketFilterDecorator(CustomPacketFilterPtr decorated_filter)
         : CustomPacketFilter(decorated_filter->getSignalInfoAfterFiltering(), decorated_filter->custom_sig_info_ptr_),
-          decorated_filter_ (decorated_filter), is_applicable_(false), has_configured_work_ (false)
+          decorated_filter_ (decorated_filter), has_configured_work_ (false)
     { }
 
     virtual void applyFilter(DataPacket &packet) = 0;
 
     virtual const SignalInfo &getSignalInfoAfterFiltering() = 0;
 
-    virtual bool isApplicable()
-    {
-        return is_applicable_;
-    }
 
     virtual bool hasConfiguredWork()
     {
@@ -93,7 +82,6 @@ public:
 
 protected:
     CustomPacketFilterPtr decorated_filter_;
-    bool is_applicable_;
     bool has_configured_work_;
 };
 

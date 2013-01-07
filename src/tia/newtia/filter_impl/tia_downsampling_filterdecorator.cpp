@@ -75,8 +75,6 @@ DownsamplingFilterDecorator::DownsamplingFilterDecorator(CustomPacketFilterPtr d
     }
   }
 
-  is_applicable_ = true;
-
   has_configured_work_ = ds_filters_.size() > 0;
 }
 
@@ -109,25 +107,17 @@ void DownsamplingFilterDecorator::applyFilter(DataPacket &packet)
 
       //            std::cout << " with " << nr_of_channels << " channels and blocksize "<< bs_old <<"." << std::endl;
 
-      //            std::vector<double> filtered_samples (signal_samples.size());
+      std::vector<double> filtered_samples (signal_samples.size());
       //TODO: delete after testing and uncomment line before
-      std::vector<double> filtered_samples (signal_samples.begin(), signal_samples.end());
+      //std::vector<double> filtered_samples (signal_samples.begin(), signal_samples.end());
 
       DownsamplingFilterParam *filter_params = signal_filter.second;
 
-      //            BasicFilter<double> *lpf = filter_params->getLpFilter();
-
-      //TODO: uncomment after testing!
-      filter_params->filter(signal_samples,filtered_samples,bs_old);
-
-      //            lpf->filter(signal_samples, filtered_samples);
+      filter_params->filter(signal_samples,filtered_samples,bs_old);      
 
       boost::uint16_t sc = filter_params->getSampleCounter();
       boost::uint16_t ds = filter_params->getDsFactor();
       boost::uint16_t chan_nr = 0;
-
-      //position of first downsampled channel within this datablock
-      boost::uint16_t sample_pos = (sc == 0 ? 0 : ds - sc);
 
       //calculate new block size after downsampling this data block
       //therefore start with last taken sample (= modeled with sc) and add
@@ -150,6 +140,9 @@ void DownsamplingFilterDecorator::applyFilter(DataPacket &packet)
         //take every ds. sample of each channel of this signal type
         for(chan_nr = 0; chan_nr < nr_of_channels; ++chan_nr)
         {
+            //position of first downsampled channel within this datablock
+            boost::uint16_t sample_pos = (sc == 0 ? 0 : ds - sc);
+
             //now start with the first downsampled sample
             //and take every ds. sample
             for(; sample_pos < bs_old; sample_pos += ds)

@@ -62,7 +62,7 @@ TiAControlMessage SetCustomSignalInfoControlCommand::execute(const TiAControlMes
             connection_.getPacketFilter().get();
 
     if(packet_filter != NULL)
-        return CustomErrorControlMessage(version,"Details:This connection already has a custom config that can not be altered!");
+        return CustomErrorControlMessage(version,"Details:This connection has already a custom config that can not be altered!");
 
     content = command.getContent();
 

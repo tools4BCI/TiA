@@ -25,6 +25,7 @@
 #include "tia-private/newtia/filter/tia_datapacket_custom_filter.h"
 #include "tia-private/newtia/filter_impl/tia_customchannel_filterdecorator.h"
 #include "tia-private/newtia/filter_impl/tia_downsampling_filterdecorator.h"
+#include "tia-private/newtia/filter_impl/downsampling_filterparam.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -53,7 +54,6 @@ TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
 
     filter_chain = CustomPacketFilterPtr(new CustomChannelFilterDecorator(filter_chain));
 
-    CHECK(filter_chain->isApplicable());
     CHECK(filter_chain->hasConfiguredWork());
 
     filter_chain->applyFilter(packet_);
@@ -130,8 +130,13 @@ TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
     double eeg_2block_arr [] = {1.2, 2.2, 3.2, 4.2};
     std::vector<double> eeg_2block (eeg_2block_arr, eeg_2block_arr + 4);
 
-    double eeg_1block_target [] = {1.1, 2.1, 3.1, 4.1};
-//    double eeg_2block_target [] = {};
+    //double eeg_1block_target [] = {1.1, 2.1, 3.1, 4.1};
+    //double eeg_2block_target [] = {};
+    std::vector<double> eeg_1filtered (eeg_1block.size());
+
+    DownsamplingFilterParam eeg_filter_params (500,2,0,4);
+    eeg_filter_params.filter(eeg_1block,eeg_1filtered,1);
+
 
     double eog_1block_arr [] = {1.1, 1.2, 2.1, 2.2};
     std::vector<double> eog_1block (eog_1block_arr, eog_1block_arr + 4);
@@ -142,6 +147,21 @@ TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
     double eog_1block_target [] = {1.1, 2.1};
     double eog_2block_target [] = {1.4, 2.4};
 
+
+    std::vector<double> eog_1filtered (eog_1block.size());
+    std::vector<double> eog_2filtered (eog_2block.size());
+
+    DownsamplingFilterParam eog_filter_params (300,3,0,2);
+
+    eog_filter_params.filter(eog_1block,eog_1filtered,2);
+    eog_1block_target[0] = eog_1filtered[0];
+    eog_1block_target[1] = eog_1filtered[2];
+
+    eog_filter_params.filter(eog_2block,eog_2filtered,2);
+    eog_2block_target[0] = eog_2filtered[1];
+    eog_2block_target[1] = eog_2filtered[3];
+
+
     double emg_1block_arr [] = {1.1, 1.2, 1.3, 2.1, 2.2, 2.3};
     std::vector<double> emg_1block (emg_1block_arr, emg_1block_arr + 6);
 
@@ -151,6 +171,23 @@ TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
     double emg_1block_target [] = {1.1, 1.3, 2.1, 2.3};
     double emg_2block_target [] = {1.5, 2.5};
 
+
+    std::vector<double> emg_1filtered (emg_1block.size());
+    std::vector<double> emg_2filtered (emg_2block.size());
+
+    DownsamplingFilterParam emg_filter_params (60,2,0,2);
+
+    emg_filter_params.filter(emg_1block,emg_1filtered,3);
+    emg_1block_target[0] = emg_1filtered[0];
+    emg_1block_target[1] = emg_1filtered[2];
+    emg_1block_target[2] = emg_1filtered[3];
+    emg_1block_target[3] = emg_1filtered[5];
+
+    emg_filter_params.filter(emg_2block,emg_2filtered,3);
+    emg_2block_target[0] = emg_2filtered[1];
+    emg_2block_target[1] = emg_2filtered[4];
+
+
     ds_1packet.insertDataBlock(eeg_1block,SIG_EEG,1);
     ds_1packet.insertDataBlock(eog_1block,SIG_EOG,2);
     ds_1packet.insertDataBlock(emg_1block,SIG_EMG,3);
@@ -158,12 +195,15 @@ TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
     filter->applyFilter(ds_1packet);
 
     tmp = ds_1packet.getSingleDataBlock(SIG_EEG);
-    CHECK_ARRAY_EQUAL(eeg_1block_target, tmp, tmp.size());
+    CHECK_EQUAL(4u,tmp.size());
+    CHECK_ARRAY_EQUAL(eeg_1filtered, tmp, tmp.size());
 
     tmp = ds_1packet.getSingleDataBlock(SIG_EOG);
+    CHECK_EQUAL(2u,tmp.size());
     CHECK_ARRAY_EQUAL(eog_1block_target, tmp, tmp.size());
 
     tmp = ds_1packet.getSingleDataBlock(SIG_EMG);
+    CHECK_EQUAL(4u,tmp.size());
     CHECK_ARRAY_EQUAL(emg_1block_target, tmp, tmp.size());
 
 
@@ -176,9 +216,11 @@ TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
     CHECK_THROW(ds_2packet.getSingleDataBlock(SIG_EEG), std::invalid_argument);
 
     tmp = ds_2packet.getSingleDataBlock(SIG_EOG);
+    CHECK_EQUAL(2u,tmp.size());
     CHECK_ARRAY_EQUAL(eog_2block_target, tmp, tmp.size());
 
     tmp = ds_2packet.getSingleDataBlock(SIG_EMG);
+    CHECK_EQUAL(2u,tmp.size());
     CHECK_ARRAY_EQUAL(emg_2block_target, tmp, tmp.size());
 
 }

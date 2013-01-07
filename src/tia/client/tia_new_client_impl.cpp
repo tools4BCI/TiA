@@ -214,8 +214,6 @@ void TiANewClientImpl::createDataConnection(bool use_udp_bc)
   }
 
   data_packet_parser.reset(new TiADataPacketParser(*data_socket_) );
-
-    data_packet_parser.reset(new TiADataPacketParser(*data_socket_) );
 }
 
 //-----------------------------------------------------------------------------

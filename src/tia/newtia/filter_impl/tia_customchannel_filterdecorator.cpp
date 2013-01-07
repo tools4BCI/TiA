@@ -52,7 +52,7 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilterPtr
                         if(channel_it->id() != custom_channel.id())
                         {
                             //custom signal info is invalid
-                            has_configured_work_ = is_applicable_ = false;
+                            has_configured_work_ = false;
                             std::cerr << "Signal " << mod_signal_it->first << ": Inkonsistent channels!" << std::endl;
 
                             return;
@@ -86,8 +86,6 @@ CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilterPtr
             ++mod_signal_it;
         }
     }
-
-    is_applicable_ = true;
 
     has_configured_work_ = (signals_to_exclude_.size() > 0 || channels_to_exclude_.size() > 0);
 
