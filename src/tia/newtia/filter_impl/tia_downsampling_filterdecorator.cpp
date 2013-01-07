@@ -44,8 +44,6 @@
 #include "tia-private/newtia/tia_exceptions.h"
 #include "tia/constants.h"
 
-#include "extern/include/filterTools/iirbutterlpf.h"
-
 namespace tia
 {
 

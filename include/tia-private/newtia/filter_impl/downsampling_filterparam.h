@@ -35,9 +35,9 @@
 #ifndef DOWNSAMPLING_FILTERPARAM_H
 #define DOWNSAMPLING_FILTERPARAM_H
 
-#include "extern/include/filterTools/BasicFilter.h"
-#include "extern/include/filterTools/iirbutterlpf.h"
-#include "extern/include/filterTools/iirchebylpf.h"
+#include "filterTools/BasicFilter.h"
+#include "filterTools/iirbutterlpf.h"
+#include "filterTools/iirchebylpf.h"
 
 
 #include <boost/cstdint.hpp>
