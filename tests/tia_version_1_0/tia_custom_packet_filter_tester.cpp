@@ -223,6 +223,53 @@ TEST_FIXTURE(TiACustomFilterTests, TiAChannelFilterTest)
     CHECK_EQUAL(2u,tmp.size());
     CHECK_ARRAY_EQUAL(emg_2block_target, tmp, tmp.size());
 
+
+    //-----------------------------------------------------------------------------
+    //check customized meta info
+
+
+    std::string target_meta_info = "<tiaMetaInfo version=\"1.0\">\n"
+                                "\t<subject/>\n"
+                                "\t<masterSignal samplingRate=\"100\" blockSize=\"2\"/>\n"
+                                "\t<signal type=\"emg\" samplingRate=\"30\" blockSize=\"3\" numChannels=\"2\">\n"
+                                    "\t\t<channel nr=\"1\" label=\"C\"/>\n"
+                                    "\t\t<channel nr=\"2\" label=\"D\"/>\n"
+                                "\t</signal>\n"
+                                "\t<signal type=\"eog\" samplingRate=\"100\" blockSize=\"2\" numChannels=\"1\">\n"
+                                    "\t\t<channel nr=\"1\" label=\"A\"/>\n"
+                                "\t</signal>\n"
+                               "</tiaMetaInfo>\n\n";
+
+    custom_str = "<tiaCustomSignalInfo version=\"1.0\">\n"
+                            "\t<masterSignal samplingRate=\"500\" blockSize=\"1\"/>\n"
+                            "\t<signal type=\"eog\" samplingRate=\"300\" blockSize=\"2\" downsamplingFactor=\"3\" numChannels=\"1\">\n"
+                                "\t\t<channel nr=\"1\" label=\"A\"/>\n"
+                            "\t</signal>\n"
+                            "\t<signal type=\"emg\" samplingRate=\"60\" blockSize=\"3\" downsamplingFactor=\"2\" numChannels=\"2\">\n"
+                                "\t\t<channel nr=\"1\" label=\"C\"/>\n"
+                                "\t\t<channel nr=\"2\" label=\"D\"/>\n"
+                            "\t</signal>\n"
+                           "</tiaCustomSignalInfo>\n\n";
+    //-----------------------------------------------------------------------------
+    custom_sig_info_= parseTiACustomSignalInfoFromXMLString(custom_str, default_sig_info_);
+
+    CustomPacketFilterPtr filter_queue (new DummyCustomPacketFilter(default_sig_info_, custom_sig_info_));
+
+    filter_queue = CustomPacketFilterPtr(new CustomChannelFilterDecorator(filter_queue));
+
+    filter_queue = CustomPacketFilterPtr(new DownsamplingFilterDecorator(filter_queue));
+
+
+    CHECK(filter_queue->hasConfiguredWork());
+
+    SSConfig result_meta_info;
+
+    result_meta_info.signal_info = filter_queue->getSignalInfoAfterFiltering();
+
+    std::string meta_info_result_str = buildTiAMetaInfoXMLString(result_meta_info);
+
+    CHECK_ARRAY_EQUAL(target_meta_info,meta_info_result_str,target_meta_info.length());
+
 }
 
 }

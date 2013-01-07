@@ -40,6 +40,11 @@
 #include "../tia_meta_info_parse_and_build_functions.h"
 #include "../server_impl/control_connection_2.h"
 
+
+#include <iostream>
+
+#include <boost/current_function.hpp>
+
 namespace tia
 {
 
@@ -55,13 +60,21 @@ public:
 
     virtual TiAControlMessage execute (TiAControlMessage const& command)
     {
+
+        #ifdef DEBUG
+            std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+        #endif
+
         SSConfig default_meta_info = command_context_.getHardwareInterface().getTiAMetaInfo();
 
         CustomPacketFilter *packet_filter =
                 connection_.getPacketFilter().get();
 
-        std::cout << "Default meta info:" <<
-                     buildTiAMetaInfoXMLString (default_meta_info) << std::endl << std::endl;
+        #ifdef DEBUG
+            std::cout << "Default meta info:" <<
+                         buildTiAMetaInfoXMLString (default_meta_info) << std::endl;
+        #endif
+
 
         if(packet_filter != NULL)
         {
@@ -69,8 +82,10 @@ public:
 
             default_meta_info.signal_info = custom_sig_info;
 
-            std::cout << "Custom meta info:" <<
-                         buildTiAMetaInfoXMLString (default_meta_info) << std::endl << std::endl;
+            #ifdef DEBUG
+                std::cout << "Custom meta info:" <<
+                             buildTiAMetaInfoXMLString (default_meta_info) << std::endl;
+            #endif
         }
 
         std::string xml = buildTiAMetaInfoXMLString (default_meta_info);

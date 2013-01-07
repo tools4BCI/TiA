@@ -41,6 +41,8 @@
 
 #include <iostream>
 
+#include <boost/current_function.hpp>
+
 namespace tia
 {
 
@@ -74,7 +76,13 @@ class DummyCustomPacketFilter : public CustomPacketFilter
 public:
     DummyCustomPacketFilter(const SignalInfo &default_info, const CustomSignalInfoPtr custom_info_ptr)
         : CustomPacketFilter(default_info, custom_info_ptr)
-    { }
+    {
+
+        #ifdef DEBUG
+            std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+        #endif
+
+    }
 
 
     virtual void applyFilter(DataPacket &)

@@ -41,6 +41,7 @@
 
 #include <boost/foreach.hpp>
 #include <boost/cast.hpp>
+#include <boost/current_function.hpp>
 
 namespace tia
 {
@@ -48,6 +49,12 @@ namespace tia
 CustomChannelFilterDecorator::CustomChannelFilterDecorator(CustomPacketFilterPtr decorated_filter)
     : CustomPacketFilterDecorator(decorated_filter)
 {  
+
+    #ifdef DEBUG
+        std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+    #endif
+
+
     CustomSignalInfo::CustomSignalMap custom_signals = custom_sig_info_ptr_->signals();
 
     modified_signal_info_ = default_sig_info_;

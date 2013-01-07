@@ -34,6 +34,9 @@
 
 #include "tia-private/newtia/filter_impl/tia_downsampling_filterdecorator.h"
 
+#include <iostream>
+
+#include <boost/current_function.hpp>
 #include <boost/foreach.hpp>
 #include <boost/cast.hpp>
 #include <string>
@@ -44,32 +47,34 @@
 #include "tia-private/newtia/tia_exceptions.h"
 #include "tia/constants.h"
 
+#include "tia-private/newtia/tia_meta_info_parse_and_build_functions.h"
+
 namespace tia
 {
 
 DownsamplingFilterDecorator::DownsamplingFilterDecorator(CustomPacketFilterPtr decorated_filter)
   : CustomPacketFilterDecorator(decorated_filter)
 {
+
+  #ifdef DEBUG
+      std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+  #endif
+
   CustomSignalInfo::CustomSignalMap custom_signals = custom_sig_info_ptr_->signals();
 
-  modified_signal_info_ = default_sig_info_;
+  boost::uint16_t master_sr = 0, master_bs = 1;
 
+  modified_signal_info_ = default_sig_info_;    
 
   for(SignalInfo::SignalMap::iterator mod_signal_it = modified_signal_info_.signals().begin();
       mod_signal_it != modified_signal_info_.signals().end();)
-  {
+  {      
 
     CustomSignalInfo::CustomSignalMap::iterator custom_signal = custom_signals.find(mod_signal_it->first);
 
-    if(custom_signal == custom_signals.end())
+    if(custom_signal != custom_signals.end())
     {
-      std::cout << "Signal " << mod_signal_it->first << " is not present in custom config!" << std::endl;
-      ++mod_signal_it;
-    }
-    else
-    {
-      double signal_fs = mod_signal_it->second.samplingRate();
-      //            double rational_ds_factor = signal_fs / ((double)custom_signal->second.samplingRate());
+      double signal_fs = mod_signal_it->second.samplingRate();      
 
       double rational_ds_factor = custom_signal->second.DSFactor();
 
@@ -96,11 +101,26 @@ DownsamplingFilterDecorator::DownsamplingFilterDecorator(CustomPacketFilterPtr d
         ds_filters_[constants_.getSignalFlag(mod_signal_it->first)] = ds_param;
 
         mod_signal_it->second.setSamplingRate(custom_signal->second.samplingRate() / (boost::uint16_t)rational_ds_factor);
-      }
-
-      ++mod_signal_it;
+      }      
     }
+    #ifdef DEBUG
+    else
+        std::cout << "Signal " << mod_signal_it->first << " is not present in custom config!" << std::endl;
+    #endif
+
+    // determine a new master sampling rate for the modified signal info on the fly
+    if(mod_signal_it->second.samplingRate() / mod_signal_it->second.blockSize() > master_sr / master_bs)
+    {
+      master_sr = mod_signal_it->second.samplingRate();
+      master_bs = mod_signal_it->second.blockSize();
+    }
+
+    ++mod_signal_it;
+
   }
+
+  modified_signal_info_.setMasterSamplingRate(master_sr);
+  modified_signal_info_.setMasterBlockSize(master_bs);
 
   has_configured_work_ = ds_filters_.size() > 0;
 }
@@ -154,7 +174,7 @@ void DownsamplingFilterDecorator::applyFilter(DataPacket &packet)
       //thus it has to be added and we get the new block size
       bs_new += (sc == 0 ? 1 : 0);
 
-      //            std::cout << "bs_new: " << bs_new << ", sc: " << sc << ", ds: " << ds << ", channels: " << nr_of_channels << std::endl;
+//          std::cout << "bs_new: " << bs_new << ", sc: " << sc << ", ds: " << ds << ", channels: " << nr_of_channels << std::endl;
 
       //update sample counter for next packet
       filter_params->setSampleCounter((sc + bs_old) % ds);

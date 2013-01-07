@@ -44,6 +44,9 @@
 #include <iostream>
 #include <stdexcept>
 
+#include <boost/current_function.hpp>
+
+
 using std::string;
 
 namespace tia
@@ -51,6 +54,11 @@ namespace tia
 
 TiAControlMessage SetCustomSignalInfoControlCommand::execute(const TiAControlMessage &command)
 {
+
+    #ifdef DEBUG
+            std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+    #endif
+
     string version = command.getVersion();
 
     string content;
@@ -65,8 +73,6 @@ TiAControlMessage SetCustomSignalInfoControlCommand::execute(const TiAControlMes
         return CustomErrorControlMessage(version,"Details:This connection has already a custom config that can not be altered!");
 
     content = command.getContent();
-
-//    std::cout << "execute setCustomSignalInfo: " << std::endl << content << std::endl;
 
     const SSConfig &meta_info = command_context_.getHardwareInterface().getTiAMetaInfoAsConstRef();
 
@@ -88,22 +94,30 @@ TiAControlMessage SetCustomSignalInfoControlCommand::execute(const TiAControlMes
 
         if(channel_filter_ptr->hasConfiguredWork())
             filter_chain_ptr = channel_filter_ptr;
+    #ifdef DEBUG
         else
             std::cout << "SetCustomSignalInfoControlCommand::NO channel filtering necessary.. " << std::endl;
+    #endif
 
         CustomPacketFilterPtr downsampling_filter_ptr =
                 CustomPacketFilterPtr(new DownsamplingFilterDecorator(filter_chain_ptr));
 
         if(downsampling_filter_ptr->hasConfiguredWork())
             filter_chain_ptr = downsampling_filter_ptr;
+    #ifdef DEBUG
         else
-            std::cout << "SetCustomSignalInfoControlCommand::NO downsampling necessary.. " << std::endl;
+             std::cout << "SetCustomSignalInfoControlCommand::NO downsampling necessary.. " << std::endl;
+    #endif
 
 
-        if(filter_chain_ptr.get() == dummy_filter_ptr)
-            std::cout << "SetCustomSignalInfoControlCommand::NO customization necessary.." << std::endl;
-        else
+
+        if(filter_chain_ptr.get() != dummy_filter_ptr)
             connection_.setPacketFilter(filter_chain_ptr);
+    #ifdef DEBUG
+        else
+            std::cout << "SetCustomSignalInfoControlCommand::NO customization necessary.." << std::endl;
+     #endif
+
 
         return OkControlMessage(version);
 

@@ -124,9 +124,9 @@ DataPacket3Impl& DataPacket3Impl::operator=(const DataPacket3Impl &src)
 
 void DataPacket3Impl::reset(void* mem)
 {
-  #ifdef DEBUG
-      std::cout << BOOST_CURRENT_FUNCTION << std::endl;
-  #endif
+//  #ifdef DEBUG
+//      std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+//  #endif
 
   flags_ = 0;
   connection_packet_nr_ = 0;
@@ -198,9 +198,9 @@ DataPacket3Impl::~DataPacket3Impl()
 
 void DataPacket3Impl::reset()
 {
-  #ifdef DEBUG
-    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
-  #endif
+//  #ifdef DEBUG
+//    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
+//  #endif
 
   flags_ = 0;
   connection_packet_nr_ = 0;
