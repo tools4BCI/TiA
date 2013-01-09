@@ -283,7 +283,7 @@ class SignalInfo
 
     void setMasterBlockSize(boost::uint16_t size) { master_block_size_ = size; }
 
-#ifdef USE_PRAGMA_SIGNALHACK
+#ifdef TIA_PRAGMA_SIGNALHACK
     #pragma push_macro("signals")
     #undef signals
 #else
@@ -302,7 +302,7 @@ class SignalInfo
     boost::uint16_t  master_sampling_rate_;   ///<
     SignalMap signals_;                       ///<
 
-#ifdef USE_PRAGMA_SIGNALHACK
+#ifdef TIA_PRAGMA_SIGNALHACK
     #pragma pop_macro("signals")
 #else
     #ifdef SIGNAL_INFO_HELPER
