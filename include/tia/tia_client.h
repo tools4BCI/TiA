@@ -174,6 +174,8 @@ public:
    * @brief Establishes a DataConnection to the server either
    * using udp (if use_udp is set) or tcp as underlying protocol.
    * The caller will be blocked until the DataConnection is established or an error has occurred.
+   * Attention: UDP is not supported with a custom signalinfo and the server will therefore return
+   *            an error.
    * @param use_udp if \c true data will be received via UDP broadcast instead of TCP
    * @throw std::ios_base::failure if the client is not connected or if an error occurred
    * \sa startReceiving(), stopReceiving(), receiving(), getDataPacket()

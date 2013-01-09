@@ -67,6 +67,10 @@ TiAControlMessage GetDataConnectionControlCommand::execute (TiAControlMessage co
       if(target != remote)
         return CustomErrorControlMessage (version,
                                           "Target and remote subnet do not match!");
+      // check if the client wants to receive custom data packets
+      else if(connection_.getPacketFilter() != NULL)
+          return CustomErrorControlMessage (version,
+                                            "UDP with a custom signalinfo is not supported!");
       else
         data_connection = data_server_.addConnection (true, connection_.getPacketFilter());
     }
