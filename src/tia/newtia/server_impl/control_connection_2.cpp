@@ -144,7 +144,7 @@ void ControlConnection2::run ()
 
             socket_->sendString (response);
         }
-        catch (TiALostConnection& exc)
+        catch (TiALostConnection& /*exc*/)
         {
             //std::cout << "ServerControlConnection::run lost connection to client: \"" << exc.what() << "\"" << std::endl;
             running_ = false;

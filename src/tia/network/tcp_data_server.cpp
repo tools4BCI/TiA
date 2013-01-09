@@ -255,7 +255,7 @@ boost::asio::ip::tcp::endpoint TCPDataServer::addConnection()
     connection->bind(0);
     local_endpoint = connection->localEndpoint();
   }
-  catch (boost::exception& e)
+  catch (boost::exception& /*e*/)
   {
     throw (std::runtime_error("Could not bind socket - adding new connection failed"));
   }

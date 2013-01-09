@@ -334,5 +334,26 @@
     <ClInclude Include="include\tia\tia_client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\tia\custom_signal_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tia-private\newtia\commands\set_custom_signalinfo_control_command.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tia-private\newtia\filter\tia_datapacket_custom_filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tia-private\newtia\filter_impl\downsampling_filterparam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tia-private\newtia\filter_impl\tia_downsampling_filterdecorator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tia-private\newtia\filter_impl\tia_customchannel_filterdecorator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tia-private\newtia\tia_custom_signal_info_parse_and_build_functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

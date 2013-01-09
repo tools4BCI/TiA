@@ -73,6 +73,12 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">tiad</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">tia</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">tia</TargetName>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Program Files\boost\boost_1_52_0\boost;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Program Files\boost\boost_1_52_0\stage\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\boost\boost_1_51_0_speed_mt;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\boost\boost_1_51_0_speed_mt\lib_64;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\boost\boost_1_51_0_speed_mt;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\boost\boost_1_51_0_speed_mt\lib_64;$(VCInstallDir)lib\amd64;$(VCInstallDir)atlmfc\lib\amd64;$(WindowsSdkDir)lib\x64;</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -213,8 +219,13 @@
     <ClInclude Include="include\tia-private\newtia\commands\get_data_connection_control_command.h" />
     <ClInclude Include="include\tia-private\newtia\commands\get_metainfo_control_command.h" />
     <ClInclude Include="include\tia-private\newtia\commands\get_serverstate_connection_command.h" />
+    <ClInclude Include="include\tia-private\newtia\commands\set_custom_signalinfo_control_command.h" />
     <ClInclude Include="include\tia-private\newtia\commands\start_data_transmission_control_command.h" />
     <ClInclude Include="include\tia-private\newtia\commands\stop_data_transmission_control_command.h" />
+    <ClInclude Include="include\tia-private\newtia\filter\tia_datapacket_custom_filter.h" />
+    <ClInclude Include="include\tia-private\newtia\filter_impl\downsampling_filterparam.h" />
+    <ClInclude Include="include\tia-private\newtia\filter_impl\tia_customchannel_filterdecorator.h" />
+    <ClInclude Include="include\tia-private\newtia\filter_impl\tia_downsampling_filterdecorator.h" />
     <ClInclude Include="include\tia-private\newtia\fusty_hardware_interface_impl.h" />
     <ClInclude Include="include\tia-private\newtia\hardware_interface.h" />
     <ClInclude Include="include\tia-private\newtia\messages\standard_control_messages.h" />
@@ -244,10 +255,12 @@
     <ClInclude Include="include\tia-private\newtia\string_utils.h" />
     <ClInclude Include="include\tia-private\newtia\tia_control_command.h" />
     <ClInclude Include="include\tia-private\newtia\tia_control_command_context.h" />
+    <ClInclude Include="include\tia-private\newtia\tia_custom_signal_info_parse_and_build_functions.h" />
     <ClInclude Include="include\tia-private\newtia\tia_datapacket_parser.h" />
     <ClInclude Include="include\tia-private\newtia\tia_exceptions.h" />
     <ClInclude Include="include\tia-private\newtia\tia_meta_info_parse_and_build_functions.h" />
     <ClInclude Include="include\tia\constants.h" />
+    <ClInclude Include="include\tia\custom_signal_info.h" />
     <ClInclude Include="include\tia\data_packet_interface.h" />
     <ClInclude Include="include\tia\defines.h" />
     <ClInclude Include="include\tia\ssconfig.h" />

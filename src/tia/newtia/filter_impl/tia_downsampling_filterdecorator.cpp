@@ -89,9 +89,12 @@ DownsamplingFilterDecorator::DownsamplingFilterDecorator(CustomPacketFilterPtr d
       {
         //  std::cout << "Adding signal " << mod_signal_it->first << " with ds factor" << rational_ds_factor << "!" << std::endl;
 
-        DownsamplingFilterParam *ds_param = new DownsamplingFilterParam ( signal_fs ,
-                                                                          (boost::uint16_t)rational_ds_factor, 0,
+		#pragma warning(disable: 4244)
+
+        DownsamplingFilterParam *ds_param = new DownsamplingFilterParam ( signal_fs , ((boost::uint16_t)rational_ds_factor), 0,
                                                                           mod_signal_it->second.channels().size());
+
+		#pragma warning(default: 4244)
         // test out of memory
         if(ds_param == NULL)
         {
