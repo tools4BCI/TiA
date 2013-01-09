@@ -191,7 +191,8 @@ class TiAClientDataReader
             #endif
           }
           else
-            break;
+            continue;
+//            break;
 
           counter++;
           #ifdef TIMING_TEST
