@@ -114,6 +114,9 @@ public:
    * @brief Destructor
    */
   virtual ~TiAClient();
+
+  void useNewTiA(bool use_new_tia);
+
   /**
    * @brief Establish a connection to a TOBI SignalServer
    * The caller will be blocked until the connection has been made or an error has occurred.

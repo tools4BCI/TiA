@@ -52,33 +52,34 @@ using boost::algorithm::to_lower_copy;
 
 //-----------------------------------------------------------------------------
 
-const string Constants::tobi("tobi-config");
+//const string Constants::tobi("tobi-config");
 
-const string Constants::subject("subject");
-const string Constants::s_id("id");
-const string Constants::s_first_name("first_name");
-const string Constants::s_surname("surname");
-const string Constants::s_sex("sex");
-const string Constants::s_birthday("birthday");
+//const string Constants::subject("subject");
+//const string Constants::s_id("id");
+//const string Constants::s_first_name("first_name");
+//const string Constants::s_surname("surname");
+//const string Constants::s_sex("sex");
+//const string Constants::s_birthday("birthday");
 
-const string Constants::ss("server_settings");
+//const string Constants::ss("server_settings");
 const string Constants::ss_ctl_port("ctl_port");
 const string Constants::ss_udp_bc_addr("udp_bc_addr");
 const string Constants::ss_udp_port("udp_port");
-const string Constants::ss_tid_port("tid_port");
 
-const string Constants::ss_store_data("store-data");
-const string Constants::ss_filename("filename");
-const string Constants::ss_filetype("filetype");
-const string Constants::ss_filepath("filepath");
-const string Constants::ss_filepath_default("rec");
-const string Constants::ss_file_overwrite("overwrite");
-const string Constants::ss_file_overwrite_default("ask");
+//const string Constants::ss_tid_port("tid_port");
 
-const string Constants::file_reader("file-reader");
-  // filepath, name and type from store_data
-const string Constants::fr_speedup("speedup");
-const string Constants::fr_stop("stop_at_end");
+//const string Constants::ss_store_data("store-data");
+//const string Constants::ss_filename("filename");
+//const string Constants::ss_filetype("filetype");
+//const string Constants::ss_filepath("filepath");
+//const string Constants::ss_filepath_default("rec");
+//const string Constants::ss_file_overwrite("overwrite");
+//const string Constants::ss_file_overwrite_default("ask");
+
+//const string Constants::file_reader("file-reader");
+//  // filepath, name and type from store_data
+//const string Constants::fr_speedup("speedup");
+//const string Constants::fr_stop("stop_at_end");
 
 //-----------------------------------------------------------------------------
 

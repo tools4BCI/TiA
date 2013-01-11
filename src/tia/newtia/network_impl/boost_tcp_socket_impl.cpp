@@ -97,11 +97,33 @@ BoostTCPSocketImpl::~BoostTCPSocketImpl ()
     std::cout << BOOST_CURRENT_FUNCTION << std::endl;
   #endif
 
-    if (socket_)
+  if (socket_)
+  {
+    boost::system::error_code ec;  //ignored
+    socket_->cancel(ec);
+    ec.clear();
+
+    unsigned int nr_disconnect_retries = 0;
+    do
     {
-        socket_->close ();
+      socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+      socket_->close(ec);
+      if(ec)
+      {
+        std::cerr << BOOST_CURRENT_FUNCTION << " -- " << ec.message() << std::endl;
+        #ifdef WIN32
+          Sleep(1);
+        #else
+          usleep(10000);
+        #endif
+      }
+      nr_disconnect_retries++;
     }
-    str_buffer_.clear ();
+    while(ec && (nr_disconnect_retries < 10) ) ;
+
+  }
+  str_buffer_.clear ();
+  socket_.reset();
 }
 
 //-----------------------------------------------------------------------------

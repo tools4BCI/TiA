@@ -68,6 +68,22 @@ TiAClient::~TiAClient()
 
 //-----------------------------------------------------------------------------
 
+void TiAClient::useNewTiA(bool use_new_tia)
+{
+  if(impl_->connected())
+    throw(std::runtime_error(std::string(BOOST_CURRENT_FUNCTION) + " -- Error: Client already connected!" ));
+
+  if(impl_)
+    delete impl_;
+
+  if(use_new_tia)
+    impl_ = new tia::TiANewClientImpl;
+  else
+    impl_ = new TiAClientImpl;
+}
+
+//-----------------------------------------------------------------------------
+
 void TiAClient::connect(const std::string& address, short unsigned port)
 {
   impl_->connect(address, port);
