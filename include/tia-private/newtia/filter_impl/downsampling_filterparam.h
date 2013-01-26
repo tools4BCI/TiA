@@ -53,11 +53,11 @@ public:
         sampling_rate_(sampling_rate), ds_factor_(ds_factor), sample_counter_(sample_counter)
     {
 
-        double cut_off_frequz = 0.8 * ((double)sampling_rate) / 2.0 / ((double)ds_factor);
+        double cut_off_frequz = 0.75 * ((double)sampling_rate) / 2.0 / ((double)ds_factor);
 
         for(boost::uint16_t chan_idx = 0; chan_idx < num_channels; ++chan_idx)
         {
-            BasicFilter<double> *chan_lpf = new IIRButterLpf<double>(sampling_rate, cut_off_frequz, 5, 8 );
+            BasicFilter<double> *chan_lpf = new IIRButterLpf<double>(sampling_rate, cut_off_frequz, 5, 16 );
 
 //            BasicFilter<double> *chan_lpf = new IIRChebyLpf<double>(false,sampling_rate, cut_off_frequz ,0.5,8,false);
 

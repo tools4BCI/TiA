@@ -35,9 +35,6 @@ SOURCES += src/tia_custom_client_main.cpp
 # -----------------------------------------------------------------------
 
 unix {
-    LIBS += -Lextern/lib/ticpp/linux \
-            -lboost_thread -lboost_system
-
     HARDWARE_PLATFORM = $$system(uname -m)
     contains( HARDWARE_PLATFORM, x86_64 )::{
         message(Building 64 bit )
@@ -49,8 +46,10 @@ unix {
         # 32-bit Linux
         message(Building 32 bit )
         LIBS += -Llib/x86 -ltia   -lticpp
-
     }
+
+    LIBS += -Lextern/lib/ticpp/linux \
+            -lboost_thread -lboost_system
 }
 
 win32:LIBS += lib/tia.lib
